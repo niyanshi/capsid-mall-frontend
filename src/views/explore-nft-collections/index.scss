@@ -1,0 +1,27 @@
+.explore-nft-collections-list {
+  .title {
+    img {
+      width: 32px;
+      height: 32px;
+      margin-right: 16px;
+    }
+
+    display: flex;
+    align-items: center;
+    font-family: 'Quiet Sans', sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 800;
+    color: #000;
+    letter-spacing: 0.02em;
+  }
+
+  .display {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 32px;
+    column-gap: 32px;
+    min-width: 980px;
+    margin: 54px 0;
+  }
+}

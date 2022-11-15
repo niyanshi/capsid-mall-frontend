@@ -1,0 +1,107 @@
+$gray: #867a93;
+$normal: #1f263b;
+.calendar-wrap {
+  position: relative;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  color: #000;
+}
+.date {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 20px;
+  line-height: 20px;
+  padding: 2px;
+}
+.icon-calendar {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  background-image: url('@/assets/icons/icon-calendar.png');
+  background-size: contain;
+}
+.calendar-panel {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  width: 335px;
+  height: 360px;
+  background-color: #fff;
+  box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  padding: 17px 32px;
+  box-sizing: border-box;
+}
+.panel-title {
+  height: 20px;
+  line-height: 20px;
+  margin-bottom: 14px;
+}
+.panel-content {
+  width: 258px;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+.month {
+  width: 258px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 18px;
+  font-size: 14px;
+  color: $normal;
+  img {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  span {
+    line-height: 18px;
+  }
+}
+.week {
+  width: 258px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  margin: 22px 0;
+  gap: 8px;
+  span {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    font-size: 10px;
+    color: $gray;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-align: center;
+    line-height: 30px;
+  }
+}
+.day {
+  width: 258px;
+  height: 150px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.calendar-item {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.light {
+  color: $gray;
+  cursor: not-allowed;
+}
+.active {
+  border: 1.6px solid #a32015;
+  border-radius: 61px;
+}

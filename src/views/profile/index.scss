@@ -1,0 +1,215 @@
+.main {
+  width: 1280px;
+  height: 100%;
+  margin: 70px auto 0;
+}
+.user-name {
+  font-family: 'Quiet Sans';
+  font-style: normal;
+  font-weight: 800;
+  font-size: 32px;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  font-feature-settings: 'pnum' on, 'lnum' on;
+  color: #1f263b;
+}
+.content {
+  margin-top: 36px;
+  display: flex;
+  .left-part {
+    width: 320px;
+    margin-right: 40px;
+    .avatar {
+      width: 320px;
+      height: 320px;
+      border: 2px solid #000000;
+      border-radius: 10px;
+      margin-top: 37px;
+    }
+    .edit {
+      width: 144px;
+      height: 32px;
+      margin: 16px auto;
+      background-color: #fff;
+      border: 1.6px solid #a32015;
+      border-radius: 32px;
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 32px;
+      text-align: center;
+      text-transform: uppercase;
+      color: #a32015;
+      cursor: pointer;
+    }
+  }
+  .right-part {
+    flex: 1;
+    .tab {
+      width: 100%;
+      height: 30px;
+      border-bottom: 2px solid #a32015;
+      padding-left: 15px;
+    }
+    .tab-item {
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 30px;
+      text-transform: uppercase;
+      color: #4d4d4d;
+      display: inline-block;
+      margin-right: 98px;
+      cursor: pointer;
+    }
+    .active {
+      color: #a32015 !important;
+    }
+    .operate {
+      margin-top: 24px;
+      .active {
+        border-color: #a32015;
+      }
+    }
+    .operate-button {
+      width: 104px;
+      height: 32px;
+      display: inline-block;
+      border: 1.6px solid #4d4d4d;
+      border-radius: 32px;
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 19px;
+      text-transform: capitalize;
+      text-align: center;
+      line-height: 32px;
+      color: #4d4d4d;
+      margin-right: 16px;
+    }
+    .position-list {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      height: 650px;
+      overflow-y: auto;
+    }
+    .empty {
+      width: 280px;
+      height: 64px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 300px auto 0;
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 16px;
+      color: #4d4d4d;
+      .icon-empty {
+        width: 64px;
+        height: 64px;
+        display: inline-block;
+        background-image: url('../../assets/icons/open-fold.png');
+        margin-right: 48px;
+      }
+    }
+  }
+}
+.dialog-content {
+  margin-top: 29px;
+  .dialog-title {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: #4d4d4d;
+    .icon {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      margin-right: 16px;
+      vertical-align: middle;
+    }
+    span {
+      font-family: 'Quiet Sans';
+      font-style: normal;
+      font-weight: 800;
+      font-size: 32px;
+      line-height: 20px;
+      letter-spacing: 0.02em;
+      font-feature-settings: 'pnum' on, 'lnum' on;
+      color: #000000;
+    }
+    p {
+      margin: 0;
+      margin-top: 16px;
+    }
+  }
+  .middle {
+    display: flex;
+    justify-content: space-between;
+    margin: 38px 50px 30px 10px;
+  }
+  .left-part {
+    .form-item {
+      margin-bottom: 48px;
+    }
+    .icon {
+      display: inline-block;
+      height: 14px;
+      height: 14px;
+      margin-bottom: 4px;
+      margin-right: 7px;
+    }
+  }
+  .bottom-line {
+    border-bottom: 2px solid #a32015;
+  }
+  .right-part {
+    span {
+      display: inline-block;
+      height: 24px;
+      line-height: 24px;
+    }
+    span:last-child {
+      width: 160px;
+      text-align: center;
+    }
+  }
+}
+.dialog-button {
+  width: 188px;
+  height: 56px;
+  background: #a32015;
+  box-shadow: 2px 2px 20px 10px rgba(163, 32, 21, 0.08);
+  border-radius: 32px;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  color: #fcf5c5;
+  cursor: pointer;
+  i {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-left: 8px;
+    background-size: contain;
+  }
+  .icon-wear {
+    background-image: url('../../assets/icons/shop.png');
+  }
+  .icon-ok {
+    background-image: url('../../assets/icons/icon-ok.png');
+  }
+}

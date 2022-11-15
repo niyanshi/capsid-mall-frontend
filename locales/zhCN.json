@@ -1,0 +1,62 @@
+{
+  "title": "Capsid",
+  "explore-title": "Explore - Capsid",
+  "campaign-title": "Campaign - Capsid",
+  "profile-title": "Profile - Capsid",
+  "create-nfr-title": "Create NFR - Capsid",
+
+  "nav": ["探索", "活动"],
+  "footer-options": ["Terms", "Privacy", "FAQ", "Careers"],
+  "connect": "登录",
+  "connect-title": "Welcome to NFR",
+  "question": "NFR是什么?",
+  "description": "购买、出售使用数字藏品的权利，\n包括但不限于collab、IP许可、merch和租赁。",
+  "quick-start": "快速开始",
+  "sponsor-titles": [
+    "Founding members from",
+    "Backed by top notch investors",
+    "Backed by execs and veterans from"
+  ],
+  "sell-slogan": ["Verify NFT Ownership", "One-Click to sell NFRs"],
+  "go": "GO",
+  "more": "更多",
+  "collection-desc": "通过将使用数字藏品的权利货币化来赚取现金流。",
+  "info-options": ["Listings", "Floor Price"],
+
+  "explore-page": {
+    "title": "NFT Collections",
+    "options": ["NFRs", "Floor Price"]
+  },
+  "menu-items": ["Profile", "Log Out"],
+  "not-online": "Coming Soon",
+  "active-only": "Active Only",
+  "properties": "属性",
+  "nfr-actions": ["REQUEST NFR", "创建NFR"],
+  "nfrs": "NFRs",
+  "nfr": "NFR",
+  "requests": "请求",
+  "expires": "过期",
+  "total": "",
+  "buy": "购买",
+  "accept": "ACCEPT",
+  "request-nfr": "Request NFR",
+  "details": "Details",
+  "issued-by": "Issued by",
+  "received-by": "Received by",
+  "delist": "DELIST",
+  "cancel": "CANCEL",
+  "create-nfr": "Create NFR",
+  "create-nfr-form-items": [
+    "Type",
+    "Expiration date",
+    "Quantity",
+    "Describe the NFR Briefly",
+    "Details",
+    "Price"
+  ],
+  "placeholder": {
+    "type": "Select Type",
+    "optional": "Optional",
+    "quantity":"Integer less than 10"
+  }
+}

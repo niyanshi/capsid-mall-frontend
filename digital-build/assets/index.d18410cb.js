@@ -1,0 +1,1 @@
+import{_ as o,l as _,o as c,c as t,j as n}from"./index.21f0358c.js";const s={},r={class:"explore"};function a(d,i){const e=_("router-view");return c(),t("div",r,[n(e)])}const p=o(s,[["render",a],["__scopeId","data-v-caf3eeb7"]]);export{p as default};

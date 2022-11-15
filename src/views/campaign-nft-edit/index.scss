@@ -1,0 +1,71 @@
+.edit-wrap {
+  width: 1280px;
+  margin: 0 auto;
+  font-family: 'Quiet Sans';
+  font-style: normal;
+  letter-spacing: 0.01em;
+  font-feature-settings: 'pnum' on, 'lnum' on;
+  color: #000000;
+
+  .campaign-info {
+    font-weight: 800;
+    font-size: 32px;
+    line-height: 32px;
+    margin: 72px auto 72px;
+  }
+  .nft-edit {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+.add {
+  border: 2px dashed #000;
+  border-radius: 10px;
+  .icon {
+    width: 260px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 20px;
+  }
+  .text {
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    color: #1f263b;
+  }
+}
+.item-size {
+  width: 260px;
+  height: 300px;
+  margin: 0 43px 37px 0;
+}
+.nft-item {
+  img {
+    width: 260px;
+    height: 255px;
+    border: 2px solid #000;
+    border-radius: 10px;
+    box-sizing: border-box;
+  }
+  .name {
+    margin-top: 16px;
+    height: 24px;
+    font-family: 'Quiet Sans';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 20px;
+    line-height: 24px;
+    letter-spacing: 0.02em;
+    font-feature-settings: 'pnum' on, 'lnum' on;
+    color: #000000;
+  }
+}
+.form-item {
+  margin-top: 30px;
+}

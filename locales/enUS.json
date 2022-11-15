@@ -1,0 +1,152 @@
+{
+  "title": "Capsid",
+  "explore-title": "Explore - Capsid",
+  "campaign-title": "Campaign - Capsid",
+  "profile-title": "Profile - Capsid",
+  "wear-title": "Wear - Capsid",
+  "create-nfr-title": "Create NFR - Capsid",
+
+  "nav": ["Explore", "Campaign", "Wear"],
+  "footer-options": ["Terms", "Privacy", "FAQ", "Careers"],
+  "connect": "CONNECT WALLET",
+  "connect-title": "Welcome to NFR",
+  "question": "What is Non-Fungible Rights ?",
+  "description": "Buy, sell and mint the rights to use NFTs,\nincluding but not limited to collab, IP licensing, merch, and rental.",
+  "quick-start": "QUICK START",
+  "sponsor-titles": [
+    "Founding members from",
+    "Backed by top notch investors",
+    "Backed by execs and veterans from"
+  ],
+  "sell-slogan": ["Verify NFT Ownership", "One-Click to sell NFRs"],
+  "go": "GO",
+  "more": "MORE",
+  "collection-desc": "to earn cashflow by monetizing rights to use your NFTs.",
+  "info-options": ["Listings", "Floor Price"],
+
+  "explore-page": {
+    "title": "NFT Collections",
+    "options": ["NFRs", "Floor Price"]
+  },
+  "menu-items": ["Profile", "Log Out"],
+  "not-online": "Coming Soon",
+  "campaign-page": {
+    "title": "Campaigns",
+    "create": "CREATE CAMPAIGN",
+    "chooseBannar": "Choose an Banner",
+    "bannerTips": "Minimum size 1280 x 200px",
+    "campaignName": "Campaign name",
+    "placeholder": "Give me a name",
+    "expirationDate": "Expiration date",
+    "calendarTitle": "Expiration Date",
+    "describeBriefly": "Describe the campaign Briefly",
+    "links": "Useful links ( website, twitter, discord, ... etc. )",
+    "pleaseEnter": "Please enter",
+    "back": "BACK",
+    "chooseNft": "Choose NFTs",
+    "tab": ["store"],
+    "edit": "edit",
+    "editNFT": "edit nfts"
+  },
+  "active-only": "Active Only",
+  "properties": "Properties",
+  "nfr-actions": ["REQUEST NFR", " CREATE NFR"],
+  "nfrs": "NFRs",
+  "nfr": "NFR",
+  "nfts": "NFTs",
+  "requests": "Requests",
+  "request": "Request",
+  "expires": "Expires",
+  "total": "Total",
+  "buy": "BUY",
+  "accept": "ACCEPT",
+  "request-nfr": "Request NFR",
+  "details": "Details",
+  "issued-by": "Issued by",
+  "received-by": "Received by",
+  "list": "LIST",
+  "delist": "DELIST",
+  "cancel": "CANCEL",
+  "create-nfr": "Create NFR",
+  "back": "BACK",
+  "ok": "OK",
+  "all": "All",
+  "create-nfr-form-items": [
+    "Type",
+    "Expiration date",
+    "Quantity",
+    "Describe the NFR Briefly",
+    "Details",
+    "Price"
+  ],
+  "alert-msg": {
+    "request-success": {
+      "title": "Request Submitted",
+      "desc": ["View in my", "profile"]
+    },
+    "list-success": {
+      "title": "Created successfully",
+      "desc": ["View in my", "profile"]
+    }
+  },
+  "nft-action-tips": ["Select NFTs", "Choose NFTs"],
+  "choose-nft": "Choose your NFT",
+  "placeholder": {
+    "type": "Select Type",
+    "optional": "Optional",
+    "quantity": "Integer less than 10"
+  },
+  "warn-msg": {
+    "type": "Wrong Type Value!",
+    "quantity": "Wrong Quantity Value!",
+    "desc": "Wrong NFR Description!",
+    "price": "Wrong Price Value!",
+    "nft": "NFT not selected",
+    "relogin": "You need to log in again",
+    "high-quantity": "Quantity should be less than 10"
+  },
+  "buyNft": "BUY NFT",
+  "buyNfr": "BUY NFR",
+  "wear": "Wear",
+  "selectAvatarNFT": "Select avatar NFT",
+  "selectAvatar": "Select your avatar",
+  "selectAvatarz": "Select your avatarz",
+  "wearSuccess": "Wear successfully",
+  "viewInMy": "View in my",
+  "profile": "profile",
+  "wearSuccessTips": "The artist is working on the final look. It might take a few days.",
+  "error": "error",
+  "errorTips": "An error occurred, please try again",
+  "profile-page": {
+    "editProfile": "edit profile",
+    "tabList": ["nfts", "nfrs", "requests", "activities"],
+    "editProfileDesc": "Set a display name and other desired profile information",
+    "profileImage": "Profile image",
+    "diaplayName": "Display Name",
+    "twitter": "Twitter",
+    "twitterPlaceholder": "Twitter username",
+    "bio": "A short bio",
+    "bioPlaceholder": "Desctibe yourself in a few words",
+    "created": "created",
+    "owned": "owned",
+    "received": "received"
+  },
+  "emptyTips": "No content temporarily",
+  "uploadImage": "Upload image",
+  "activityTableLabel": ["Item", "Price", "Quantity", "From", "To", "Time"],
+  "wear-page": {
+    "tab": ["All", "Completed", "Pending"],
+    "createNew": "Create",
+    "selectWearNFT": "Select wearable NFT/NFR",
+    "chooseWearable": "Choose your wearable",
+    "selectAvatar": "Select avatar NFT",
+    "chooseAvatar": "Choose your avatar"
+  },
+  "newNFT": {
+    "imageLabel": "Image",
+    "chooseImage": "please upload an image",
+    "nameLabel": "Name",
+    "namePlaceholder": "please input name",
+    "descLabel": "Desc"
+  }
+}

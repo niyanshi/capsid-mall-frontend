@@ -1,0 +1,28 @@
+.drop-down-box {
+  position: absolute;
+  top: calc(100% + 2px);
+  width: 230px;
+  background-color: #fff;
+  border-radius: 0 0 32px 32px;
+  box-shadow: 0 12px 36px rgb(204 204 204 / 30%);
+
+  .item {
+    display: flex;
+    align-items: center;
+    height: 56px;
+    font-size: 16px;
+    font-weight: 500;
+    color: $main-font-color;
+
+    &.disable {
+      opacity: 0.4;
+    }
+
+    img {
+      width: 24px;
+      height: 24px;
+      margin-right: 16px;
+      margin-left: 20px;
+    }
+  }
+}

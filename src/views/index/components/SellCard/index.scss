@@ -1,0 +1,60 @@
+.sell-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 1280px;
+  height: 192px;
+  padding: 0 136px;
+  background: $main-color;
+  border-radius: 32px;
+  box-shadow: 2px 2px 20px 10px rgb(163 32 21 / 8%);
+
+  .block {
+    display: flex;
+
+    .icon {
+      width: 48px;
+      height: 48px;
+    }
+
+    .desc {
+      margin-left: 24px;
+      font-size: 32px;
+      font-style: italic;
+      font-weight: 700;
+      color: $vice-color;
+      letter-spacing: 0.02em;
+    }
+  }
+
+  .click {
+    width: 78px;
+    height: auto;
+  }
+
+  .btn {
+    position: absolute;
+    right: 60px;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 180px;
+    height: 56px;
+    font-size: 20px;
+    font-weight: 700;
+    color: $main-color;
+    cursor: pointer;
+    background-color: #fff;
+    border-radius: 32px;
+    box-shadow: 2px 2px 20px 10px rgb(163 32 21 / 8%);
+    transform: translateY(50%);
+
+    img {
+      width: 24px;
+      height: auto;
+      margin-left: 8px;
+    }
+  }
+}

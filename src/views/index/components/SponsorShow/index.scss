@@ -1,0 +1,30 @@
+.sponsor-show {
+  .title {
+    display: flex;
+    align-items: center;
+    font-size: 32px;
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+
+    img {
+      width: 32px;
+      height: auto;
+      margin-right: 24px;
+    }
+  }
+
+  .sponsor-list {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 160px;
+    padding-left: 70px;
+    margin-top: 32px;
+    margin-bottom: 80px;
+
+    img {
+      width: auto;
+      height: 40px;
+    }
+  }
+}

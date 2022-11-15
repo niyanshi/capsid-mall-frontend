@@ -1,0 +1,32 @@
+.layouts {
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1999;
+    width: 100vw;
+    height: 96px;
+    margin-bottom: 96px;
+    background-color: #fff;
+  }
+
+  aside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 96px;
+    height: 100vh;
+  }
+
+  main {
+    box-sizing: border-box;
+    width: 100vw;
+    min-height: calc(100vh - 96px - 88px);
+  }
+
+  footer {
+    width: 100vw;
+    height: 88px;
+    background-color: $main-color;
+  }
+}

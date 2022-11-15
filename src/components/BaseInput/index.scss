@@ -1,0 +1,50 @@
+.base-input {
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  input {
+    width: 100%;
+    min-width: 100px;
+    font-family: Roboto, serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    color: $main-font-color;
+
+    &.none {
+      border: none;
+      outline-style: none;
+    }
+
+    &.border {
+      box-sizing: border-box;
+      width: 100%;
+      height: 32px;
+      padding: 0 12px;
+      border: 2px solid $main-color;
+      border-radius: 16px;
+      outline-style: none;
+    }
+
+    &.line {
+      width: 100%;
+      height: 32px;
+      border: none;
+      border-bottom: 2px solid $main-color;
+      outline-style: none;
+    }
+
+    &::-webkit-inner-spin-button {
+      appearance: none;
+    }
+
+    &::-webkit-outer-spin-button {
+      appearance: none;
+    }
+
+    &::placeholder {
+      color: rgb(77 77 77 / 60%);
+    }
+  }
+}

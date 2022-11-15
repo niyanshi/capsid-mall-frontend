@@ -1,0 +1,28 @@
+.dialog-content {
+  background: #ffffff;
+  box-shadow: 2px 2px 20px 10px rgba(163, 32, 21, 0.08);
+  border-radius: 32px;
+  padding: 30px;
+  margin-top: -100px;
+  box-sizing: border-box;
+  position: relative;
+}
+.icon-close {
+  width: 18px;
+  height: 18px;
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  display: inline-block;
+  background-image: url('../../assets/icons/close.png');
+  background-size: contain;
+  cursor: pointer;
+}
+.bottom {
+  height: 56px;
+  display: flex;
+  justify-content: flex-end;
+  position: absolute;
+  right: 50px;
+  bottom: -28px;
+}

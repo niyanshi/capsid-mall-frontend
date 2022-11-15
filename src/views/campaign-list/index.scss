@@ -1,0 +1,113 @@
+.list-wrap {
+  width: 1280px;
+  margin: 0 auto;
+}
+.campaign-title {
+  display: flex;
+  margin-bottom: 30px;
+}
+.campaign-icon {
+  width: 32px;
+  height: 32px;
+  background-image: url(../../assets/icons/campaigns-title.png);
+  background-size: contain;
+  margin-right: 16px;
+}
+.campaign-text {
+  margin-right: 16px;
+  font-family: 'Quiet Sans';
+  font-style: normal;
+  font-weight: 800;
+  font-size: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+.create-button {
+  width: 249px;
+  height: 36px;
+  border: 2px solid #a32015;
+  border-radius: 32px;
+  padding: 9px 27px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  span {
+    display: inline-block;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    height: 18px;
+    line-height: 18px;
+  }
+  em {
+    width: 24px;
+    height: 24px;
+    background-image: url(../../assets/icons/Chat-add.png);
+    background-size: contain;
+  }
+}
+.campaign-item {
+  width: 1280px;
+  height: 320px;
+  background-color: #fff;
+  box-shadow: 2px 2px 20px 10px rgba(163, 32, 21, 0.08);
+  border-radius: 32px;
+  margin-bottom: 60px;
+  img {
+    width: 1280px;
+    height: 200px;
+  }
+  .campaign-name {
+    width: 100%;
+    height: 120px;
+    position: relative;
+    & > span {
+      display: inline-block;
+      margin: 51px 0 37px 47px;
+      height: 32px;
+      font-family: 'Quiet Sans';
+      font-style: normal;
+      font-weight: 800;
+      font-size: 32px;
+      line-height: 32px;
+      font-feature-settings: 'pnum' on, 'lnum' on;
+      color: #000000;
+    }
+    .edit {
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 184px;
+      height: 56px;
+      line-height: 56px;
+      right: 30px;
+      bottom: -26px;
+      background: #a32015;
+      border-radius: 32px;
+      cursor: pointer;
+      span {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 21px;
+        text-align: center;
+        text-transform: uppercase;
+        color: #fcf5c5;
+        margin: 0 12px 0 0;
+      }
+      .icon-edit {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        background-image: url(../../assets/icons/Edit.png);
+      }
+    }
+    .r240 {
+      right: 240px;
+    }
+  }
+}
