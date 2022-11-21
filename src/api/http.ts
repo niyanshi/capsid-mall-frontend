@@ -9,6 +9,7 @@ import Router from '@/router';
 const userInfoStore = useUserInfoStore(pinia);
 
 const http = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
   timeout: 10_000,
   headers: {
     'Content-Type': 'application/json',
@@ -40,4 +41,4 @@ http.interceptors.response.use(
 
 export default http;
 
-export const prefix = import.meta.env.VITE_PREFIX;
+export const prefix = import.meta.env.  VITE_PREFIX;

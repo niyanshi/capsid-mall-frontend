@@ -6,10 +6,14 @@ import { resolve } from 'path';
 
 /** 代理目标 */
 const targetObj = {
-  wg: 'http://172.100.3.19:8080',
-  // cj: 'http://172.100.3.188:9002',
-  wq: 'http://172.100.3.144:9080',
-  test: 'http://172.100.3.188:9092',
+  // wg: 'http://172.100.3.19:8080',
+  // // cj: 'http://172.100.3.188:9002',
+  // wq: 'http://172.100.3.144:9080',
+  // test: 'http://172.100.3.188:9092',
+    wg: 'http://127.0.0.1:8888',
+    // cj: 'http://172.100.3.188:9002',
+    wq: 'http://127.0.0.1:8888',
+    test: 'http://127.0.0.1:8888',
 };
 
 /**
@@ -62,7 +66,7 @@ export default ({ command }: ConfigEnv) =>
       proxy: {
         '/api': {
           target: targetObj.test,
-          // rewrite:path => path.replace(/^\/api/, '')
+          rewrite:path => path.replace(/^\/api/, '')
         },
         // '/api': {
         //   target: targetObj.xjy,
