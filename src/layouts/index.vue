@@ -4,7 +4,6 @@
       <header-area></header-area>
     </header>
     <div style="height: 96px;"></div>
-
     <aside>
       <side-bar></side-bar>
     </aside>

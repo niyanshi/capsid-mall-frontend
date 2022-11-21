@@ -42,7 +42,7 @@ const router = useRouter();
  */
 const skipToProfile = () => {
   if (!userInfoStore.currentUser.isLogin) return;
-  console.log('profile:',userInfoStore.currentUser.publicKey);
+  console.log('profile:', userInfoStore.currentUser.publicKey);
   router.push(`/profile/${userInfoStore.currentUser.publicKey}`);
 };
 /**
@@ -51,6 +51,7 @@ const skipToProfile = () => {
 const handleLogOut = () => {
   if (!userInfoStore.currentUser.isLogin) return;
   userInfoStore.logout();
+  router.push('/');
 };
 </script>
 

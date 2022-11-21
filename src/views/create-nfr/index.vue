@@ -24,8 +24,12 @@
         <!-- Expiration date 和 Quantity -->
         <div class="layer one">
           <!-- Expiration date  -->
-          <form-item :title="t('create-nfr-form-items[1]')">
-            <base-datepicker ref="expireRef"></base-datepicker>
+          <form-item :title="t('create-nfr-form-items[1]') + ' (day)'">
+            <base-input
+              v-model="valueObj.duration"
+              type="number"
+              style-type="line"
+            ></base-input>
           </form-item>
           <form-item :title="t('create-nfr-form-items[2]')">
             <base-input
@@ -109,7 +113,9 @@
       >
         <template #desc>
           {{ t('alert-msg.list-success.desc[0]') }}
-          <a>{{ t('alert-msg.list-success.desc[1]') }}</a>
+          <a @click="router.push(`/profile/${userInfoStore.currentUser.publicKey}`)">{{
+            t('alert-msg.list-success.desc[1]')
+          }}</a>
         </template>
       </base-alert>
     </template>
@@ -132,25 +138,27 @@ import FormItemDetails from '@/components/BaseForm/FormItemDetails.vue';
 import FormItem from '@/components/BaseForm/FormItem.vue';
 import BaseInput from '@/components/BaseInput/index.vue';
 import BaseTextarea from '@/components/BaseTextarea/index.vue';
-import BaseDatepicker from '@/components/BaseDatepicker/index.vue';
+// import BaseDatepicker from '@/components/BaseDatepicker/index.vue';
 import CollectionShow from './components/CollectionShow.vue';
 import ChooseNFTModal from './components/ChooseNFTModal.vue';
 import useSeaport from '@/hooks/useSeaport';
 import { useRouter } from 'vue-router';
 import { httpGetNFTsDetails } from '@/api/explore';
 import { INFRTypeForRequest, INFTsType } from '@/types/nft';
-import dayjs from 'dayjs';
 import { message } from 'ant-design-vue';
 import { httpListNFR } from '@/api/nfr';
 import { useUserInfoStore } from '@/stores/user-info';
+import { useControllerStore } from '@/stores/controller';
+import { ERR } from '@/utils/constant';
+import _ from 'lodash-es';
 
 const { t } = useI18n();
 const { listNFR } = useSeaport();
 const router = useRouter();
 const userInfoStore = useUserInfoStore();
+const controllerStore = useControllerStore();
 
 const isChooseRef = ref(false);
-const expireRef = ref();
 const isSuccessful = ref(false);
 const isEditableRef = ref(false);
 const nftObj = reactive<INFTsType>({
@@ -164,23 +172,14 @@ const valueObj = reactive<{
   price?: number;
   quantity?: number;
   desc: string;
+  duration: string;
 }>({
   type: '',
   details: '',
   desc: '',
+  duration: '',
 });
-const options = [
-  { key: '0', value: 'type' },
-  { key: '1', value: 'type1' },
-  { key: '2', value: 'type2' },
-  { key: '3', value: 'type3' },
-];
-const getKey = (val: string) => {
-  for (let i = 0; i < options.length; i++) {
-    if (options[i].value === val) return options[i].key;
-  }
-  return '';
-};
+const options = controllerStore.nfrType.map((item) => ({ key: item.id, value: item.name }));
 
 /** 获取nft详情 */
 const getNFTsDetails = async (address: string, id: string) => {
@@ -194,6 +193,12 @@ const getNFTsDetails = async (address: string, id: string) => {
     const { traitType, value } = item;
     return `${traitType} ${value}`;
   });
+  nftObj.attributes = _.fromPairs(
+    d.traits?.map((item: { traitType: string; value: string }) => {
+      const { traitType, value } = item;
+      return [traitType, value];
+    }),
+  );
   nftObj.owner = d.ownerAddressList;
 };
 
@@ -218,7 +223,6 @@ const handleGetSelected = (e?: INFTsType) => {
 /** 数据验证 */
 const validateData = () => {
   const quantityCof = 10;
-
   if (!nftObj.contractAddress || !nftObj.id) {
     message.error(t('warn-msg.nft'));
     return false;
@@ -227,8 +231,17 @@ const validateData = () => {
     message.error(t('warn-msg.type'));
     return false;
   }
-  if (!valueObj.quantity || Number(valueObj.quantity) < quantityCof) {
+  if (!valueObj.duration) {
+    message.error(t('warn-msg.duration'));
+    return false;
+  }
+  if (!Number(valueObj.quantity) || String(valueObj.quantity).includes('.')) {
     message.error(t('warn-msg.quantity'));
+    return false;
+  }
+
+  if (Number(valueObj.quantity) > quantityCof) {
+    message.error(t('warn-msg.high-quantity'));
     return false;
   }
   if (!valueObj.desc) {
@@ -244,26 +257,40 @@ const validateData = () => {
 
 /** list NFR */
 const handleList = async () => {
-  const current = dayjs();
-  const expire = dayjs(expireRef.value.currentValue).endOf('d');
-
+  // const current = dayjs();
+  // const expire = dayjs(expireRef.value.currentValue).endOf('d');
   if (!validateData()) return;
   const obj = {
-    type: Number(getKey(valueObj.type)),
+    type: valueObj.type,
     quantity: valueObj.quantity || 0,
     price: valueObj.price || 0,
-    druation: Math.ceil(expire.diff(current, 'd', true)),
+    druation: Number(valueObj.duration) || 0,
     nftId: String(nftObj.id),
     nftContractAddress: String(nftObj.contractAddress),
     desc: valueObj.desc,
+    avatar: nftObj?.avatar,
+    attributes: nftObj?.attributes,
   } as INFRTypeForRequest;
-  const resParams = await listNFR(obj);
-  const res = await httpListNFR(resParams);
-  if (res.code === 0) {
+
+  controllerStore.setGlobalLoading(true);
+  controllerStore.setGlobalTip(t('wait-msg.list'));
+  try {
+    const resParams = await listNFR(obj);
+    const res = await httpListNFR(resParams);
+    if (res.code !== 0) {
+      message.error(res.msg);
+      controllerStore.setGlobalLoading(false);
+      return;
+    }
     isSuccessful.value = true;
-    return;
+  } catch (error) {
+    const { code } = error as IOpenseaErrorType;
+    if (code === ERR.RejectMessage) {
+      message.error(t('err-msg.reject'));
+    }
+    console.error(error);
   }
-  message.error(res.msg);
+  controllerStore.setGlobalLoading(false);
 };
 
 /** 完成上链后的回调 */

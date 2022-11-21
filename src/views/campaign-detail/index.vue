@@ -9,11 +9,14 @@
         <!-- <span :class="[{active: activeKey === 3}]">REQUESTS</span> -->
       </div>
     </div>
-    <div class="list-wrap">
+    <div v-if="campaignList.length !== 0" class="list-wrap">
       <div v-for="(item,index) in campaignList" :key="index" class="campaign-item" @click="handleDetailClick(item)">
         <img :src="item.imageUrl" alt="">
         <div class="name">{{item.name}}</div>
       </div>
+    </div>
+    <div v-else class="empty text">
+      <span>{{ t('coming-soon') }}</span>
     </div>
   </div>
 </template>
@@ -34,12 +37,9 @@ const campaignId = ref<number>();
 const campaignList = ref<INFT[]>([]);
 const campaignName = ref<string>();
 const handleDetailClick = (nft: INFT) => {
-  // 点击详情，带上campaignID和nft的tokenId
+  // 点击详情，带上nft的id
   router.push({
-    path: `/campaign/campaign-nft-details/${nft.tokenId}`,
-    query: {
-      campaignId: campaignId.value
-    }
+    path: `/campaign/campaign-nft-details/${nft.id}`,
   });
 };
 // 获取活动下所有NFT

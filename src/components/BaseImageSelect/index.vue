@@ -1,8 +1,8 @@
 <template>
-  <div class="select-box">
+  <div class="select-box" @click="handleImageSelect">
     <div class="img-box" :style="{ width: `${prop.width || 400}px`, height: `${prop.height || 400}px` }">
-      <img v-show="src" :src='`${basePath}${src}`' alt="" @click="handleImageSelect">
-      <div v-show="!src" @click="handleImageSelect">
+      <img v-show="src" :src='src' alt="">
+      <div v-show="!src">
         <input ref="imageInput" type="file" style="display:none;" @change="handleImageChange">
         <img
           class="icon-add" src="@/assets/icons/icon-add.png"
@@ -16,6 +16,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { httpUploadload } from '@/api/campaign';
+import { message } from 'ant-design-vue';
 
 const prop = defineProps<{
   width?: string | number,
@@ -27,15 +28,14 @@ const prop = defineProps<{
 }>();
 const emit = defineEmits(['update:modelValue']);
 const src = ref('');
-const basePath = import.meta.env.VITE_IMAGE_BASE_URL;
 const imageInput = ref<HTMLInputElement>();
 // 图片选择
 const handleImageSelect = () => {
   imageInput.value?.click();
 };
-watch(()=> prop.modelValue, (val) => {
-  src.value = val || '';
-},{immediate: true});
+watch(() => prop.modelValue, (val) => {
+  if(src.value === '') src.value = val;
+}, { immediate: true });
 const handleImageChange = async (e: Event) => {
   const input = e.target as HTMLInputElement;
   const file = input.files ? input.files[0] : null;
@@ -45,8 +45,10 @@ const handleImageChange = async (e: Event) => {
     const url = prop.url || '/campaigns/upload';
     const res = await httpUploadload(url, formData);
     if (res.code === 0) {
-      src.value = res.data;
-      emit('update:modelValue', res.data);
+      src.value = res.data.fullPath;
+      emit('update:modelValue', res.data.path);
+    } else {
+      message.error(res.msg);
     }
   }
 };

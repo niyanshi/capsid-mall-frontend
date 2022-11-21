@@ -19,14 +19,6 @@ export const httpGetNFTsByCollection = async (id: string): Promise<IResponseDto>
 };
 
 /**
- * 获取nft列表
- */
-export const httpGetNFTsList = async (): Promise<IResponseDto> => {
-  const res = await http.get('/mock/explore/get-nfts-list');
-  return res.data;
-};
-
-/**
  * 获取nft详情
  * @param assetContractAddress nft合约地址
  * @param tokenId nft的tokenId

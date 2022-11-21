@@ -73,7 +73,7 @@
   "all": "All",
   "create-nfr-form-items": [
     "Type",
-    "Expiration date",
+    "Duration",
     "Quantity",
     "Describe the NFR Briefly",
     "Details",
@@ -97,13 +97,37 @@
     "quantity": "Integer less than 10"
   },
   "warn-msg": {
+    "duration": "Wrong Duration Value!",
     "type": "Wrong Type Value!",
     "quantity": "Wrong Quantity Value!",
     "desc": "Wrong NFR Description!",
     "price": "Wrong Price Value!",
     "nft": "NFT not selected",
     "relogin": "You need to log in again",
-    "high-quantity": "Quantity should be less than 10"
+    "high-quantity": "Quantity should be less than 10",
+    "weth-not-enough": "WETH is not enough",
+    "mintEmpty": "All Item Minted",
+    "busy": "It took too long, please try next time",
+    "needLogin": "Please login",
+    "viewSoon": "It took too long, please view transaction result in your wallet"
+  },
+  "err-msg": {
+    "reject": " You rejected the request",
+    "request-fail": "Request Fail"
+  },
+  "wait-msg": {
+    "loading": "Loading...",
+    "request": "Requesting...",
+    "list": "Listing...",
+    "cancel": "Canceling...",
+    "delist": "Delisting...",
+    "accept": "Accepting...",
+    "mint": "Minting...",
+    "listNFT": "NFT Listing...",
+    "listNFR": "NFR Listing..."
+  },
+  "info-msg": {
+    "success": "Successful operation!"
   },
   "buyNft": "BUY NFT",
   "buyNfr": "BUY NFR",
@@ -112,8 +136,8 @@
   "selectAvatar": "Select your avatar",
   "selectAvatarz": "Select your avatarz",
   "wearSuccess": "Wear successfully",
-  "viewInMy": "View in my",
-  "profile": "profile",
+  "viewInMy": "View in the",
+  "profile": "Wear Page",
   "wearSuccessTips": "The artist is working on the final look. It might take a few days.",
   "error": "error",
   "errorTips": "An error occurred, please try again",
@@ -133,14 +157,18 @@
   },
   "emptyTips": "No content temporarily",
   "uploadImage": "Upload image",
-  "activityTableLabel": ["Item", "Price", "Quantity", "From", "To", "Time"],
+  "activityTableLabel": ["Item", "Price", "Quantity", "From", "To", "type", "Time"],
   "wear-page": {
     "tab": ["All", "Completed", "Pending"],
     "createNew": "Create",
     "selectWearNFT": "Select wearable NFT/NFR",
     "chooseWearable": "Choose your wearable",
     "selectAvatar": "Select avatar NFT",
-    "chooseAvatar": "Choose your avatar"
+    "chooseAvatar": "Choose your avatar",
+    "name": "name",
+    "inputName": "please input name",
+    "desc": "please input description",
+    "selectTip": "please select a NFT"
   },
   "newNFT": {
     "imageLabel": "Image",
@@ -148,5 +176,7 @@
     "nameLabel": "Name",
     "namePlaceholder": "please input name",
     "descLabel": "Desc"
-  }
+  },
+  "mintAll": "MINT ALL",
+  "coming-soon": "Coming Soon~~"
 }

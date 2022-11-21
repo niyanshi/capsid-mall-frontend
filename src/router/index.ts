@@ -121,7 +121,7 @@ const Router = createRouter({
 });
 Router.beforeEach((to) => {
   const userInfoStore = useUserInfoStore();
-  if(to.name === 'campaign-create' && !userInfoStore.currentUser.isLogin) {
+  if (to.name === 'campaign-create' && !userInfoStore.currentUser.isLogin) {
     userInfoStore.setLoginModalVisible(true);
     return false;
   }

@@ -98,3 +98,30 @@ export interface IWearItem {
   type: 1| 2;
   tokenAddress: string;
 }
+export interface IRequestV {
+  amount: number;
+  chain: string;
+  createdAt: string;
+  creator: string;
+  description: string;
+  duration: number;
+  extra: string;
+  id: number;
+  image: string;
+  nfrTokenAddress: string;
+  nftId: string;
+  nftMeta: string;
+  nftOwnerAddress: string;
+  nftTokenAddress: string;
+  nftTokenType: string;
+  orderOnChain: string;
+  orderOnChainHash: string;
+  selledAmount: number;
+  status: string;
+  templateId: string;
+  tokenType: string;
+  totalPrice: string;
+  type: string;
+  unitPrice: string;
+  updatedAt: string;
+}

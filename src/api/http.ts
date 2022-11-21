@@ -4,6 +4,7 @@ import { RELOGIN_CODE } from '@/utils/constant';
 import { useUserInfoStore } from '@/stores/user-info';
 import { pinia } from '@/stores';
 import { message } from 'ant-design-vue';
+import Router from '@/router';
 
 const userInfoStore = useUserInfoStore(pinia);
 
@@ -18,6 +19,7 @@ http.interceptors.request.use((config) => {
   if (storage.getToken()) {
     config.headers = {
       Authorization: `Bearer${storage.getToken()}`,
+      'Accept-Language': 'en-us',
     };
   }
 
@@ -28,7 +30,8 @@ http.interceptors.response.use(
     const { data } = config;
     if (data.code === RELOGIN_CODE) {
       userInfoStore.logout();
-      message.warn(`CODE ${data.code}: ${data.message}`);
+      Router.push('/');
+      message.warn(`CODE ${data.code}: ${data.message || data.msg}`);
     }
     return config;
   },

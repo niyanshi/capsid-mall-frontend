@@ -26,3 +26,16 @@
     margin-top: 40px;
   }
 }
+
+.invalid {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: fit-content;
+  height: 100px;
+  margin: auto;
+  font-size: 30px;
+  font-weight: 500;
+}

@@ -46,15 +46,17 @@ const useMetaMask = () => {
     return accounts[0];
   };
 
-  /** 监听账户切换 */
-  // const monitorAccountChange = async (event: (e: unknown) => void) => {
-  //   ethereum.on('accountsChanged', event);
-  //   return ethereum.removeListener('accountsChanged', event);
-  // };
+  /** 获取网络 */
+  const getNetwork = async () => {
+    if (!ethereum) return { name: 'undefined', chainId: -1 } as ethers.providers.Network;
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    return provider.getNetwork();
+  };
 
   return {
     connectWallet,
     getAddress,
+    getNetwork,
     // monitorAccountChange,
   };
 };

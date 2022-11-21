@@ -2,13 +2,13 @@ import http, { prefix } from './http';
 import { IResponseDto } from './types';
 
 /** list NFR */
-export const httpListNFR = async (data: Record<string, string>) => {
+export const httpListNFR = async (data: Record<string, unknown>) => {
   const res = await http.post(`${prefix}/nfr-order/listing`, { ...data });
   return res.data;
 };
 
 /** request NFR */
-export const httpRequestNFR = async (data: Record<string, string>) => {
+export const httpRequestNFR = async (data: Record<string, unknown>) => {
   const res = await http.post(`${prefix}/nfr-order/request`, { ...data });
   return res.data;
 };
@@ -40,8 +40,11 @@ export const httpGetNFRsDetails = async (id: string): Promise<IResponseDto> => {
 /**
  * 取消nfr 订单
  */
-export const httpCancelNFRsOrder = async (id: string): Promise<IResponseDto> => {
-  const res = await http.get(`${prefix}/nfr-order/cancel`, { params: { nfrOrderId: id } });
+export const httpCancelNFRsOrder = async (
+  id: string,
+  status: 'pending' | 'cancel' | 'active',
+): Promise<IResponseDto> => {
+  const res = await http.get(`${prefix}/nfr-order/cancel`, { params: { nfrOrderId: id, status } });
   return res.data;
 };
 
@@ -93,5 +96,11 @@ export const httpNoticeStatus = async (id: string, transStatus: 'submitted' | 'f
       params: { nfrTransId: id, transStatus },
     },
   );
+  return res.data;
+};
+
+/** 获取type类型 */
+export const httpGetType = async (): Promise<IResponseDto> => {
+  const res = await http.get(`${prefix}/nfr-template`);
   return res.data;
 };

@@ -11,19 +11,19 @@
     <div>
       <div v-for="(item, index) in campaignList" :key="index" class="campaign-list" @click="handleListClick(item.id)">
         <div class="campaign-item">
-          <img :src="`${basePath}${item.banner}`" alt="">
+          <img :src="item.banner" alt="">
           <div class="campaign-name">
             <span>{{ item.campaignName }}</span>
             <div
-              v-if="String(item.ownerId) === userInfoStore.currentUser.userId" class="edit r240"
+              v-if="String(item.ownerId) === String(userInfoStore.currentUser.userId)" class="edit r240"
               @click.stop="handleEditClick(item.id)"
             >
               <span>{{ t('campaign-page.edit') }}</span>
               <em class="icon-edit"></em>
             </div>
             <div
-              v-if="String(item.ownerId) === userInfoStore.currentUser.userId" class="edit"
-              @click.stop="handleEditNFTClick(item.id)"
+              v-if="String(item.ownerId) === String(userInfoStore.currentUser.userId)" class="edit"
+              @click.stop="handleEditNFTClick(item.id,item.campaignName)"
             >
               <span>{{t('campaign-page.editNFT')}}</span>
               <em class="icon-edit"></em>
@@ -46,7 +46,6 @@ import { useUserInfoStore } from '@/stores/user-info';
 const { t } = useI18n();
 const router = useRouter();
 const userInfoStore = useUserInfoStore();
-const basePath = import.meta.env.VITE_IMAGE_BASE_URL;
 
 type CampaignListItem = ICampaign & IcampaignId;
 const campaignList = ref<CampaignListItem[]>([]);
@@ -70,8 +69,13 @@ const handleEditClick = (id: number) => {
     }
   });
 };
-const handleEditNFTClick = (id: number) => {
-  router.push(`/campaign/campaign-nft-edit/${id}`);
+const handleEditNFTClick = (id: number,campaignName: string) => {
+  router.push({
+    path: `/campaign/campaign-nft-edit/${id}`,
+    query: {
+      campaignName
+    }
+  });
 };
 
 const getCampaignList = async () => {

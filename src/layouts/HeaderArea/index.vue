@@ -1,22 +1,32 @@
 <template>
   <div class="header-area">
     <div class="left">
-      <img :src="ImageLogo" alt="" @click="skipTo('/')" />
+      <img
+        :src="ImageLogo"
+        alt=""
+        @click="skipTo('/')"
+      />
       <div class="line"></div>
       <nav>
         <div
-          class="nav-item" :class="{ active: currentRouteName.indexOf('explore') === 0 }"
-          @click="skipTo('/explore')">
+          class="nav-item"
+          :class="{ active: currentRouteName.indexOf('explore') === 0 }"
+          @click="skipTo('/explore')"
+        >
           {{ t('nav[0]') }}
         </div>
         <div
-          class="nav-item" :class="{ active: currentRouteName.indexOf('campaign') === 0 }"
-          @click="skipTo('/campaign')">
+          class="nav-item"
+          :class="{ active: currentRouteName.indexOf('campaign') === 0 }"
+          @click="skipTo('/campaign')"
+        >
           {{ t('nav[1]') }}
         </div>
         <div
-          class="nav-item" :class="{ active: currentRouteName.indexOf('wear') === 0 }"
-          @click="skipTo('/wear')">
+          class="nav-item"
+          :class="{ active: currentRouteName.indexOf('wear') === 0 }"
+          @click="skipTo('/wear')"
+        >
           {{ t('nav[2]') }}
         </div>
       </nav>
@@ -25,11 +35,16 @@
     <div class="right">
       <template v-if="userInfoStore.currentUser.isLogin">
         <div
-          class="btn avatar"
+          class="avatar"
           @mouseenter="handleMouseenter"
           @mouseleave="visibleRef = false"
         >
-          <Avatar></Avatar>
+          <Avatar
+            shape="square"
+            :src="userInfoStore.currentUser.avatar"
+          >
+          </Avatar>
+          <div class="address">{{ calcAddress }}</div>
           <transition v-show="visibleRef">
             <drop-down-box></drop-down-box>
           </transition>
@@ -52,9 +67,22 @@
     <!-- 钱包选择弹窗 -->
     <template v-if="userInfoStore.loginModalVisible">
       <wallet-connect-modal
-:visible="userInfoStore.loginModalVisible"
-        @close="userInfoStore.setLoginModalVisible(false)"></wallet-connect-modal>
+        :visible="userInfoStore.loginModalVisible"
+        @close="userInfoStore.setLoginModalVisible(false)"
+      ></wallet-connect-modal>
     </template>
+
+    <!-- 全局提示 -->
+    <div
+      v-if="tipVisibleRef"
+      class="tip"
+    >
+      <Alert
+        type="warning"
+        :message="`Your wallet is connecting to the testnet (${networkNameRef}), please switch to mainnet.`"
+        closable
+      ></Alert>
+    </div>
   </div>
 </template>
 
@@ -63,19 +91,26 @@ import ImageLogo from '@/assets//images/logo.png';
 import IconWallet from '@/assets/icons/wallet.png';
 import DropDownBox from '../DropDownBox/index.vue';
 import WalletConnectModal from '@/components/WalletConnectModal/index.vue';
-import { computed, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useUserInfoStore } from '@/stores/user-info';
-// import { UserOutlined } from '@ant-design/icons-vue';
-import { Avatar } from 'ant-design-vue';
+import { Avatar, Alert } from 'ant-design-vue';
+import useMetaMask from '@/hooks/useMetaMask';
 
+const { ethereum } = window;
 const { t } = useI18n();
 const router = useRouter();
 const userInfoStore = useUserInfoStore();
+const { getNetwork } = useMetaMask();
 
 const visibleRef = ref(false);
+const tipVisibleRef = ref(false);
+const networkNameRef = ref('');
 
+const calcAddress = computed(() =>
+  userInfoStore.currentUser.publicKey.replace(/(?<=.{6})(.+)(?=.{4})/g, '...'),
+);
 /**
  * 连接钱包事件
  */
@@ -104,6 +139,25 @@ const handleMouseenter = () => {
   }
   visibleRef.value = true;
 };
+
+/** 判断当前网络环境 */
+const judgeNetwork = async () => {
+  const res = await getNetwork();
+  networkNameRef.value = res.name;
+  if (res.chainId !== 1) {
+    tipVisibleRef.value = true;
+  } else {
+    tipVisibleRef.value = false;
+  }
+};
+
+onMounted(() => {
+  judgeNetwork();
+  if (ethereum) ethereum.on('chainChanged', judgeNetwork);
+});
+onUnmounted(() => {
+  if (ethereum) ethereum.removeListener('chainChanged', judgeNetwork);
+});
 </script>
 
 <style soped lang="scss">

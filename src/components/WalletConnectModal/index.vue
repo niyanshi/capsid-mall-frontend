@@ -59,6 +59,7 @@ import useMetaMask from '@/hooks/useMetaMask';
 import { httpGetToken } from '@/api/common';
 import storage from '@/utils/storage';
 import { useUserInfoStore } from '@/stores/user-info';
+import { message } from 'ant-design-vue';
 
 const { t } = useI18n();
 const { connectWallet: connectMetaMask } = useMetaMask();
@@ -91,8 +92,9 @@ const handleConnectWallet = async () => {
       publicKey: resInfo.address,
       userId: resToken.data.userId,
     });
-
     handleClose();
+    message.info('Login successfully');
+    location.reload();
   } catch (error) {
     console.error(error);
   }

@@ -2,6 +2,17 @@
   width: 1280px;
   margin: 0 auto;
 }
+.text {
+  font-family: 'Quiet Sans';
+  font-style: normal;
+  font-weight: 800;
+  font-size: 32px;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  font-feature-settings: 'pnum' on, 'lnum' on;
+  color: #000000;
+  margin-right: 55px;
+}
 .tab-bar {
   margin-bottom: 60px;
   display: flex;
@@ -11,17 +22,7 @@
     height: 32px;
     margin-right: 17px;
   }
-  .text {
-    font-family: 'Quiet Sans';
-    font-style: normal;
-    font-weight: 800;
-    font-size: 32px;
-    line-height: 20px;
-    letter-spacing: 0.02em;
-    font-feature-settings: 'pnum' on, 'lnum' on;
-    color: #000000;
-    margin-right: 55px;
-  }
+
   .tab {
     height: 20px;
     line-height: 20px;
@@ -71,4 +72,12 @@
       color: #000000;
     }
   }
+}
+.empty {
+  width: 100%;
+  margin: 0 auto;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

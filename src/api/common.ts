@@ -9,7 +9,7 @@ import http, { prefix } from './http';
  * @returns
  */
 export const httpGetRandomString = async (data: Record<string, unknown>) => {
-  const res = await http.post(`${prefix}/api/v1/login/request`, { ...data });
+  const res = await http.post(`${prefix}/v1/login/request`, { ...data });
   return res.data;
 };
 
@@ -19,6 +19,6 @@ export const httpGetRandomString = async (data: Record<string, unknown>) => {
  * @returns
  */
 export const httpGetToken = async (data: Record<string, unknown>) => {
-  const res = await http.post(`${prefix}/api/v1/login`, { ...data });
+  const res = await http.post(`${prefix}/v1/login`, { ...data });
   return res.data;
 };

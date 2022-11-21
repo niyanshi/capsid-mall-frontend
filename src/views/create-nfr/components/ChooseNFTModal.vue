@@ -71,10 +71,10 @@ import { ICollectionsItemDto, ICollectionsItemType } from '@/types/collection';
 import useMetaMask from '@/hooks/useMetaMask';
 import { httpGetMyNFTs } from '@/api/nft';
 import { INFTsDto, INFTsType } from '@/types/nft';
+import { nfrContractAddress } from '@/hooks/var';
 
 const { t } = useI18n();
 const { getAddress } = useMetaMask();
-
 const activeKeyRef = ref('all');
 const collectionsListRef = ref<ICollectionsItemType[]>([]);
 const nftListRef = ref<INFTsType[]>();
@@ -110,16 +110,38 @@ const gettNFTCollectionsList = async () => {
 
 /** 获取nft列表 */
 const getNFTsList = async () => {
+  let offset = 0;
+  let empty = false;
+  let list = [] as INFTsType[];
+
+  const limit = 10;
+  const size = 120;
   const owner = await getAddress();
-  const res = await httpGetMyNFTs({
-    owner,
-    collection: activeKeyRef.value === 'all' ? '' : activeKeyRef.value,
-  });
-  nftListRef.value = res.data?.map((item: INFTsDto) => ({
-    avatar: item.imageUrl,
-    id: item.tokenId,
-    contractAddress: item.contractAddress,
-  }));
+
+  while (list.length < size && !empty) {
+    const res = await httpGetMyNFTs({
+      owner,
+      collection: activeKeyRef.value === 'all' ? '' : activeKeyRef.value,
+      offset,
+      limit,
+    });
+    offset += limit;
+    if (res.data.length === 0) {
+      empty = true;
+      break;
+    }
+    const arr = res.data
+      ?.filter(
+        (item: INFTsDto) => item.contractAddress.toLowerCase() !== nfrContractAddress.toLowerCase(),
+      )
+      ?.map((item: INFTsDto) => ({
+        avatar: item.imageUrl,
+        id: item.tokenId,
+        contractAddress: item.contractAddress,
+      }));
+    list = [...list, ...arr];
+  }
+  nftListRef.value = list;
 };
 
 /** radio select */

@@ -3,8 +3,8 @@
     <div class="user-name">{{ profile.username }}</div>
     <div class="content">
       <div class="left-part">
-        <img class="avatar" :src="`${baseUrl}${profile.avartar}`" alt="" srcset="">
-        <div v-if="userInfoStore.currentUser.userId === String(profile.id)" class="edit" @click="handleEditClick">{{
+        <img class="avatar" :src="profile.avartar" alt="" srcset="">
+        <div v-if="String(userInfoStore.currentUser.userId) === String(profile.id)" class="edit" @click="handleEditClick">{{
             t('profile-page.editProfile')
         }}</div>
       </div>
@@ -39,19 +39,32 @@
               @click="handleSecondTabChange(2)">{{ t('profile-page.received') }}</span>
           </div>
           <div v-show="currentTab !== 3 && !isEmpty()" ref="scrollListRef" class="position-list">
-            <PositionItem v-for="(item, index) in NFTList" v-show="true" :key="index" :pic="String(item.imageUrl)" :name="String(item.name)" @click="goNFTDetail(item)">
+            <PositionItem v-for="(item, index) in NFTList" v-show="currentTab === 0" :key="index" :pic="String(item.imageUrl)" :name="String(item.name)" @click="goNFTDetail(item)">
             </PositionItem>
-            <PositionItem v-for="(item, index) in NFRList" v-show="currentTab === 1" :key="index" :pic="String(item.image)" :name="'NFR:'" @click="goNFRDetail(item)">
+            <PositionItem
+              v-for="(item, index) in NFRList"
+              v-show="currentTab === 1"
+              :key="index"
+              :pic="String(item.image)"
+              :name="`NFR:${item.templateId}`"
+              @click="goNFRDetail(item)">
             </PositionItem>
-            <PositionItem v-for="(item, index) in requestList" v-show="currentTab === 2" :key="index" :pic="String(item.image)" :name="'NFR:'" @click="goNFRRequestDetail(item)">
+            <PositionItem
+              v-for="(item, index) in requestList"
+              v-show="currentTab === 2"
+              :key="index"
+              :pic="String(item.image)"
+              :name="`NFR:${item.templateId}`"
+              @click="goNFRRequestDetail(item)">
             </PositionItem>
           </div>
           <div v-show="currentTab !== 3 && isEmpty()" class="empty">
             <span class="icon-empty"></span>
             <span>{{ t('emptyTips') }}</span>
           </div>
-          <div v-show="currentTab === 3">
+          <div v-show="currentTab === 3" class="activity">
             <BaseTable :columns="columns" :data="list" :empty-text="t('emptyTips')"></BaseTable>
+            <Pagination v-model:current="pageNum" class="flexr" :total="total" @change="getActivty"></Pagination>
           </div>
         </div>
       </div>
@@ -119,13 +132,16 @@ import compass from '../../assets/icons/compass.png';
 import { httpGetMyNFTs } from '@/api/nft';
 import dayjs from 'dayjs';
 import { useRouter, useRoute } from 'vue-router';
+import { message,Pagination } from 'ant-design-vue';
+import { nfrContractAddress, nftContractAddress } from '@/hooks/var';
+import { toNonExponential } from '@/utils/util';
 
 const userInfoStore = useUserInfoStore();
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 const currentTab = ref(0);
-const baseUrl = import.meta.env.VITE_IMAGE_BASE_URL;
+
 const currentAccount = ref<string>(userInfoStore.currentUser.publicKey as string);
 // 当前的资料
 const profile = reactive<IProfile>({
@@ -163,7 +179,7 @@ const handleDialogClose = () => {
 
 const currentSecondTab = ref(0);
 const currentPageNum = ref(1);
-const SIZE = 12;
+const SIZE = 20;
 const currentPageSize = ref(SIZE);
 const currentList = ref<{
   name: string,
@@ -182,30 +198,48 @@ const isEmpty = () => {
     return requestList.value.length === 0;
   }
 };
+const ERROR_MESSAGE = t('err-msg.request-fail');
+
 /**
  * NFTs
  * @param isNew true-刷新列表，获取到的数据不会拼接到已有数据之后
  */
-const getNFTList = async (isNew=false) => {
+const getNFTList = async (isNew=false,length = 0) => {
   const res = await httpGetMyNFTs({
     owner: profile.etherAddr,
     limit: currentPageSize.value,
-    offset: currentPageSize.value * (currentPageNum.value - 1 < 0 ? 0 : currentPageNum.value - 1)
+    offset: currentPageSize.value * (currentPageNum.value - 1 <= 0 ? 0 : currentPageNum.value - 1)
   });
   if (res.code === 0) {
     if (res.data.length === 0) {
       // 没有值说明已经请求完毕
       noScroll.value = true;
+      return;
     }
+    // 筛选出规定合约的nft
+    const filterList = res.data.filter((item: INFT) =>
+      item.contractAddress.toLowerCase() !== nfrContractAddress.toLowerCase() &&
+      item.contractAddress.toLowerCase() !== nftContractAddress.toLowerCase());
     // const list = res.data.map((item: INFT) => ({
     //   name: item.name,
     //   imageUrl: item.imageUrl
     // }));
     if(isNew) {
-      NFTList.value = res.data;
+      NFTList.value = filterList;
     } else {
-      NFTList.value = NFTList.value?.concat(...res.data);
+      NFTList.value = NFTList.value?.concat(...filterList);
     }
+    // eslint-disable-next-line no-magic-numbers
+    if(filterList.length + length < currentPageSize.value / 2) {
+      // 如果筛选结果不足规定一半，重新请求一次
+      const timeout = 1000;
+      currentPageNum.value++;
+      setTimeout(() => {
+        getNFTList(false, filterList.length);
+      }, timeout);
+    }
+  } else {
+    message.error(ERROR_MESSAGE);
   }
 };
 
@@ -214,7 +248,7 @@ const getNFTList = async (isNew=false) => {
  */
 const getNFRList = async (isNew=false) => {
   const res = await httpGetNFR({
-    accountAdr: 'test',
+    accountAdr: profile.etherAddr,
     type: currentSecondTab.value === Number('1') ? 'owned' : 'created',
     pageSize: currentPageSize.value,
     pageNum: currentPageNum.value
@@ -229,10 +263,12 @@ const getNFRList = async (isNew=false) => {
     //   imageUrl: item.image
     // }));
     if(isNew) {
-      NFRList.value = res.data;
+      NFRList.value = res.data?.records;
     } else {
-      NFRList.value = NFRList.value?.concat(...res.data);
+      NFRList.value = NFRList.value?.concat(...res.data.records);
     }
+  } else {
+    message.error(ERROR_MESSAGE);
   }
 };
 /**
@@ -259,17 +295,21 @@ const getRequestList = async (isNew = false) => {
     } else {
       requestList.value = requestList.value?.concat(...res.data.records);
     }
+  } else {
+    message.error(ERROR_MESSAGE);
   }
 };
 
 /**
  * activity
  */
+const pageNum = ref(1);
+const total = ref(0);
 const columns = [
   {
     label: t('activityTableLabel[0]'),
     prop: 'item',
-    width: 100,
+    width: 200,
     type: 'image',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cellRender: (val: any) => h(
@@ -280,9 +320,6 @@ const columns = [
           'justify-content': 'center',
           'align-items': 'center',
         },
-        onClick: () => {
-          router.push(`/explore/nfr-details/${val.id}/request`);
-        }
       },
       [
         h(
@@ -292,13 +329,21 @@ const columns = [
             style: {
               width: '50px',
               height: '50px',
-              'margin-right': '7px'
+              'margin-right': '7px',
+              'border-radius': '10px'
             }
           }
         ),
         h(
-          'span',
-          val.name
+          'div',
+          {
+            style: {
+              'max-width': '140px',
+              'text-overflow': 'ellipsis',
+              'overflow': 'hidden',
+            }
+          },
+          val.name || '--'
         ),
       ]
     ),
@@ -330,29 +375,30 @@ const columns = [
         ),
         h(
           'span',
-          val.value
+          toNonExponential(Number(val.value)) || '--'
         ),
       ]
     )
   },
   { label: t('activityTableLabel[2]'), prop: 'quantity', width: 100 },
   {
-    label: t('activityTableLabel[3]'), prop: 'from', width: 200, cellRender: (val: {value: string}) => h(
+    label: t('activityTableLabel[3]'), prop: 'sourceFrom', width: 200, cellRender: (val: {value: string}) => h(
       'span',
       {
         style: {
           color: '#ffb080'
         },
         onClick: () => {
-          router.push(`/profile/${val.value}`);
+          if(val.value) router.push(`/profile/${val.value}`);
         }
       },
-      val.value
+      // eslint-disable-next-line no-magic-numbers
+      val.value === userInfoStore.currentUser.publicKey ? 'you' : val.value?.slice(2,8) || '--'
     )
   },
   {
     label: t('activityTableLabel[4]'),
-    prop: 'to',
+    prop: 'sourceTo',
     width: 200,
     cellRender: (val: {value: string}) => h(
       'span',
@@ -361,14 +407,16 @@ const columns = [
           color: '#ffb080'
         },
         onClick: () => {
-          router.push(`/profile/${val.value}`);
+          if(val.value) router.push(`/profile/${val.value}`);
         }
       },
-      val.value
+      // eslint-disable-next-line no-magic-numbers
+      val.value === userInfoStore.currentUser.publicKey ? 'you' : val.value?.slice(2,8) || '--'
     )
   },
+  { label: t('activityTableLabel[5]'), prop: 'activityType', width: 100 },
   {
-    label: t('activityTableLabel[5]'),
+    label: t('activityTableLabel[6]'),
     prop: 'transTime',
     width: 160,
     cellRender: (val: {value: string}) => {
@@ -382,10 +430,17 @@ const columns = [
 ];
 const list = ref<IActivity[]>([]);
 const getActivty = async () => {
-  const accountId = profile.id;
-  const res = await httpGetActivity({ accountId });
+  const accountAddr = currentAccount.value;
+  const res = await httpGetActivity({
+    accountAddr,
+    pageNum:pageNum.value,
+    pageSize: 10
+  });
   if (res.code === 0) {
     list.value = res.data.records;
+    total.value = res.data.total;
+  } else {
+    message.error(ERROR_MESSAGE);
   }
 };
 
@@ -418,7 +473,12 @@ const getProfile = async () => {
     profile.description = res.data.description;
     profile.twitter = res.data.twitter;
     profile.etherAddr = res.data.etherAddr;
+    userInfoStore.setCurrentUser({
+      avatar:res.data.avartar
+    });
     getData(true);
+  } else {
+    message.error(res.msg);
   }
 };
 /** 资料编辑 */
@@ -435,7 +495,7 @@ const handleTabChange = (index: number) => {
   currentTab.value = index;
   // 清空list以及页码
   currentList.value = [];
-  currentPageNum.value = 0;
+  currentPageNum.value = 1;
   noScroll.value = false;
   getData(true);
 };
@@ -445,9 +505,9 @@ const handleSecondTabChange = (index: number) => {
   currentSecondTab.value = index;
   noScroll.value = false;
   if (currentTab.value === 1) {
-    getNFRList();
+    getNFRList(true);
   } else {
-    getRequestList();
+    getRequestList(true);
   }
 };
 
@@ -458,6 +518,7 @@ const handleScroll = (e: Event) => {
     // 若当前list的数量不是size的整数倍，说明已经请求完了
     if (currentList.value.length % currentPageSize.value > 0) return;
     currentPageNum.value++;
+    console.log('🚀 ~ handleScroll ~ currentPageNum.value', currentPageNum.value);
     getData();
   }
 };
@@ -496,5 +557,17 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-@import "./index.scss";
+@import './index.scss';
+
+</style>
+<style>
+.ant-pagination-prev:hover button,
+.ant-pagination-item:hover a,
+.ant-pagination-item-active a {
+  color: #a32015;
+}
+.ant-pagination-item:hover,
+.ant-pagination-item-active {
+  border-color: #a32015;
+}
 </style>

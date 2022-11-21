@@ -88,7 +88,7 @@
   height: 64px;
   display: flex;
   align-items: center;
-  margin-bottom: 23px;
+  // margin-bottom: 23px;
   .icon {
     display: inline-block;
     width: 64px;
@@ -139,6 +139,9 @@
   .icon-ok {
     background-image: url('../../assets/icons/icon-ok.png');
   }
+  .icon-back {
+    background-image: url('../../assets/icons/icon-back-gold.png');
+  }
 }
 .select {
   .tab-wrap {
@@ -170,12 +173,19 @@
   }
   .avatar-to-select {
     margin-left: 68px;
-    width: 1064px;
+    width: 1110px;
     height: 400px;
-    overflow-y: auto;
+
     display: flex;
     flex-wrap: wrap;
-    & > div {
+    .select-list {
+      width: 1110px;
+      height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .select-list > div {
       width: 204px;
       height: 204px;
       margin-right: 16px;
@@ -191,5 +201,17 @@
       border: 2px dashed #000;
       box-sizing: border-box;
     }
+  }
+}
+// .form {
+//   margin-top: 10px;
+// }
+.form-item {
+  margin-top: 15px;
+  width: 50%;
+  font-size: 18px;
+  display: flex;
+  .label {
+    width: 200px;
   }
 }

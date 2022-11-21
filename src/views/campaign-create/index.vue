@@ -56,13 +56,6 @@
         >
         </base-input>
       </form-item>
-      <form-item
-        class="form-item"
-        :title="t('campaign-page.chooseNft')"
-        :width="368"
-      >
-        <div @click="handleDialogShow">choose nft</div>
-      </form-item>
     </div>
     <div class="operate">
       <div
@@ -80,35 +73,6 @@
         <em></em>
       </div>
     </div>
-    <BaseDialog
-      :visible="dialogVisible"
-      width="1280"
-      height="688"
-      @close="handleDialogClose"
-    >
-      <div class="choose-nft-modal">
-        <div class="title">
-          <img
-            :src="ImageBallooon"
-            alt=""
-          />
-          {{ t('choose-nft') }}
-        </div>
-
-        <!-- 选择区域 -->
-        <div class="radio-area">
-          <base-radio-group :data="NFTList"></base-radio-group>
-        </div>
-
-        <div class="main-area">
-          <img
-            v-for="item in NFTList"
-            :key="item.id"
-            :src="item.imageUrl!"
-          />
-        </div>
-      </div>
-    </BaseDialog>
   </div>
 </template>
 
@@ -120,14 +84,9 @@ import FormItem from '@/components/BaseForm/FormItem.vue';
 import BaseDatepicker from '@/components/BaseDatepicker/index.vue';
 import BaseInput from '@/components/BaseInput/index.vue';
 import BaseImageSelect from '@/components/BaseImageSelect/index.vue';
-import BaseDialog from '@/components/BaseDialog/index.vue';
 import { httpCreateCampaign, httpGetCampaignDetail } from '@/api/campaign';
 import { useUserInfoStore } from '@/stores/user-info';
 import { ICampaign } from '@/types/campaign';
-import { INFTsDto } from '@/types/nft';
-import ImageBallooon from '@/assets/images/balloon.png';
-import BaseRadioGroup from '@/components/BaseRadioGroup/index.vue';
-import { httpGetMyNFTs } from '@/api/nft';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -176,27 +135,6 @@ const getCampaignDetail = async (campaignId: number) => {
   }
 };
 
-// 选择nft弹框
-const dialogVisible = ref(false);
-const NFTList = ref<{ id: string; title: string; imageUrl: string }[]>([]);
-const getNFTList = async () => {
-  const res = await httpGetMyNFTs({
-    // owner: userInfoStore.currentUser.publicKey
-    owner: '',
-  });
-  NFTList.value = res.data.map((item: INFTsDto) => ({
-    title: item.name,
-    id: item.tokenId,
-    imageUrl: item.imageUrl,
-  }));
-};
-const handleDialogShow = () => {
-  getNFTList();
-  dialogVisible.value = true;
-};
-const handleDialogClose = () => {
-  dialogVisible.value = false;
-};
 onMounted(() => {
   if (route.query.campaignId) {
     getCampaignDetail(Number(route.query.campaignId));

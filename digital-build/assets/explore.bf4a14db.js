@@ -1,1 +1,0 @@
-import{k as s,p as a}from"./index.21f0358c.js";const r=async()=>(await s.get(`${a}/collections`)).data,c=async t=>(await s.get(`${a}/collections/nfts/${t}`)).data,i=async(t,e)=>(await s.get(`${a}/nft/detail`,{params:{tokenId:e,assetContractAddress:t}})).data;export{c as a,i as b,r as h};

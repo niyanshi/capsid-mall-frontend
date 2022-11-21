@@ -64,26 +64,25 @@ export default ({ command }: ConfigEnv) =>
           target: targetObj.test,
           // rewrite:path => path.replace(/^\/api/, '')
         },
+        // '/api': {
+        //   target: targetObj.xjy,
+        //   rewrite: (path) => path.replace(/^\/api/, ''),
+        // },
         ...processProxy(
-          [
-            '/capsid/api/v1/login',
-            '/capsid/nft',
-            '/capsid/nfr-order',
-            '/capsid/collections',
-            '/capsid/nfr-trans',
-          ],
+          ['/api/v1/login', '/api/nft', '/api/nfr-order', '/api/collections', '/api/nfr-trans'],
           targetObj.wg,
         ),
         ...processProxy(
           [
-            '/capsid/nfr-request',
-            '/capsid/campaigns',
-            '/capsid/activity',
-            '/capsid/account',
-            '/capsid/wear',
+            '/api/nfr-request',
+            '/api/campaigns',
+            '/api/activity',
+            '/api/account',
+            '/api/wear',
+            '/api/campaign-nft',
           ],
           targetObj.wq,
-          '/capsid',
+          '/api',
           true,
         ),
       },

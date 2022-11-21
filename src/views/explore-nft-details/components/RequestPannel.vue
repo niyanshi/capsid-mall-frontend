@@ -32,24 +32,28 @@
 import ImageThumbtack from '@/assets/images/thumbtack.png';
 import IconAccept from '@/assets/icons/accept.png';
 import NFRsDisplayItem from './NFRsDisplayItem.vue';
-
 import { useI18n } from 'vue-i18n';
 import { INFRsType, INFTsType } from '@/types/nft';
 import { watch, ref, onMounted, onUnmounted } from 'vue';
-import { httpAcceptNFRsOrder, httpGetNFRsList } from '@/api/nfr';
+import { httpAcceptNFRsOrder, httpGetNFRsList, httpNoticeStatus } from '@/api/nfr';
 import { useRouter } from 'vue-router';
 import dayjs from 'dayjs';
 import useSeaport from '@/hooks/useSeaport';
 import emitter from '@/utils/event';
-import { EV_RELOAD_NFR_LIST } from '@/utils/constant';
+import { ERR, EV_RELOAD_NFR_LIST } from '@/utils/constant';
+import { message } from 'ant-design-vue';
+import { useControllerStore } from '@/stores/controller';
 
 const { t } = useI18n();
 const router = useRouter();
 const { acceptNFRsRequest } = useSeaport();
+const controllerStore = useControllerStore();
 
 const props = defineProps<{ data?: INFTsType; isOwner?: boolean }>();
 
 const pageSize = 999;
+const rejectMsg = t('err-msg.reject');
+
 const pageNumRef = ref(1);
 const nfrsListRef = ref<INFRsType[]>([]);
 
@@ -68,24 +72,41 @@ const getNFRsList = async () => {
     avatar: props.data?.avatar,
     total: item.amount,
     price: item.totalPrice,
-    name: `${t('nfr')}: ${item.name || ''}`,
+    name: `${t('nfr')}: ${item.templateId || ''}`,
     expire: dayjs(item.createdAt).add(Number(item.duration), 'day').valueOf(),
-    order: item.order,
+    order: item.orderOnChain,
   }));
 };
 
 /** accept NFR */
 const handleAccpet = async (data: INFRsType) => {
   if (!data?.order) return;
-  const { order, id: orderId } = data;
-  const res = await httpAcceptNFRsOrder(String(orderId));
-  console.log({ res });
-  // const ret = acceptNFRsRequest({ order, orderId });
-  // if (!ret) return;
-  // const res = await httpAcceptNFRsOrder(String(orderId));
-  // if (res.code === 0) {
-  //   // TODO: 刷新
-  // }
+  const { order, id } = data;
+  const res = await httpAcceptNFRsOrder(String(id));
+  if (res.code !== 0) {
+    message.error(res.msg);
+    return;
+  }
+  controllerStore.setGlobalLoading(true);
+  controllerStore.setGlobalTip(t('wait-msg.accept'));
+  try {
+    const orderId = res.data.nfrTrans.nfrTokenId;
+    await acceptNFRsRequest({ order, orderId });
+    await httpNoticeStatus(res.data.nfrTrans.id, 'submitted');
+    message.info(t('info-msg.success'));
+    emitter.emit(EV_RELOAD_NFR_LIST);
+  } catch (error: unknown) {
+    await httpNoticeStatus(res.data.nfrTrans.id, 'failed');
+    const { code } = error as IOpenseaErrorType;
+    if (code === ERR.RejectMessage) {
+      message.error(rejectMsg);
+    } else {
+      message.error((error as Error).message);
+    }
+    console.error(error);
+  } finally {
+    controllerStore.setGlobalLoading(false);
+  }
 };
 
 watch(
@@ -96,14 +117,16 @@ watch(
   { immediate: true },
 );
 
+const reloadFn = () => {
+  getNFRsList();
+};
+
 onMounted(() => {
-  emitter.on(EV_RELOAD_NFR_LIST, () => {
-    getNFRsList();
-  });
+  emitter.on(EV_RELOAD_NFR_LIST, reloadFn);
 });
 
 onUnmounted(() => {
-  emitter.off(EV_RELOAD_NFR_LIST);
+  emitter.off(EV_RELOAD_NFR_LIST, reloadFn);
 });
 </script>
 

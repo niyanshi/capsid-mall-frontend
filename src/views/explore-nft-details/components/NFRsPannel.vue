@@ -47,19 +47,16 @@ import NFRsDisplayItem from './NFRsDisplayItem.vue';
 import { useI18n } from 'vue-i18n';
 import { INFRsType, INFTsType } from '@/types/nft';
 import { watch, ref, onMounted, onUnmounted } from 'vue';
-import { httpBuyNFRs, httpGetNFRsList } from '@/api/nfr';
+import { httpGetNFRsList } from '@/api/nfr';
 import { useRouter } from 'vue-router';
 import dayjs from 'dayjs';
-import useSeaport from '@/hooks/useSeaport';
 import { EV_RELOAD_NFR_LIST } from '@/utils/constant';
 import emitter from '@/utils/event';
 import { useUserInfoStore } from '@/stores/user-info';
 import { useControllerStore } from '@/stores/controller';
-import { message } from 'ant-design-vue';
 
 const { t } = useI18n();
 const router = useRouter();
-const { buyNFR } = useSeaport();
 const userInfoStore = useUserInfoStore();
 const controllerStore = useControllerStore();
 
@@ -82,9 +79,9 @@ const getNFRsList = async () => {
   const arr = res.data.records.map((item: Record<string, string>) => ({
     id: item.id,
     avatar: props.data?.avatar,
-    total: item.amount,
+    total: Number(item.amount) - Number(item.selledAmount),
     price: item.unitPrice,
-    name: `${t('nfr')}: ${item.name || ''}`,
+    name: `${t('nfr')}: ${item.templateId || ''}`,
     expire: dayjs(item.createdAt).add(Number(item.duration), 'day').valueOf(),
     order: item.orderOnChain,
   }));
@@ -103,40 +100,31 @@ watch(
   },
   { immediate: true },
 );
+
+const reloadFn = () => {
+  nfrsListRef.value = [];
+  pageNumRef.value = 1;
+  getNFRsList();
+};
 onMounted(() => {
-  emitter.on(EV_RELOAD_NFR_LIST, () => {
-    nfrsListRef.value = [];
-    pageNumRef.value = 1;
-    getNFRsList();
-  });
+  emitter.on(EV_RELOAD_NFR_LIST, reloadFn);
 });
 
 onUnmounted(() => {
-  emitter.off(EV_RELOAD_NFR_LIST);
+  emitter.off(EV_RELOAD_NFR_LIST, reloadFn);
 });
 
 /** 购买nfr */
 const handleBuy = async (data: INFRsType) => {
-  controllerStore.setGlobalLoading(true);
-  try {
-    if (!userInfoStore.currentUser.isLogin) {
-      userInfoStore.setLoginModalVisible(true);
-      return;
-    }
-    if (!data?.order) return;
-    const { order, id } = data;
-    const amount = 1;
-    const res = await httpBuyNFRs(String(id), amount);
-    if (res.code !== 0) return;
-    const orderId = res.data.nfrTrans.nfrTokenId;
-    const ret = await buyNFR({ order, orderId, amount });
-    if (!ret) return;
-    emitter.emit(EV_RELOAD_NFR_LIST);
-  } catch (error) {
-    console.error(error);
-    message.error((error as Error).message);
+  if (!userInfoStore.currentUser.isLogin) {
+    userInfoStore.setLoginModalVisible(true);
+    return;
   }
-  controllerStore.setGlobalLoading(false);
+  controllerStore.setModelVisibleForBuy(true);
+  controllerStore.setOrderObjForBuy({
+    id: String(data?.id),
+    order: String(data?.order),
+  });
 };
 </script>
 

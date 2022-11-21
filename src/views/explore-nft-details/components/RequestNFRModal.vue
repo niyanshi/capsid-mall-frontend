@@ -4,7 +4,7 @@ import FormItemDetails from '@/components/BaseForm/FormItemDetails.vue';
 import FormItem from '@/components/BaseForm/FormItem.vue';
 import BaseInput from '@/components/BaseInput/index.vue';
 import BaseSelect from '@/components/BaseSelect/index.vue';
-import BaseDatepicker from '@/components/BaseDatepicker/index.vue';
+// import BaseDatepicker from '@/components/BaseDatepicker/index.vue';
 import BaseTextarea from '@/components/BaseTextarea/index.vue';
 import SvgAddList from '@/assets/svg/add-list.svg';
 import ImageGold from '@/assets/icons/gold.png';
@@ -13,48 +13,46 @@ import ImageBallot from '@/assets/images/ballot.png';
 import BaseOverlay from '@/components/BaseOverlay/index.vue';
 import IconClose from '@/assets/icons/close.png';
 import { useI18n } from 'vue-i18n';
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
 import { INFRTypeForRequest, INFTsType } from '@/types/nft';
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
 import { message } from 'ant-design-vue';
+import { useControllerStore } from '@/stores/controller';
 
 const { t } = useI18n();
+const controllerStore = useControllerStore();
+
 const props = defineProps<{ visible: boolean; data: INFTsType }>();
 const emit = defineEmits<{
   (event: 'close'): void;
   (event: 'request', data: INFRTypeForRequest): void;
 }>();
-const expireRef = ref();
+// const expireRef = ref();
 const valueObj = reactive<{
   type: string;
   details: string;
   price: string;
   quantity: string;
   desc: string;
+  duration: string;
 }>({
   type: '',
   details: '',
   desc: '',
   quantity: '',
   price: '',
+  duration: '',
 });
-const options = [
-  { key: '0', value: 'type' },
-  { key: '1', value: 'type1' },
-  { key: '2', value: 'type2' },
-  { key: '3', value: 'type3' },
-];
-const getKey = (val: string) => {
-  for (let i = 0; i < options.length; i++) {
-    if (options[i].value === val) return options[i].key;
-  }
-  return '';
-};
+const options = controllerStore.nfrType.map((item) => ({ key: item.id, value: item.name }));
 
 /** 数据验证 */
 const validateData = () => {
   const quantityCof = 10;
-  if (!valueObj.quantity) {
+  if (!valueObj.duration) {
+    message.error(t('warn-msg.duration'));
+    return false;
+  }
+  if (!Number(valueObj.quantity) || valueObj.quantity.includes('.')) {
     message.error(t('warn-msg.quantity'));
     return false;
   }
@@ -79,15 +77,16 @@ const validateData = () => {
 
 /** request nfr */
 const handleRequest = () => {
-  const current = dayjs();
-  const expire = dayjs(expireRef.value.currentValue).endOf('d');
+  // const current = dayjs();
+  // const expire = dayjs(expireRef.value.currentValue).endOf('d');
 
   if (!validateData()) return;
   const obj = {
-    type: Number(getKey(valueObj.type)),
+    type: valueObj.type,
     quantity: valueObj.quantity || 0,
     price: valueObj.price || 0,
-    druation: Math.ceil(expire.diff(current, 'd', true)),
+    druation: valueObj.duration || 0,
+    // druation: Math.ceil(expire.diff(current, 'd', true)),
     nftId: props.data.id,
     nftContractAddress: props.data.contractAddress,
     desc: valueObj.desc,
@@ -130,8 +129,13 @@ const handleClose = () => {
         <div class="left">
           <div class="form-layer one">
             <!-- Expiration date -->
-            <form-item :title="t('create-nfr-form-items[1]')">
-              <base-datepicker ref="expireRef"></base-datepicker>
+            <form-item :title="t('create-nfr-form-items[1]') + ' (day)'">
+              <base-input
+                v-model="valueObj.duration"
+                type="number"
+                style-type="line"
+              ></base-input>
+              <!-- <base-datepicker ref="expireRef"></base-datepicker> -->
             </form-item>
             <!-- Quantity -->
             <form-item :title="t('create-nfr-form-items[2]')">

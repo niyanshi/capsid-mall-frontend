@@ -13,7 +13,8 @@
         </div>
       </div>
       <div v-for="(item, index) in wearList" :key="index" class="wear-item item-size">
-        <img :src="item.parentPic1" alt="" srcset="">
+        <img v-if="item.wearMeta?.image" :src="item.wearMeta?.image" alt="" srcset="">
+        <img v-else :src="item.parentPic1" alt="" srcset="">
         <div class="status text">{{item.status === 3 ? t('wear-page.tab[1]') : t('wear-page.tab[2]')}}</div>
       </div>
     </div>
@@ -24,13 +25,13 @@
         <div class="info-text">
           <div class="info-title">{{ t('wearSuccess') }}</div>
           <div class="message">
-            <p>{{ t('viewInMy') }}<a>{{ t('profile') }}</a></p>
+            <!-- <p>{{ t('viewInMy') }}<a>{{ t('profile') }}</a></p> -->
             <p>{{ t('wearSuccessTips') }}</p>
           </div>
         </div>
       </div>
       <div v-else class="tip-content">
-        <i class="icon-error icon"></i>
+        <i class="icon-error icon-size"></i>
         <div class="info-text">
           <div class="info-title">{{ t('error') }}</div>
           <div class="message">
@@ -93,6 +94,7 @@ const handleDialogClose = () => {
 const handleWearRes = (res: boolean) => {
   resultSuccess.value = res;
   resultDialogVisible.value = true;
+  getWearList();
 };
 
 const handleResultDialogClose = () => {

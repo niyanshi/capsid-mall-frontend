@@ -2,7 +2,7 @@
  * @file 存储用信息的全局state
  */
 
-import Router from '@/router';
+// import Router from '@/router';
 import storage from '@/utils/storage';
 import { defineStore } from 'pinia';
 
@@ -11,9 +11,10 @@ export const useUserInfoStore = defineStore('userInfo', {
     // 当前用户信息
     currentUser: {
       isLogin: !!storage.getToken(),
-      publicKey: storage.getPublicKey() || '',
-      userId: storage.getUserId(),
       token: storage.getToken(),
+      publicKey: storage.getPublicKey() || '',
+      userId: '',
+      avatar: '',
     },
     // 登录弹窗显示
     loginModalVisible: false,
@@ -33,7 +34,7 @@ export const useUserInfoStore = defineStore('userInfo', {
       this.currentUser.isLogin = false;
       storage.removeToken();
       storage.removePublicKey();
-      Router.push('/');
+      // Router.push('/');
     },
   },
 });

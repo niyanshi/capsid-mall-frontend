@@ -23,8 +23,20 @@ declare interface Window {
 
 interface ImportMetaEnv {
   readonly VITE_PREFIX: string;
+  readonly VITE_WETH_ADDRESS: string;
+  readonly VITE_NFR_ADDRESS: string;
+  readonly VITE_NFT_ADDRESS: string;
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
+}
+
+/** 声明opensea错误接口 */
+declare interface IOpenseaErrorType {
+  reason: string;
+  code: string;
+  action: string;
+  from: string;
+  messageData: unknown;
 }

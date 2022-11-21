@@ -4,14 +4,22 @@
     :class="{ active: props.active }"
   >
     <img
+      ref="imgRef"
       :src="props.avatar"
-      alt=""
+      @error="onError"
     />
   </div>
 </template>
 
 <script setup lang="ts">
+import ImageAlt from '@/assets/images/image-alt.png';
+import { ref } from 'vue';
 const props = defineProps<{ avatar: string; active: boolean }>();
+const imgRef = ref();
+const onError = function () {
+  if (!imgRef.value) return;
+  imgRef.value.src = ImageAlt;
+};
 </script>
 
 <style scoped lang="scss">

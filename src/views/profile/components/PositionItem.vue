@@ -19,6 +19,7 @@ const prop = defineProps<{
 .item-wrap {
   margin: 30px 21px 0 11px;
   width: 176px;
+  cursor: pointer;
 
   img {
     width: 176px;

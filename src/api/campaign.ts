@@ -81,3 +81,47 @@ export const httpCreateWear = async (data: Record<string, unknown>): Promise<IRe
   const res = await http.post(`${prefix}/wear/create`, { ...data });
   return res.data;
 };
+/**
+ * 保存campaign-nft
+ */
+export const httpSaveNFT = async (data: Record<string, unknown>): Promise<IResponseDto> => {
+  const res = await http.post(`${prefix}/campaign-nft/save`, { ...data });
+  return res.data;
+};
+/**
+ * 查询campaign待铸造的nft列表
+ */
+export const httpGetCampaignNFTList = async (
+  id: number,
+): Promise<IResponseDto> => {
+  const res = await http.get(`${prefix}/campaign-nft/mintingList/${id}`);
+  return res.data;
+};
+/**
+ * 下架campaign-nft
+ */
+export const httpRemoveCampaignNFT = async (nftId: number): Promise<IResponseDto> => {
+  const res = await http.get(`${prefix}/campaign-nft/remove`, {params: { nftId }});
+  return res.data;
+};
+/**
+ * 关联id
+ */
+export const httpRelateOrder = async (data: Record<string, unknown>): Promise<IResponseDto> => {
+  const res = await http.post(`${prefix}/campaign-nft/relateOrder`, { ...data });
+  return res.data;
+};
+/**
+ * 获取campaign Nft详情
+ */
+export const httpCampaignNFTDetail = async (campaignNftId: number): Promise<IResponseDto> => {
+  const res = await http.get(`${prefix}/campaign-nft/detail/${campaignNftId}`);
+  return res.data;
+};
+/**
+ * 创建nft listing
+ */
+export const httpListNFT = async (data: Record<string, unknown>): Promise<IResponseDto> => {
+  const res = await http.post(`${prefix}/campaign-nft-order/listing`, { ...data });
+  return res.data;
+};

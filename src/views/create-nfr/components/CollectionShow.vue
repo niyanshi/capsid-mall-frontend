@@ -21,8 +21,10 @@
         <!-- 存在选中图片时 -->
         <template v-else>
           <img
+            ref="imgRef"
             :src="props.data?.avatar"
             alt=""
+            @error="onError"
           />
         </template>
       </div>
@@ -33,8 +35,10 @@
     <template v-else>
       <div class="image">
         <img
+          ref="imgRef"
           :src="props.data?.avatar"
           alt=""
+          @error="onError"
         />
       </div>
     </template>
@@ -45,12 +49,20 @@
 import SvgCross from '@/assets/svg/cross.svg';
 import { INFTsType } from '@/types/nft';
 import { useI18n } from 'vue-i18n';
+import ImageAlt from '@/assets/images/image-alt.png';
+import { ref } from 'vue';
 
 const { t } = useI18n();
 
 const props = defineProps<{ editable?: boolean; data?: INFTsType }>();
 
 const emit = defineEmits<{ (event: 'select'): void }>();
+
+const imgRef = ref();
+const onError = function () {
+  if (!imgRef.value) return;
+  imgRef.value.src = ImageAlt;
+};
 </script>
 
 <style scoped lang="scss">

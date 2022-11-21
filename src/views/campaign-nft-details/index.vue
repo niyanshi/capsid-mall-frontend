@@ -2,43 +2,43 @@
   <div class="wrap">
     <div class="title">
       <img src="../../assets/icons/gold.png" alt="">
-      <span>{{ currentNft?.name }}</span>
+      <span>{{ campaignNft?.name }}</span>
     </div>
-    <div class="info-wrap">
-      <img :src="currentNft?.imageUrl" alt="">
+    <div v-if="currentNft" class="info-wrap">
+      <img :src="campaignNft?.imageUrl" alt="">
       <div class="text">
-        <div class="desc">{{ currentNft?.description }}</div>
+        <div class="desc">{{ campaignNft?.description }}</div>
         <div class="price">
           <span class="icon-price"></span>
-          <span>{{ currentNft?.price }}</span>
+          <span>{{ currentNft?.unitPrice }}</span>
         </div>
-        <div class="buy-button nft" @click="handleBuyNFTClick(currentNft as INFT)">
+        <div v-if="currentNfr?.nftOwnerAddress !== userInfoStore.currentUser.publicKey && currentNft.status !== 'complete'" class="buy-button nft" @click="handleBuyNFTClick">
           <span>{{ t('buyNft') }}</span>
           <span class="button-icon nft-money"></span>
         </div>
       </div>
     </div>
-    <div v-for="(nfr,index) in currentNfr" :key="index" class="info-wrap">
-      <img :src="nfr?.image" alt="">
+    <div v-if="currentNfr" class="info-wrap">
+      <img :src="currentNfr?.image" alt="">
       <div class="text">
-        <div class="desc">{{ nfr?.description }}</div>
+        <div class="desc">{{ currentNfr?.description }}</div>
         <div class="price">
           <span class="icon-price"></span>
-          <span>{{ nfr?.unitPrice }}</span>
+          <span>{{ currentNfr?.unitPrice }}</span>
         </div>
         <div class="expire">
           <div class="expire-date mb41">
             <span class="start-icon calendar-icon"></span>
-            <span>{{ dayjs(nfr?.createdAt).add(nfr?.duration,'day').format('DD/MM/YYYY') }}</span>
+            <span>{{ dayjs(currentNfr?.createdAt).add(currentNfr?.duration as number,'day').format('DD/MM/YYYY') }}</span>
             <!-- <span class="end-icon"></span> -->
           </div>
           <div class="expire-date">
             <span class="start-icon book-icon"></span>
-            <span>{{ available(nfr?.selledAmount as number,nfr?.amount as number) + '/' + nfr?.amount }}</span>
+            <span>{{ available(currentNfr?.selledAmount as number,currentNfr?.amount as number) + '/' + currentNfr?.amount }}</span>
             <!-- <span class="end-icon"></span> -->
           </div>
         </div>
-        <div class="buy-button nfr" @click="handleBuyNFRClick(nfr)">
+        <div v-if="currentNfr?.nftOwnerAddress !== userInfoStore.currentUser.publicKey" class="buy-button nfr" @click="handleBuyNFRClick">
           <span>{{ t('buyNfr') }}</span>
           <span class="button-icon nfr-money"></span>
         </div>
@@ -51,7 +51,7 @@
         <div class="info-text">
           <div class="info-title">{{ t('wearSuccess') }}</div>
           <div class="message">
-            <p>{{ t('viewInMy') }}<a>{{ t('profile') }}</a></p>
+            <!-- <p>{{ t('viewInMy') }}<a>{{ t('profile') }}</a></p> -->
             <p>{{ t('wearSuccessTips') }}</p>
           </div>
         </div>
@@ -72,6 +72,13 @@
         </div>
       </template>
     </BaseDialog>
+    <template v-if="amountDialogVisible">
+      <purchasing-box
+        :visible="amountDialogVisible"
+        @buy="handleBuy"
+        @close="amountDialogVisible = false"
+      ></purchasing-box>
+    </template>
   </div>
 </template>
 
@@ -80,25 +87,29 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import BaseDialog from '@/components/BaseDialog/index.vue';
-import { httpGetCampaignDetail } from '@/api/campaign';
-import { httpBuyNFRs } from '@/api/nfr';
-import { INFT,INFR } from '../../types/campaign';
+import { httpCampaignNFTDetail } from '@/api/campaign';
+import { httpBuyNFRs, httpNoticeStatus } from '@/api/nfr';
+import { httpBuyNFT } from '@/api/nft';
+import { INFT, IRequestV } from '../../types/campaign';
 import dayjs from 'dayjs';
 import PrivateWearDialog from '@/components/PrivateWearDialog/index.vue';
 import useSeaport from '@/hooks/useSeaport';
 import { useUserInfoStore } from '@/stores/user-info';
 import { message } from 'ant-design-vue';
+import PurchasingBox from '@/components/PurchasingBox/index.vue';
+import { ERR } from '@/utils/constant';
+import { useControllerStore } from '@/stores/controller';
 
-const { buyNFR } = useSeaport();
+const { buyNFR, buyNFT, poll } = useSeaport();
 const { t } = useI18n();
 const route = useRoute();
 const userInfoStore = useUserInfoStore();
+const controllerStore = useControllerStore();
 
-// 当前展示的NFT、NFR所属的campaignID
-const campaignId = ref();
 const nftId = ref<string>();
-const currentNft = ref<INFT>();
-const currentNfr = ref<INFR[]>([]);
+const campaignNft = ref<INFT>();
+const currentNft = ref<IRequestV>();
+const currentNfr = ref<IRequestV>();
 const itemToWear = ref<{
   image: string;
   tokenId: string;
@@ -108,58 +119,112 @@ const itemToWear = ref<{
 }>();
 // 弹窗
 const dialogVisible = ref(false);
+const amountDialogVisible = ref(false);
 const resultDialogVisible = ref(false);
 const resultSuccess = ref(false);
+
 /**获取相关数据*/
-const getCampaignDetail = async () => {
-  if(!campaignId.value) return;
-  const res = await httpGetCampaignDetail({campaignId: campaignId.value});
-  if(res.code === 0) {
-    currentNft.value = res.data.nfts.find((nft:INFT) => nft.tokenId === nftId.value);
-    // 1个NFT可以对应多个NFR
-    currentNfr.value = res.data.nfrs.filter((nfr:INFR) => nfr.nftId === nftId.value);
-  }
+const getNFTDetail = async () => {
+  const res = await httpCampaignNFTDetail(Number(nftId.value));
+  campaignNft.value = res.data.campaignNft;
+  currentNft.value = res.data.nftRequestVO;
+  currentNfr.value = res.data.nfrRequestVO;
 };
 // 可用
 const available = (sell:number, amount:number) => amount - sell;
 
-const handleBuyNFTClick = (nft: INFT) => {
-  dialogVisible.value = true;
-  itemToWear.value = {
-    image: nft.imageUrl,
-    tokenId: nft.tokenId,
-    type: 1,
-    tokenAddress: nft.contractAddress
-  };
+const handleBuyNFTClick = async () => {
+  if (!userInfoStore.currentUser.isLogin) {
+    userInfoStore.setLoginModalVisible(true);
+    message.warn(t('warn-msg.needLogin'));
+    return;
+  }
+  const { orderOnChain } = currentNft.value as IRequestV;
+  const order = JSON.parse(orderOnChain);
+  controllerStore.setGlobalLoading(true);
+  try {
+    const res1 = await buyNFT(order,userInfoStore.currentUser.publicKey);
+    const pollRes = await poll(res1.hash);
+    if(pollRes) {
+      const res2 = await httpBuyNFT({nftOrderId:currentNft.value?.id,status:'complete'});
+      if(res2.code === 0) {
+        message.info(t('info-msg.success'));
+        controllerStore.setGlobalLoading(false);
+        dialogVisible.value = true;
+        itemToWear.value = {
+          image: (currentNft.value as IRequestV).image,
+          tokenId: (currentNft.value as IRequestV).nfrTokenAddress,
+          type: 1,
+          tokenAddress: (currentNft.value as IRequestV).nftTokenAddress
+        };
+      }
+    } else {
+      controllerStore.setGlobalLoading(false);
+      message.warning(t('warn-msg.viewSoon'));
+    }
+  } catch (error) {
+    controllerStore.setGlobalLoading(false);
+    const completeReason = 'The order you are trying to fulfill is already filled';
+    message.error((error as Error).message);
+    if ((error as Error).message === completeReason) {
+      await httpBuyNFT({nftOrderId:currentNft.value?.id,status:'complete'});
+      console.log('filled');
+    }
+  }
 };
 /** 购买nfr */
-const handleBuyNFRClick = async (item: INFR) => {
+const handleBuyNFRClick = async () => {
+  if (!userInfoStore.currentUser.isLogin) {
+    userInfoStore.setLoginModalVisible(true);
+    message.warn(t('warn-msg.needLogin'));
+    return;
+  }
+  amountDialogVisible.value = true;
+};
+const handleBuy = async (amount: string) => {
+  controllerStore.setGlobalLoading(true);
+  const { orderOnChain: order, id } = currentNfr.value as IRequestV;
+  const res = await httpBuyNFRs(String(id), amount);
+  if (res.code !== 0) {
+    message.error(res.msg);
+    controllerStore.setGlobalLoading(false);
+    return;
+  }
   try {
-    if (!userInfoStore.currentUser.isLogin) {
-      userInfoStore.setLoginModalVisible(true);
-      return;
-    }
-    const { orderOnChain: order, id } = item;
-    const amount = 1;
-    const res = await httpBuyNFRs(String(id), amount);
-    if (res.code !== 0) return;
-
     const orderId = res.data.nfrTrans.nfrTokenId;
-    const ret = await buyNFR({ order, orderId, amount });
-    if (!ret) return;
-    dialogVisible.value = true;
-    itemToWear.value = {
-      image: item.image,
-      tokenId: item.nfrTokenId,
-      type: 2,
-      tokenAddress: item.nfrTokenAddress
-    };
+    const res1 = await buyNFR({ order, orderId, amount });
+    const pollRes = await poll(res1.hash);
+    if(pollRes) {
+      const res2 = await httpNoticeStatus(res.data.nfrTrans.id, 'submitted');
+      if(res2.code === 0) {
+        controllerStore.setGlobalLoading(false);
+        dialogVisible.value = true;
+        itemToWear.value = {
+          image: (currentNfr.value as IRequestV).image,
+          tokenId: orderId,
+          type: 2,
+          tokenAddress: (currentNfr.value as IRequestV).nfrTokenAddress
+        };
+      }
+    } else {
+      controllerStore.setGlobalLoading(false);
+      message.warning(t('warn-msg.viewSoon'));
+    }
   } catch (error) {
-    message.error((error as Error).message);
+    controllerStore.setGlobalLoading(false);
+    await httpNoticeStatus(res.data.nfrTrans.id, 'failed');
+    const { code } = error as IOpenseaErrorType;
+    if (code === ERR.RejectMessage) {
+      message.error(t('err-msg.reject'));
+    } else {
+      message.error((error as Error).message);
+    }
+    console.error(error);
   }
 };
 const handleDialogClose = () => {
   dialogVisible.value = false;
+  getNFTDetail();
 };
 const handleWearRes = (res: boolean) => {
   resultSuccess.value = res;
@@ -174,11 +239,8 @@ const handleResDislogClick = () => {
   handleDialogClose();
 };
 onMounted(() => {
-  if(route.query.campaignId) {
-    campaignId.value = Number(route.query.campaignId);
-    getCampaignDetail();
-  }
   nftId.value = route.params.id as string;
+  getNFTDetail();
 });
 </script>
 

@@ -31,7 +31,6 @@
             />
           </div>
         </template>
-
         <div class="nfrs">
           <NFRsPannel
             v-if="nftDetalsRef"
@@ -39,7 +38,6 @@
             :is-owner="isOwner"
           ></NFRsPannel>
         </div>
-
         <div class="request">
           <request-pannel
             v-if="nftDetalsRef"
@@ -49,8 +47,12 @@
         </div>
       </div>
     </BaseNFTsDetailsLayout>
-    <div :style="{ height: '89px' }"></div>
 
+    <!-- tip -->
+    <template v-if="isValidAddressRef">
+      <div class="invalid">Invalid address</div>
+    </template>
+    <div :style="{ height: '89px' }"></div>
     <!-- 请求nfr -->
     <template v-if="requestVisibleRef">
       <RequestNFRModal
@@ -71,7 +73,9 @@
       >
         <template #desc>
           {{ t('alert-msg.request-success.desc[0]') }}
-          <a>{{ t('alert-msg.request-success.desc[1]') }}</a>
+          <a @click="router.push(`/profile/${userInfoStore.currentUser.publicKey}`)">{{
+            t('alert-msg.request-success.desc[1]')
+          }}</a>
         </template>
       </base-alert>
     </template>
@@ -97,19 +101,22 @@ import useSeaport from '@/hooks/useSeaport';
 import { httpRequestNFR } from '@/api/nfr';
 import { message } from 'ant-design-vue';
 import emitter from '@/utils/event';
-import { EV_RELOAD_NFR_LIST } from '@/utils/constant';
+import { EV_RELOAD_NFR_LIST, ERR } from '@/utils/constant';
 import { useControllerStore } from '@/stores/controller';
+import _ from 'lodash-es';
+import { nfrContractAddress } from '@/hooks/var';
 
 const { t } = useI18n();
 const router = useRouter();
 const userInfoStore = useUserInfoStore();
-const { requestNFR } = useSeaport();
+const { requestNFR, getWethBalance } = useSeaport();
 const controllerStore = useControllerStore();
 
 const nftDetalsRef = ref<INFTsType>();
 const isSuccessful = ref(false);
 const requestVisibleRef = ref(false);
 const myAddressRef = ref('');
+const isValidAddressRef = ref(false);
 
 /** 触发请求nfr按钮 */
 const emitRequestNFR = () => {
@@ -123,7 +130,15 @@ const emitRequestNFR = () => {
 /** 获取nft详情 */
 const getNFTsDetails = async () => {
   const { address, id } = router.currentRoute.value.params;
+  if (String(address).toLowerCase() === nfrContractAddress.toLowerCase()) {
+    isValidAddressRef.value = true;
+    return;
+  }
   const res = await httpGetNFTsDetails(String(address), String(id));
+  if (!res.data) {
+    message.error(res.msg);
+    return;
+  }
   const d = res.data;
   nftDetalsRef.value = {
     avatar: d.imageUrl,
@@ -134,6 +149,12 @@ const getNFTsDetails = async () => {
       const { traitType, value } = item;
       return `${traitType} ${value}`;
     }),
+    attributes: _.fromPairs(
+      d.traits?.map((item: { traitType: string; value: string }) => {
+        const { traitType, value } = item;
+        return [traitType, value];
+      }),
+    ),
     owner: d.ownerAddressList,
   } as INFTsType;
 };
@@ -156,9 +177,20 @@ onMounted(() => {
 /** 请求nfr */
 const handleRequest = async (e: INFRTypeForRequest) => {
   controllerStore.setGlobalLoading(true);
-
+  controllerStore.setGlobalTip(t('wait-msg.request'));
+  const obj = {
+    ...e,
+    avatar: nftDetalsRef.value?.avatar,
+    attributes: nftDetalsRef.value?.attributes,
+  };
+  const balance = await getWethBalance(userInfoStore.currentUser.publicKey);
+  if (Number(balance) < Number(e.price)) {
+    message.warn(t('warn-msg.weth-not-enough'));
+    controllerStore.setGlobalLoading(false);
+    return;
+  }
   try {
-    const resParams = await requestNFR(e);
+    const resParams = await requestNFR(obj);
     const res = await httpRequestNFR(resParams);
     if (res.code !== 0) {
       message.error(res.msg);
@@ -168,7 +200,11 @@ const handleRequest = async (e: INFRTypeForRequest) => {
     requestVisibleRef.value = false;
     isSuccessful.value = true;
     emitter.emit(EV_RELOAD_NFR_LIST);
-  } catch (error) {
+  } catch (error: unknown) {
+    const { code } = error as IOpenseaErrorType;
+    if (code === ERR.RejectMessage) {
+      message.error(t('err-msg.reject'));
+    }
     console.error(error);
   }
   controllerStore.setGlobalLoading(false);

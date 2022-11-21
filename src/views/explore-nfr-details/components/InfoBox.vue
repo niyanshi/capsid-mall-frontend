@@ -20,12 +20,30 @@
     <div class="both">
       <div class="item">
         <div class="key">{{ t('issued-by') }}</div>
-        <div class="val">{{ ' ' + props.data?.issued }}</div>
+        <div
+          class="val"
+          :title="props.data?.issued"
+          @click="router.push(`/profile/${props.data?.issued}`)"
+        >
+          {{ ' ' }}
+          <span>{{ calcIssuedRole }}</span>
+        </div>
       </div>
 
       <div class="item">
         <div class="key">{{ t('received-by') }}</div>
-        <div class="val">{{ ' ' + props.data?.receive }}</div>
+        <div class="val">
+          {{ ' ' }}
+          <span
+            v-for="(item, index) in calcReceiveRole"
+            :key="item.key"
+            :title="item.key"
+            @click="router.push(`/profile/${item.key}`)"
+          >
+            {{ item.val }}
+            <span v-if="index + 1 !== calcReceiveRole?.length">{{ ',' }}</span>
+          </span>
+        </div>
       </div>
     </div>
 
@@ -91,12 +109,33 @@ import { INFRsType } from '@/types/nft';
 import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
 import { IInfoBtnType } from '@/types/explore';
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUserInfoStore } from '@/stores/user-info';
 
 const { t } = useI18n();
+const router = useRouter();
+const userInfoStore = useUserInfoStore();
 const props = defineProps<{
   data?: INFRsType;
   btns?: IInfoBtnType[];
 }>();
+const sliceStart = 2;
+const sliceEnd = 8;
+
+const isYou = (address?: string) =>
+  address?.toLowerCase() === userInfoStore.currentUser.publicKey.toLowerCase();
+
+const calcReceiveRole = computed(() =>
+  props.data?.receive?.split(',').map((item) => ({
+    val: isYou(item) ? 'you' : item.slice(sliceStart, sliceEnd),
+    key: item,
+  })),
+);
+
+const calcIssuedRole = computed(() =>
+  isYou(props.data?.issued) ? 'you' : props.data?.issued?.slice(sliceStart, sliceEnd),
+);
 </script>
 
 <style scoped lang="scss">
@@ -117,6 +156,14 @@ const props = defineProps<{
   background-color: #fff;
   border: 1.6px solid $main-color;
   border-radius: 32px;
+  .desc {
+    max-height: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
 
   .link {
     display: inline-block;
@@ -146,13 +193,22 @@ const props = defineProps<{
     .item {
       display: flex;
       align-items: center;
+      max-width: 50%;
 
       .val {
+        // max-width: calc(100% - 110px);
         margin-left: 8px;
+        overflow: hidden;
         font-size: 20px;
         font-style: italic;
         font-weight: 700;
         color: #ee8b49;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        span {
+          cursor: pointer;
+        }
       }
 
       &:last-child {

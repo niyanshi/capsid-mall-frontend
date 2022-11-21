@@ -9,6 +9,7 @@ export interface INFTsType {
   props?: string[];
   contractAddress?: string;
   owner?: string[];
+  attributes?: unknown;
 }
 
 export interface INFTsDto {
@@ -34,6 +35,7 @@ export interface INFRsType {
   nftName?: string;
   nft?: INFTsType;
   order?: string;
+  status?: string;
   [key: string]: unknown;
 }
 
@@ -54,7 +56,7 @@ export interface INFRsDto {
 
 /** 用于请求nfr的类型 */
 export interface INFRTypeForRequest {
-  type: number;
+  type: string | number;
   price: number;
   druation: number;
   quantity: number;
@@ -62,5 +64,28 @@ export interface INFRTypeForRequest {
   nftContractAddress?: string;
   desc?: string;
   details?: string;
+  avatar?: string;
+  attributes?: unknown;
   [key: string]: unknown;
+}
+
+// 创建的nft
+export interface ICreateNFT {
+  campaignId: number;
+  collection: string;
+  contractAddress: string;
+  createTime: string;
+  creator: string;
+  deleteFlag: number;
+  description: string;
+  id: number;
+  imageUrl: string;
+  name: string;
+  originalData: string;
+  price: string;
+  status: string;
+  tokenId: string;
+  updateTime: string;
+  nfrOrderId: number | null,
+  nftOrderId: number | null
 }
