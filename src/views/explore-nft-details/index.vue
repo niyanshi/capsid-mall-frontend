@@ -73,9 +73,7 @@
       >
         <template #desc>
           {{ t('alert-msg.request-success.desc[0]') }}
-          <a @click="router.push(`/profile/${userInfoStore.currentUser.publicKey}`)">{{
-            t('alert-msg.request-success.desc[1]')
-          }}</a>
+          <a @click="skip">{{ t('alert-msg.request-success.desc[1]') }}</a>
         </template>
       </base-alert>
     </template>
@@ -117,6 +115,10 @@ const isSuccessful = ref(false);
 const requestVisibleRef = ref(false);
 const myAddressRef = ref('');
 const isValidAddressRef = ref(false);
+const skip = () => {
+  sessionStorage.setItem('profile-tab', '1');
+  router.push(`/profile/${userInfoStore.currentUser.publicKey}`);
+};
 
 /** 触发请求nfr按钮 */
 const emitRequestNFR = () => {
@@ -176,6 +178,10 @@ onMounted(() => {
 
 /** 请求nfr */
 const handleRequest = async (e: INFRTypeForRequest) => {
+  if (userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
+    message.error('You are not connected to the correct network environment! ');
+    return;
+  }
   controllerStore.setGlobalLoading(true);
   controllerStore.setGlobalTip(t('wait-msg.request'));
   const obj = {

@@ -26,6 +26,7 @@ interface ImportMetaEnv {
   readonly VITE_WETH_ADDRESS: string;
   readonly VITE_NFR_ADDRESS: string;
   readonly VITE_NFT_ADDRESS: string;
+  readonly VITE_CHAINID: string;
 }
 
 interface ImportMeta {

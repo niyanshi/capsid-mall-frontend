@@ -20,6 +20,7 @@ export const useControllerStore = defineStore('contoller', {
       amount: '',
     },
     modelVisibleForBuy: false,
+    limitForBuy: 10,
   }),
   actions: {
     setGlobalLoading(payload: boolean) {
@@ -37,6 +38,9 @@ export const useControllerStore = defineStore('contoller', {
       if (id) this.orderObjForBuy.id = id;
       if (order) this.orderObjForBuy.order = order;
       if (amount) this.orderObjForBuy.amount = amount;
+    },
+    setLimitForBuy(payload: number) {
+      this.limitForBuy = payload;
     },
     setModelVisibleForBuy(payload: boolean) {
       this.modelVisibleForBuy = payload;

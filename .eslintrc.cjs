@@ -4,9 +4,9 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:vue/vue3-recommended',
+    'plugin:sonarjs/recommended',
     '@vue/eslint-config-typescript/recommended',
     'prettier',
-    'plugin:sonarjs/recommended',
   ],
   plugins: ['sonarjs'],
   env: {
@@ -42,7 +42,7 @@ module.exports = {
     // 5. 变量：不允许有未使用的变量
     '@typescript-eslint/no-unused-vars': 'error',
     // 7. 变量：使用 let、const 来声明变量
-    'no-undef': 'error',
+    'no-undef': 'off',
     // 8. 变量：每个变量声明要有单独的 const 或 let
     'one-var': ['error', 'never'],
     // 9. 变量：不要尝试更新 const 声明的常量

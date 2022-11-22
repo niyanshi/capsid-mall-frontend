@@ -1,5 +1,5 @@
 <template>
-  <BaseOverlay v-if="dialogVisible" :visible="dialogVisible" @close="handleClose">
+  <BaseOverlay v-if="dialogVisible" :visible="dialogVisible" @close="handleMaskClose">
     <div class="dialog-content" :style="{ width: prop.width + 'px', height: prop.height + 'px' }">
       <div class="icon-close" @click="handleClose"></div>
       <slot></slot>
@@ -17,7 +17,9 @@ import { ref, watch } from 'vue';
 interface Props {
   visible: boolean
   width?: number | string
-  height?: number | string
+  height?: number | string,
+  // 禁止通过点击mask关闭弹窗
+  maskDisable?: boolean
 }
 const prop = withDefaults(defineProps<Props>(), {
   width: 500,
@@ -29,6 +31,10 @@ watch(() => prop.visible, (value) => {
   dialogVisible.value = value;
 });
 const handleClose = () => {
+  emit('close');
+};
+const handleMaskClose = () => {
+  if(prop.maskDisable) return;
   emit('close');
 };
 </script>

@@ -1,18 +1,26 @@
 <template>
   <div class="item-wrap">
-    <img :src="prop.pic">
+    <img ref="imgRef" :src="prop.pic" @error="onError">
     <div class="info">
       <p>{{ prop.name?.split('#')[0] }}</p>
-      <p>#{{ prop.name?.split('#')[1] }}</p>
+      <p>{{ prop.name?.split('#')[1] ? `#${prop.name?.split('#')[1]}` : '' }}</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import ImageAlt from '@/assets/images/image-alt.png';
+import { ref } from 'vue';
 const prop = defineProps<{
   pic: string,
   name: string
 }>();
+
+const imgRef = ref();
+const onError = function () {
+  if (!imgRef.value) return;
+  imgRef.value.src = ImageAlt;
+};
 </script>
 
 <style lang="scss" scoped>

@@ -119,11 +119,20 @@ const Router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
-Router.beforeEach((to) => {
+Router.beforeEach((to,from) => {
   const userInfoStore = useUserInfoStore();
   if (to.name === 'campaign-create' && !userInfoStore.currentUser.isLogin) {
     userInfoStore.setLoginModalVisible(true);
     return false;
+  }
+  const profileTab = sessionStorage.getItem('tabStorage') || '';
+  if(from.name === 'profile' && to.path.includes('nfr-details')) {
+    // 如果是去nfr detail 或 nfr request detail，记录下profile当前的tab
+    const value = sessionStorage.getItem('profile-tab') || '';
+    sessionStorage.setItem('tabStorage',value);
+  }
+  if(from.path.includes('nfr-details') && to.name === 'profile' && profileTab !== '') {
+    sessionStorage.setItem('profile-tab',profileTab);
   }
   return true;
 });

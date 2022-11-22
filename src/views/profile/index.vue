@@ -3,7 +3,7 @@
     <div class="user-name">{{ profile.username }}</div>
     <div class="content">
       <div class="left-part">
-        <img class="avatar" :src="profile.avartar" alt="" srcset="">
+        <img ref="imgRef" class="avatar" :src="profile.avartar" alt="" srcset="" @error="onError">
         <div v-if="String(userInfoStore.currentUser.userId) === String(profile.id)" class="edit" @click="handleEditClick">{{
             t('profile-page.editProfile')
         }}</div>
@@ -124,7 +124,7 @@ import BaseInput from '@/components/BaseInput/index.vue';
 import BaseTable from '@/components/BaseTable/index.vue';
 import FormItem from '@/components/BaseForm/FormItem.vue';
 import PositionItem from './components/PositionItem.vue';
-import { onMounted, reactive, ref, h, watch } from 'vue';
+import { onMounted, reactive, ref, h, watch, onUnmounted } from 'vue';
 import { httpGetAccount, httpEditAccount, httpGetActivity, httpGetNFR, httpGetRequest } from '@/api/profile';
 import { useUserInfoStore } from '@/stores/user-info';
 import { IProfile, IActivity, INFT, INFR } from '@/types/profile';
@@ -135,12 +135,14 @@ import { useRouter, useRoute } from 'vue-router';
 import { message,Pagination } from 'ant-design-vue';
 import { nfrContractAddress, nftContractAddress } from '@/hooks/var';
 import { toNonExponential } from '@/utils/util';
+import ImageAlt from '@/assets/images/image-alt.png';
 
 const userInfoStore = useUserInfoStore();
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
-const currentTab = ref(0);
+const SESSION_KEY = 'profile-tab';
+const currentTab = ref(Number(sessionStorage.getItem(SESSION_KEY)) || 0);
 
 const currentAccount = ref<string>(userInfoStore.currentUser.publicKey as string);
 // 当前的资料
@@ -493,8 +495,7 @@ const handleProfileEdit = async () => {
 /** tab切换 */
 const handleTabChange = (index: number) => {
   currentTab.value = index;
-  // 清空list以及页码
-  currentList.value = [];
+  sessionStorage.setItem(SESSION_KEY, String(index));
   currentPageNum.value = 1;
   noScroll.value = false;
   getData(true);
@@ -504,9 +505,12 @@ const handleTabChange = (index: number) => {
 const handleSecondTabChange = (index: number) => {
   currentSecondTab.value = index;
   noScroll.value = false;
+  currentPageNum.value = 1;
   if (currentTab.value === 1) {
+    NFRList.value = [];
     getNFRList(true);
   } else {
+    requestList.value = [];
     getRequestList(true);
   }
 };
@@ -518,7 +522,6 @@ const handleScroll = (e: Event) => {
     // 若当前list的数量不是size的整数倍，说明已经请求完了
     if (currentList.value.length % currentPageSize.value > 0) return;
     currentPageNum.value++;
-    console.log('🚀 ~ handleScroll ~ currentPageNum.value', currentPageNum.value);
     getData();
   }
 };
@@ -554,6 +557,15 @@ onMounted(() => {
   currentAccount.value = route.params.address as string;
   getProfile();
 });
+onUnmounted(() => {
+  sessionStorage.removeItem(SESSION_KEY);
+});
+// 图片错误处理
+const imgRef = ref();
+const onError = function () {
+  if (!imgRef.value) return;
+  imgRef.value.src = ImageAlt;
+};
 </script>
 
 <style scoped lang="scss">

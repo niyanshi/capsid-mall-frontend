@@ -80,6 +80,10 @@ const handleDelistNFR = async () => {
   delistVisibleRef.value = true;
 };
 const handleConfirmDelistNFR = async () => {
+  if (userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
+    message.error('You are not connected to the correct network environment! ');
+    return;
+  }
   delistVisibleRef.value = false;
   controllerStore.setGlobalLoading(true);
   if (isAtRequest.value) {
@@ -114,10 +118,17 @@ const handleConfirmDelistNFR = async () => {
 
 /** accept NFR Request */
 const execAcceptRequest = async () => {
+  if (userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
+    message.error('You are not connected to the correct network environment! ');
+    return;
+  }
   if (!nfrDetalsRef.value?.order) return;
   const { order, id } = nfrDetalsRef.value;
+  controllerStore.setGlobalLoading(true);
+
   const res = await httpAcceptNFRsOrder(String(id));
   if (res.code !== 0) {
+    controllerStore.setGlobalLoading(false);
     message.error(res.msg);
     return;
   }
@@ -150,6 +161,7 @@ const execBuyNFR = async () => {
     return;
   }
   controllerStore.setModelVisibleForBuy(true);
+  controllerStore.setLimitForBuy(Number(nfrDetalsRef.value?.remain));
   controllerStore.setOrderObjForBuy({
     id: String(nfrDetalsRef.value?.id),
     order: String(nfrDetalsRef.value?.order),

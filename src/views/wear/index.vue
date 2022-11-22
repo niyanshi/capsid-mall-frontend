@@ -13,13 +13,15 @@
         </div>
       </div>
       <div v-for="(item, index) in wearList" :key="index" class="wear-item item-size">
-        <img v-if="item.wearMeta?.image" :src="item.wearMeta?.image" alt="" srcset="">
-        <img v-else :src="item.parentPic1" alt="" srcset="">
+        <!-- <img v-if="item.wearMeta?.image" :src="item.wearMeta?.image" alt="" srcset=""> -->
+        <PrivateImage v-if="item.wearMeta?.image" :src="item.wearMeta?.image"></PrivateImage>
+        <PrivateImage v-else :src="item.parentPic1"></PrivateImage>
+        <!-- <img v-else :src="item.parentPic1" alt="" srcset=""> -->
         <div class="status text">{{item.status === 3 ? t('wear-page.tab[1]') : t('wear-page.tab[2]')}}</div>
       </div>
     </div>
     <PrivateWearDialog :visible="visible" @close="handleDialogClose" @result="handleWearRes"></PrivateWearDialog>
-    <BaseDialog :visible="resultDialogVisible" width="640" height="240" @close="handleResultDialogClose">
+    <BaseDialog :visible="resultDialogVisible" width="640" height="240"  :mask-disable="true" @close="handleResultDialogClose">
       <div v-if="resultSuccess" class="tip-content">
         <i class="icon-success icon-size"></i>
         <div class="info-text">
@@ -57,6 +59,8 @@ import { useUserInfoStore } from '@/stores/user-info';
 import { IWear } from '@/types/campaign';
 import BaseDialog from '@/components/BaseDialog/index.vue';
 import PrivateWearDialog from '@/components/PrivateWearDialog/index.vue';
+import PrivateImage from '@/components/PrivateImage/index.vue';
+
 const { t } = useI18n();
 const userInfoStore = useUserInfoStore();
 

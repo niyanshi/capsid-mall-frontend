@@ -11,22 +11,18 @@
           @click="handleClose"
         />
       </div>
-
-      <!-- content -->
-      <!-- <form-item :title="t('create-nfr-form-items[2]')"> -->
       <div class="content">
         <div class="label">{{ t('create-nfr-form-items[2]') }}</div>
         <div class="input">
           <base-input
             v-model="amountRef"
-            :placeholder="t('placeholder.quantity')"
+            :placeholder="`Integer less than ${controllerStore.limitForBuy}`"
             type="number"
             style-type="line"
           ></base-input>
         </div>
       </div>
 
-      <!-- </form-item> -->
       <div
         class="btn"
         @click="handleBuy"
@@ -49,8 +45,10 @@ import BaseInput from '@/components/BaseInput/index.vue';
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 import { message } from 'ant-design-vue';
+import { useControllerStore } from '@/stores/controller';
 
 const { t } = useI18n();
+const controllerStore = useControllerStore();
 
 const props = defineProps<{ visible: boolean }>();
 const emit = defineEmits<{ (event: 'close'): void; (event: 'buy', data: string): void }>();
@@ -64,13 +62,12 @@ const handleClose = () => {
 
 /** 触发购买 */
 const handleBuy = () => {
-  const quantityCof = 10;
   if (!Number(amountRef.value) || amountRef.value.includes('.')) {
     message.error(t('warn-msg.quantity'));
     return;
   }
-  if (Number(amountRef.value) > quantityCof) {
-    message.error(t('warn-msg.high-quantity'));
+  if (Number(amountRef.value) > controllerStore.limitForBuy) {
+    message.error(`Quantity should be less than ${controllerStore.limitForBuy}`);
     return;
   }
   emit('buy', amountRef.value);

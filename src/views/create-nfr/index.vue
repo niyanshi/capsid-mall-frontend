@@ -113,9 +113,7 @@
       >
         <template #desc>
           {{ t('alert-msg.list-success.desc[0]') }}
-          <a @click="router.push(`/profile/${userInfoStore.currentUser.publicKey}`)">{{
-            t('alert-msg.list-success.desc[1]')
-          }}</a>
+          <a @click="skip">{{ t('alert-msg.list-success.desc[1]') }}</a>
         </template>
       </base-alert>
     </template>
@@ -129,7 +127,7 @@ import IconPartyPopper from '@/assets/icons/party-popper.png';
 import SvgBack from '@/assets/svg/back.svg';
 import SvgAddList from '@/assets/svg/add-list.svg';
 import ImageBallot from '@/assets/images/ballot.png';
-import { watch, onMounted, reactive, ref } from 'vue';
+import { watch, onMounted, reactive, ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import BaseAlert from '@/components/BaseAlert/index.vue';
 import BaseSelect from '@/components/BaseSelect/index.vue';
@@ -179,7 +177,14 @@ const valueObj = reactive<{
   desc: '',
   duration: '',
 });
-const options = controllerStore.nfrType.map((item) => ({ key: item.id, value: item.name }));
+const options = computed(() =>
+  controllerStore.nfrType.map((item) => ({ key: item.id, value: item.name })),
+);
+
+const skip = () => {
+  sessionStorage.setItem('profile-tab', '1');
+  router.push(`/profile/${userInfoStore.currentUser.publicKey}`);
+};
 
 /** 获取nft详情 */
 const getNFTsDetails = async (address: string, id: string) => {
@@ -257,8 +262,10 @@ const validateData = () => {
 
 /** list NFR */
 const handleList = async () => {
-  // const current = dayjs();
-  // const expire = dayjs(expireRef.value.currentValue).endOf('d');
+  if (userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
+    message.error('You are not connected to the correct network environment! ');
+    return;
+  }
   if (!validateData()) return;
   const obj = {
     type: valueObj.type,

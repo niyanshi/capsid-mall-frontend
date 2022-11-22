@@ -121,6 +121,7 @@ const handleBuy = async (data: INFRsType) => {
     return;
   }
   controllerStore.setModelVisibleForBuy(true);
+  controllerStore.setLimitForBuy(Number(data.total));
   controllerStore.setOrderObjForBuy({
     id: String(data?.id),
     order: String(data?.order),

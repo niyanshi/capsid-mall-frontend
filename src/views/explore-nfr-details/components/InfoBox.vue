@@ -156,11 +156,11 @@ const calcIssuedRole = computed(() =>
   background-color: #fff;
   border: 1.6px solid $main-color;
   border-radius: 32px;
+
   .desc {
     max-height: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
   }

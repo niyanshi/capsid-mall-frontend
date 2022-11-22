@@ -9,10 +9,11 @@ import Router from '@/router';
 const userInfoStore = useUserInfoStore(pinia);
 
 const http = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_PREFIX,
   timeout: 10_000,
   headers: {
     'Content-Type': 'application/json',
+    'Accept-Language': 'en-US',
   },
 });
 
@@ -20,7 +21,6 @@ http.interceptors.request.use((config) => {
   if (storage.getToken()) {
     config.headers = {
       Authorization: `Bearer${storage.getToken()}`,
-      'Accept-Language': 'en-us',
     };
   }
 
@@ -41,4 +41,4 @@ http.interceptors.response.use(
 
 export default http;
 
-export const prefix = import.meta.env.  VITE_PREFIX;
+export const prefix = import.meta.env.VITE_PREFIX;

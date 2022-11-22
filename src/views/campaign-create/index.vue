@@ -87,11 +87,14 @@ import BaseImageSelect from '@/components/BaseImageSelect/index.vue';
 import { httpCreateCampaign, httpGetCampaignDetail } from '@/api/campaign';
 import { useUserInfoStore } from '@/stores/user-info';
 import { ICampaign } from '@/types/campaign';
+import _ from 'lodash-es';
+import dayjs from 'dayjs';
 
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 const userInfoStore = useUserInfoStore();
+const defaultDuration = 7;
 
 const campaignInfo = reactive<ICampaign>({
   campaignName: '',
@@ -109,15 +112,17 @@ const expireRef = ref();
 const handleBackClick = () => {
   router.push('/campaign');
 };
-const handleOkClick = async () => {
+const campaignSubmit = async () => {
   campaignInfo.startTime = campaignInfo.startTime || new Date().toISOString();
-  campaignInfo.endTime = expireRef.value.currentValue;
+  campaignInfo.endTime = dayjs(expireRef.value.currentValue).endOf('day').toDate().toISOString();
   const params = {id: editId.value,...campaignInfo};
   const res = await httpCreateCampaign(params);
   if (res.code === 0) {
     router.push('/campaign');
   }
 };
+const TIME = 1000;
+const handleOkClick = _.debounce(campaignSubmit,TIME);
 
 // 获取campaign详情
 const getCampaignDetail = async (campaignId: number) => {
@@ -136,6 +141,7 @@ const getCampaignDetail = async (campaignId: number) => {
 };
 
 onMounted(() => {
+  expireRef.value.currentValue = dayjs().add(defaultDuration,'day');
   if (route.query.campaignId) {
     getCampaignDetail(Number(route.query.campaignId));
   }

@@ -1,5 +1,5 @@
 <template>
-  <BaseDialog :visible="props.visible" width="1280" height="688" @close="handleDialogClose">
+  <BaseDialog :visible="props.visible" width="1280" height="688" :mask-disable="true" @close="handleDialogClose">
     <div v-show="isWear" class="wear">
       <div class="dialog-title">
         <i class="icon-crown icon"></i>
@@ -9,7 +9,7 @@
         <div class="select-box">
           <div class="select-title"></div>
           <div v-if="leftItem" class="img-box" @click="handleAvatarClick('left')">
-            <img :src="leftItem.image" alt="">
+            <img ref="leftRef" :src="leftItem.image" alt="" @error="onError('0')">
           </div>
           <div v-else class="img-box add-border" @click="handleAvatarClick('left')">
             <div class="add-wrap">
@@ -24,7 +24,7 @@
         <div class="select-box">
           <div class="select-title">{{ t('selectAvatarNFT') }}</div>
           <div v-if="selectedItem?.image" class="img-box">
-            <img :src="selectedItem?.image" alt="" @click="handleAvatarClick('right')">
+            <img ref="rightRef" :src="selectedItem?.image" alt="" @click="handleAvatarClick('right')"  @error="onError('1')">
           </div>
           <div v-else class="img-box add-border" @click="handleAvatarClick('right')">
             <div class="add-wrap">
@@ -68,7 +68,8 @@
             :key="index"
             :class="[currentAvatar === index ? 'select-img' : '']"
             @click="handleAvatarSelect(index)">
-            <img :src="item.imageUrl" />
+            <PrivateImage :src="item.imageUrl"></PrivateImage>
+            <!-- <img :src="item.imageUrl" /> -->
           </div>
         </div>
         <div v-else ref="scrollListRef" class="select-list">
@@ -77,7 +78,8 @@
             :key="index"
             :class="[currentAvatar === index ? 'select-img' : '']"
             @click="handleAvatarSelect(index)">
-            <img :src="item.image" />
+            <PrivateImage :src="item.image"></PrivateImage>
+            <!-- <img ref="imgRef" :src="item.image" @error="onError('2')" /> -->
           </div>
         </div>
       </div>
@@ -113,6 +115,9 @@ import BaseInput from '@/components/BaseInput/index.vue';
 import BaseTextarea from '@/components/BaseTextarea/index.vue';
 import { message } from 'ant-design-vue';
 import {nfrContractAddress} from '@/hooks/var';
+import _ from 'lodash-es';
+import ImageAlt from '@/assets/images/image-alt.png';
+import PrivateImage from '@/components/PrivateImage/index.vue';
 
 const userInfoStore = useUserInfoStore();
 const { t } = useI18n();
@@ -343,7 +348,7 @@ const handleBackClick = () => {
   currentAvatar.value = -1;
   isWear.value = true;
 };
-const handleWearClick = () => {
+const wear = () => {
   if(!name.value) {
     message.error(t('wear-page.inputName'));
     return;
@@ -357,6 +362,21 @@ const handleWearClick = () => {
     return;
   }
   createWear(leftItem.value as IWearItem,selectedItem.value as IWearItem);
+};
+// 防抖间隔时间
+const TIME = 500;
+const handleWearClick = _.debounce(wear,TIME);
+
+const leftRef = ref();
+const rightRef = ref();
+const onError = function (index:string) {
+  if(index === '0') {
+    if(!leftRef.value) return;
+    leftRef.value.src = ImageAlt;
+  } else if(index === '1') {
+    if(!rightRef.value) return;
+    rightRef.value.src = ImageAlt;
+  }
 };
 </script>
 

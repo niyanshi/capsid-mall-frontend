@@ -18,6 +18,9 @@ export const useUserInfoStore = defineStore('userInfo', {
     },
     // 登录弹窗显示
     loginModalVisible: false,
+
+    // 当前连接网络
+    currentChainId: -1,
   }),
   persist: true,
   actions: {
@@ -34,7 +37,10 @@ export const useUserInfoStore = defineStore('userInfo', {
       this.currentUser.isLogin = false;
       storage.removeToken();
       storage.removePublicKey();
-      // Router.push('/');
+    },
+
+    setCurrentChainId(payload: string | number) {
+      this.currentChainId = Number(payload);
     },
   },
 });

@@ -10,8 +10,6 @@ import { message } from 'ant-design-vue';
 message.config({
   top: '128px',
 });
-console.log('Hello, world!');
-console.log(import.meta.env.BASE_URL);
 
 const app = createApp(App);
 // 国际化配置

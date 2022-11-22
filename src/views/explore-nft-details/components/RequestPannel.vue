@@ -43,11 +43,13 @@ import emitter from '@/utils/event';
 import { ERR, EV_RELOAD_NFR_LIST } from '@/utils/constant';
 import { message } from 'ant-design-vue';
 import { useControllerStore } from '@/stores/controller';
+import { useUserInfoStore } from '@/stores/user-info';
 
 const { t } = useI18n();
 const router = useRouter();
 const { acceptNFRsRequest } = useSeaport();
 const controllerStore = useControllerStore();
+const userInfoStore = useUserInfoStore();
 
 const props = defineProps<{ data?: INFTsType; isOwner?: boolean }>();
 
@@ -80,14 +82,19 @@ const getNFRsList = async () => {
 
 /** accept NFR */
 const handleAccpet = async (data: INFRsType) => {
+  if (userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
+    message.error('You are not connected to the correct network environment! ');
+    return;
+  }
   if (!data?.order) return;
   const { order, id } = data;
+  controllerStore.setGlobalLoading(true);
   const res = await httpAcceptNFRsOrder(String(id));
   if (res.code !== 0) {
+    controllerStore.setGlobalLoading(false);
     message.error(res.msg);
     return;
   }
-  controllerStore.setGlobalLoading(true);
   controllerStore.setGlobalTip(t('wait-msg.accept'));
   try {
     const orderId = res.data.nfrTrans.nfrTokenId;

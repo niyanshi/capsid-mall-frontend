@@ -5,7 +5,7 @@
       <span>{{ campaignNft?.name }}</span>
     </div>
     <div v-if="currentNft" class="info-wrap">
-      <img :src="campaignNft?.imageUrl" alt="">
+      <PrivateImage :src="(campaignNft?.imageUrl as string)"></PrivateImage>
       <div class="text">
         <div class="desc">{{ campaignNft?.description }}</div>
         <div class="price">
@@ -19,7 +19,8 @@
       </div>
     </div>
     <div v-if="currentNfr" class="info-wrap">
-      <img :src="currentNfr?.image" alt="">
+      <!-- <img :src="currentNfr?.image" alt=""> -->
+      <PrivateImage :src="(currentNfr?.image as string)"></PrivateImage>
       <div class="text">
         <div class="desc">{{ currentNfr?.description }}</div>
         <div class="price">
@@ -45,7 +46,7 @@
       </div>
     </div>
     <PrivateWearDialog :visible="dialogVisible" :item-to-wear="itemToWear" @close="handleDialogClose" @result="handleWearRes"></PrivateWearDialog>
-    <BaseDialog :visible="resultDialogVisible" width="640" height="240" @close="handleResultDialogClose">
+    <BaseDialog :visible="resultDialogVisible" width="640" height="240"  :mask-disable="true" @close="handleResultDialogClose">
       <div v-if="resultSuccess" class="tip-content">
         <i class="icon-success icon"></i>
         <div class="info-text">
@@ -99,6 +100,7 @@ import { message } from 'ant-design-vue';
 import PurchasingBox from '@/components/PurchasingBox/index.vue';
 import { ERR } from '@/utils/constant';
 import { useControllerStore } from '@/stores/controller';
+import PrivateImage from '@/components/PrivateImage/index.vue';
 
 const { buyNFR, buyNFT, poll } = useSeaport();
 const { t } = useI18n();
@@ -179,6 +181,7 @@ const handleBuyNFRClick = async () => {
     message.warn(t('warn-msg.needLogin'));
     return;
   }
+  controllerStore.setLimitForBuy(Number(currentNfr.value?.amount) - Number(currentNfr.value?.selledAmount));
   amountDialogVisible.value = true;
 };
 const handleBuy = async (amount: string) => {
@@ -199,6 +202,7 @@ const handleBuy = async (amount: string) => {
       if(res2.code === 0) {
         controllerStore.setGlobalLoading(false);
         dialogVisible.value = true;
+        amountDialogVisible.value = false;
         itemToWear.value = {
           image: (currentNfr.value as IRequestV).image,
           tokenId: orderId,

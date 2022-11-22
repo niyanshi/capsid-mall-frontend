@@ -10,48 +10,48 @@ const AVARTAR = 'avartar';
  * @param value token值
  */
 const setToken = (value: string) => {
-  sessionStorage.setItem(TOKEN, value);
+  localStorage.setItem(TOKEN, value);
 };
 
 /** 设置公钥 */
 const setPublicKey = (value: string) => {
-  sessionStorage.setItem(PUBLIC_KEY, value);
+  localStorage.setItem(PUBLIC_KEY, value);
 };
 /** 设置用户id */
 const setUserId = (value: string) => {
-  sessionStorage.setItem(USER_ID, value);
+  localStorage.setItem(USER_ID, value);
 };
 /** 设置用户头像 */
 const setUserAvartar = (value: string) => {
-  sessionStorage.setItem(AVARTAR, value);
+  localStorage.setItem(AVARTAR, value);
 };
 
 /**
  * 获取token
  * @returns token
  */
-const getToken = () => sessionStorage.getItem(TOKEN);
+const getToken = () => localStorage.getItem(TOKEN);
 
 /** 获取publicKey */
-const getPublicKey = () => sessionStorage.getItem(PUBLIC_KEY);
+const getPublicKey = () => localStorage.getItem(PUBLIC_KEY);
 /** 移除publicKey */
-const removePublicKey = () => sessionStorage.removeItem(PUBLIC_KEY);
+const removePublicKey = () => localStorage.removeItem(PUBLIC_KEY);
 
 /**
  * 移除token
  * @returns
  */
 const removeToken = () => {
-  sessionStorage.removeItem(TOKEN);
-  sessionStorage.removeItem(PUBLIC_KEY);
-  sessionStorage.removeItem(USER_ID);
-  sessionStorage.removeItem(AVARTAR);
+  localStorage.removeItem(TOKEN);
+  localStorage.removeItem(PUBLIC_KEY);
+  localStorage.removeItem(USER_ID);
+  localStorage.removeItem(AVARTAR);
 };
 
 /** 获取用户id */
-const getUserId = () => sessionStorage.getItem(USER_ID);
+const getUserId = () => localStorage.getItem(USER_ID);
 /** 获取用户头像 */
-const getUserAvartar = () => sessionStorage.getItem(AVARTAR);
+const getUserAvartar = () => localStorage.getItem(AVARTAR);
 export default {
   setToken,
   getToken,
