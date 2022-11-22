@@ -79,7 +79,7 @@
     >
       <Alert
         type="warning"
-        :message="`Your wallet is connecting to the testnet (${networkNameRef}), please switch to correct network.`"
+        :message="`aaaaaaa. Your wallet is connecting to the testnet (${networkNameRef}), please switch to correct network.`"
         closable
       ></Alert>
     </div>
