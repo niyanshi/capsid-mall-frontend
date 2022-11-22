@@ -8,9 +8,7 @@ import Router from '@/router';
 
 const userInfoStore = useUserInfoStore(pinia);
 
-console.log("............", import.meta.env.VITE_API_URL);
 const http = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
   timeout: 10_000,
   headers: {
     'Content-Type': 'application/json',
