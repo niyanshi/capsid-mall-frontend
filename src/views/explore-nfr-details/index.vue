@@ -222,7 +222,10 @@ const getNFTsDetails = async (address: string, id: string) => {
     btnsConfigRef.value = [];
     if (!isOwnerRef.value) {
       // 请求creater
-      if ((nfrDetalsRef.value?.creator as string).toLowerCase() === myAddress.toLowerCase()) {
+      if (
+        (nfrDetalsRef.value?.creator as string).toLowerCase() === myAddress.toLowerCase() &&
+        nfrDetalsRef.value?.status === 'active'
+      ) {
         btnsConfigRef.value = [
           {
             title: t('cancel'),

@@ -116,7 +116,7 @@ const requestVisibleRef = ref(false);
 const myAddressRef = ref('');
 const isValidAddressRef = ref(false);
 const skip = () => {
-  sessionStorage.setItem('profile-tab', '1');
+  sessionStorage.setItem('profile-tab', '2');
   router.push(`/profile/${userInfoStore.currentUser.publicKey}`);
 };
 

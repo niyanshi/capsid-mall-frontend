@@ -7,6 +7,7 @@ import { message } from 'ant-design-vue';
 import Router from '@/router';
 
 const userInfoStore = useUserInfoStore(pinia);
+
 const http = axios.create({
   timeout: 10_000,
   headers: {
@@ -15,14 +16,12 @@ const http = axios.create({
   },
 });
 
-
 http.interceptors.request.use((config) => {
   if (storage.getToken()) {
     config.headers = {
       Authorization: `Bearer${storage.getToken()}`,
     };
   }
-
   return config;
 });
 http.interceptors.response.use(

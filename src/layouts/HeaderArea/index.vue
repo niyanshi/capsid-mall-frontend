@@ -79,7 +79,7 @@
     >
       <Alert
         type="warning"
-        :message="`aaaaaaa. Your wallet is connecting to the testnet (${networkNameRef}), please switch to correct network.`"
+        :message="`Your wallet is connecting to the wrong network (${networkNameRef}), please switch to correct network.`"
         closable
       ></Alert>
     </div>
@@ -145,7 +145,6 @@ const judgeNetwork = async () => {
   const res = await getNetwork();
   networkNameRef.value = res.name;
   userInfoStore.setCurrentChainId(res.chainId);
-  if (!import.meta.env.PROD) return;
   if (res.chainId !== Number(import.meta.env.VITE_CHAINID)) {
     tipVisibleRef.value = true;
   } else {

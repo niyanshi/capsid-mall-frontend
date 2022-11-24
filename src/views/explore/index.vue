@@ -49,7 +49,7 @@ const handleBuy = async (amount: string) => {
     const orderId = res.data.nfrTrans.nfrTokenId;
     await buyNFR({ order, orderId, amount });
     await httpNoticeStatus(res.data.nfrTrans.id, 'submitted');
-    message.info(t('info-msg.success'));
+    message.info('You have purchased successfully');
     if (router.currentRoute.value.path.includes('nfr-details')) {
       router.back();
     } else {
