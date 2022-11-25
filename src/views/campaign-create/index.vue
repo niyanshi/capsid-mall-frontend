@@ -106,6 +106,8 @@ const campaignInfo = reactive<ICampaign>({
   banner: '',
   ownerEtherAddr: userInfoStore.currentUser.publicKey as string,
 });
+// 原始banner
+let originalBanner = '';
 const editId = ref<number>();
 
 const expireRef = ref();
@@ -115,7 +117,21 @@ const handleBackClick = () => {
 const campaignSubmit = async () => {
   campaignInfo.startTime = campaignInfo.startTime || new Date().toISOString();
   campaignInfo.endTime = dayjs(expireRef.value.currentValue).endOf('day').toDate().toISOString();
-  const params = {id: editId.value,...campaignInfo};
+  const { campaignName,startTime,endTime,content,link,ownerId,ownerEtherAddr } = campaignInfo;
+  const params = {
+    id: editId.value,
+    banner: campaignInfo.banner === originalBanner ? null : campaignInfo.banner,
+    campaignName,
+    startTime,
+    endTime,
+    content,
+    link,
+    ownerId,
+    ownerEtherAddr};
+  if(campaignInfo.banner === originalBanner) {
+    // 如果banner没有改变，为了防止图片路径出现问题，banner参数设置为空
+    params.banner = null;
+  }
   const res = await httpCreateCampaign(params);
   if (res.code === 0) {
     router.push('/campaign');
@@ -137,6 +153,7 @@ const getCampaignDetail = async (campaignId: number) => {
     campaignInfo.ownerId = res.data.ownerId;
     campaignInfo.link = res.data.link;
     campaignInfo.content = res.data.content;
+    originalBanner = res.data.banner;
   }
 };
 

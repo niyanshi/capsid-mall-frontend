@@ -175,3 +175,78 @@
   border: 2px dashed #000;
   border-radius: 10px;
 }
+.tip-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .icon {
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+    margin-right: 24px;
+  }
+  .info-title {
+    font-family: 'Quiet Sans';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 30px;
+    line-height: 30px;
+    letter-spacing: 0.02em;
+    font-feature-settings: 'pnum' on, 'lnum' on;
+    color: #000;
+    margin-bottom: 16px;
+  }
+  .message {
+    width: 370px;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 26px;
+    letter-spacing: 0.02em;
+    color: #4d4d4d;
+    a {
+      margin-left: 5px;
+      color: #f1b540;
+      font-style: oblique;
+      cursor: pointer;
+    }
+    p {
+      margin: 0;
+    }
+  }
+}
+.icon-success {
+  background-image: url('../../assets/icons/party-popper.png');
+  background-size: contain;
+}
+.dialog-button {
+  width: 188px;
+  height: 56px;
+  background: #a32015;
+  box-shadow: 2px 2px 20px 10px rgba(163, 32, 21, 0.08);
+  border-radius: 32px;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  color: #fcf5c5;
+  cursor: pointer;
+  i {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-left: 8px;
+    background-size: contain;
+  }
+  .icon-ok {
+    background-image: url('../../assets/icons/icon-ok.png');
+  }
+}

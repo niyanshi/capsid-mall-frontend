@@ -193,6 +193,7 @@ const handleRequest = async (e: INFRTypeForRequest) => {
   if (Number(balance) < Number(e.price)) {
     message.warn(t('warn-msg.weth-not-enough'));
     controllerStore.setGlobalLoading(false);
+    controllerStore.setSwapVisible(true);
     return;
   }
   try {
@@ -212,8 +213,9 @@ const handleRequest = async (e: INFRTypeForRequest) => {
       message.error(t('err-msg.reject'));
     }
     console.error(error);
+  } finally {
+    controllerStore.setGlobalLoading(false);
   }
-  controllerStore.setGlobalLoading(false);
 };
 </script>
 

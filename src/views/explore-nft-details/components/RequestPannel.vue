@@ -47,7 +47,7 @@ import { useUserInfoStore } from '@/stores/user-info';
 
 const { t } = useI18n();
 const router = useRouter();
-const { acceptNFRsRequest } = useSeaport();
+const { acceptNFRsRequest, poll } = useSeaport();
 const controllerStore = useControllerStore();
 const userInfoStore = useUserInfoStore();
 
@@ -98,9 +98,15 @@ const handleAccpet = async (data: INFRsType) => {
   controllerStore.setGlobalTip(t('wait-msg.accept'));
   try {
     const orderId = res.data.nfrTrans.nfrTokenId;
-    await acceptNFRsRequest({ order, orderId });
-    await httpNoticeStatus(res.data.nfrTrans.id, 'submitted');
-    message.info(t('info-msg.success'));
+    const ret = await acceptNFRsRequest({ order, orderId });
+    const pollRes = await poll(ret.hash);
+    if (!pollRes) {
+      controllerStore.setGlobalLoading(false);
+      message.warning(t('warn-msg.viewSoon'));
+      return;
+    }
+    await httpNoticeStatus(res.data.nfrTrans.id, 'submitted', ret.hash);
+    message.success('You accept successfully!');
     emitter.emit(EV_RELOAD_NFR_LIST);
   } catch (error: unknown) {
     await httpNoticeStatus(res.data.nfrTrans.id, 'failed');

@@ -21,8 +21,13 @@ export const useControllerStore = defineStore('contoller', {
     },
     modelVisibleForBuy: false,
     limitForBuy: 10,
+
+    swapVisible: false,
   }),
   actions: {
+    setSwapVisible(payload: boolean) {
+      this.swapVisible = payload;
+    },
     setGlobalLoading(payload: boolean) {
       this.globalLoading = payload;
       this.globalTip = '';

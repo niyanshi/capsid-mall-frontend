@@ -66,7 +66,7 @@ export default ({ command }: ConfigEnv) =>
         },
         // '/api': {
         //   target: targetObj.xjy,
-        //   rewrite: (path) => path.replace(/^\/api/, ''),
+        //   rewrite:path => path.replace(/^\/api/, '')
         // },
         ...processProxy(
           ['/api/v1/login', '/api/nft', '/api/nfr-order', '/api/collections', '/api/nfr-trans'],

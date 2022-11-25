@@ -88,12 +88,16 @@ export const httpBuyNFRs = async (
 };
 
 /** 通知交易状态 */
-export const httpNoticeStatus = async (id: string, transStatus: 'submitted' | 'failed') => {
+export const httpNoticeStatus = async (
+  id: string,
+  transStatus: 'submitted' | 'failed',
+  transHash?: string,
+) => {
   const res = await http.post(
     `${prefix}/nfr-trans/noticeStatus`,
     {},
     {
-      params: { nfrTransId: id, transStatus },
+      params: { nfrTransId: id, transStatus, transHash },
     },
   );
   return res.data;

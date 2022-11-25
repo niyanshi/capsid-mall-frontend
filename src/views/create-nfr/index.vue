@@ -296,8 +296,9 @@ const handleList = async () => {
       message.error(t('err-msg.reject'));
     }
     console.error(error);
+  } finally {
+    controllerStore.setGlobalLoading(false);
   }
-  controllerStore.setGlobalLoading(false);
 };
 
 /** 完成上链后的回调 */

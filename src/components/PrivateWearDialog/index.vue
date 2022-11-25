@@ -265,13 +265,13 @@ watch(() => noScroll.value, () => {
 // 获取拥有的NFT列表
 const handleSelectChange = (index: number) => {
   isSelectNFT.value = index === 1 ? true : false;
+  currentPageNum.value = 1;
+  noScroll.value = false;
   if(index === 1) {
     getNFTList(true);
   } else {
     getNFRList(true);
   }
-  currentPageNum.value = 1;
-  noScroll.value = false;
 };
 // 判断选择框触发是由左侧触发还是右侧触发
 const triggerType = ref<'left'|'right'>('right');

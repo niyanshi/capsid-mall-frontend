@@ -59,7 +59,7 @@ import { ERR } from '@/utils/constant';
 
 const userInfoStore = useUserInfoStore();
 const controllerStore = useControllerStore();
-const { cancelNFRsOrder, acceptNFRsRequest } = useSeaport();
+const { cancelNFRsOrder, acceptNFRsRequest, poll } = useSeaport();
 const { t } = useI18n();
 const router = useRouter();
 
@@ -112,8 +112,9 @@ const handleConfirmDelistNFR = async () => {
       message.error((error as Error).message);
     }
     console.error(error);
+  } finally {
+    controllerStore.setGlobalLoading(false);
   }
-  controllerStore.setGlobalLoading(false);
 };
 
 /** accept NFR Request */
@@ -136,9 +137,15 @@ const execAcceptRequest = async () => {
   controllerStore.setGlobalTip(t('wait-msg.accept'));
   try {
     const orderId = res.data.nfrTrans.nfrTokenId;
-    await acceptNFRsRequest({ order, orderId });
-    await httpNoticeStatus(res.data.nfrTrans.id, 'submitted');
-    message.info(t('info-msg.success'));
+    const ret = await acceptNFRsRequest({ order, orderId });
+    const pollRes = await poll(ret.hash);
+    if (!pollRes) {
+      controllerStore.setGlobalLoading(false);
+      message.warning(t('warn-msg.viewSoon'));
+      return;
+    }
+    await httpNoticeStatus(res.data.nfrTrans.id, 'submitted', ret.hash);
+    message.success('You accept successfully!');
     router.back();
   } catch (error: unknown) {
     await httpNoticeStatus(res.data.nfrTrans.id, 'failed');

@@ -11,11 +11,21 @@
       @close="controllerStore.setModelVisibleForBuy(false)"
     ></purchasing-box>
   </template>
+
+  <!-- 转换代币组件 -->
+  <template v-if="controllerStore.swapVisible">
+    <covert-token-modal
+      :visible="controllerStore.swapVisible"
+      @close="controllerStore.setSwapVisible(false)"
+      @swap="handleSwap"
+    ></covert-token-modal>
+  </template>
 </template>
 
 <script setup lang="ts">
 import { httpBuyNFRs, httpNoticeStatus } from '@/api/nfr';
 import PurchasingBox from '@/components/PurchasingBox/index.vue';
+import CovertTokenModal from '@/components/CovertTokenModal/index.vue';
 import useSeaport from '@/hooks/useSeaport';
 import { useControllerStore } from '@/stores/controller';
 import { useUserInfoStore } from '@/stores/user-info';
@@ -27,7 +37,7 @@ import { useRouter } from 'vue-router';
 
 const userInfoStore = useUserInfoStore();
 const controllerStore = useControllerStore();
-const { buyNFR } = useSeaport();
+const { buyNFR, poll, depositWETH } = useSeaport();
 const { t } = useI18n();
 const router = useRouter();
 
@@ -47,9 +57,15 @@ const handleBuy = async (amount: string) => {
   }
   try {
     const orderId = res.data.nfrTrans.nfrTokenId;
-    await buyNFR({ order, orderId, amount });
-    await httpNoticeStatus(res.data.nfrTrans.id, 'submitted');
-    message.info('You have purchased successfully');
+    const ret = await buyNFR({ order, orderId, amount });
+    const pollRes = await poll(ret.hash);
+    if (!pollRes) {
+      controllerStore.setGlobalLoading(false);
+      message.warning(t('warn-msg.viewSoon'));
+      return;
+    }
+    await httpNoticeStatus(res.data.nfrTrans.id, 'submitted', ret.hash);
+    message.success('You have purchased successfully');
     if (router.currentRoute.value.path.includes('nfr-details')) {
       router.back();
     } else {
@@ -58,7 +74,6 @@ const handleBuy = async (amount: string) => {
   } catch (error) {
     await httpNoticeStatus(res.data.nfrTrans.id, 'failed');
     const { code } = error as IOpenseaErrorType;
-    console.log({ code });
     if (code === ERR.RejectMessage) {
       message.error(t('err-msg.reject'));
     } else if (
@@ -72,6 +87,36 @@ const handleBuy = async (amount: string) => {
   } finally {
     controllerStore.setGlobalLoading(false);
     controllerStore.setModelVisibleForBuy(false);
+  }
+};
+
+const handleSwap = async (amount: string) => {
+  try {
+    controllerStore.setGlobalLoading(true);
+    const ret = await depositWETH(amount);
+    controllerStore.setGlobalTip('Wrap pending');
+    const pollRes = await poll(ret.hash);
+    if (!pollRes) {
+      controllerStore.setGlobalLoading(false);
+      message.warning(t('warn-msg.viewSoon'));
+      return;
+    }
+    message.success('You have swap WETH successfully');
+  } catch (error) {
+    const { code } = error as IOpenseaErrorType;
+    if (code === ERR.RejectMessage) {
+      message.error(t('err-msg.reject'));
+    } else if (
+      (error as Error).message.includes('transaction may fail or may require manual gas limit')
+    ) {
+      message.error('network problem');
+    } else {
+      message.error((error as Error).message);
+    }
+    console.error(error);
+  } finally {
+    controllerStore.setGlobalLoading(false);
+    controllerStore.setSwapVisible(false);
   }
 };
 </script>

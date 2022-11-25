@@ -1,6 +1,22 @@
 <template>
   <div class="item-wrap">
-    <img ref="imgRef" :src="prop.pic" @error="onError">
+    <template v-if="isNFR">
+      <div class="image">
+        <BaseNFRImage :src="prop.pic" />
+      </div>
+    </template>
+    <template v-else>
+      <img
+        ref="imgRef"
+        class="image"
+        :src="prop.pic"
+        @error="onError"
+      />
+    </template>
+
+    <!--
+     -->
+
     <div class="info">
       <p>{{ prop.name?.split('#')[0] }}</p>
       <p>{{ prop.name?.split('#')[1] ? `#${prop.name?.split('#')[1]}` : '' }}</p>
@@ -10,11 +26,16 @@
 
 <script setup lang="ts">
 import ImageAlt from '@/assets/images/image-alt.png';
-import { ref } from 'vue';
+
+import BaseNFRImage from '@/components/BaseNFRImage/index.vue';
+import { computed, ref } from 'vue';
+
 const prop = defineProps<{
-  pic: string,
-  name: string
+  pic: string;
+  name: string;
 }>();
+
+const isNFR = computed(() => sessionStorage.getItem('profile-tab') === '1');
 
 const imgRef = ref();
 const onError = function () {
@@ -25,11 +46,11 @@ const onError = function () {
 
 <style lang="scss" scoped>
 .item-wrap {
-  margin: 30px 21px 0 11px;
   width: 176px;
+  margin: 30px 21px 0 11px;
   cursor: pointer;
 
-  img {
+  .image {
     width: 176px;
     height: 176px;
     border-radius: 10px;
@@ -38,16 +59,16 @@ const onError = function () {
   .info {
     width: 100%;
     margin-top: 16px;
-    font-family: 'Quiet Sans';
+    overflow: hidden;
+    font-family: 'Quiet Sans', sans-serif;
+    font-size: 20px;
     font-style: normal;
     font-weight: 800;
-    font-size: 20px;
-    line-height: 24px;
-    letter-spacing: 0.02em;
     font-feature-settings: 'pnum' on, 'lnum' on;
-    color: #000000;
-    overflow: hidden;
+    line-height: 24px;
+    color: #000;
     text-overflow: ellipsis;
+    letter-spacing: 0.02em;
 
     p {
       margin: 0;

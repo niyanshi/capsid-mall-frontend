@@ -3,7 +3,8 @@
     <div class="user-name">{{ profile.username }}</div>
     <div class="content">
       <div class="left-part">
-        <img ref="imgRef" class="avatar" :src="profile.avartar" alt="" srcset="" @error="onError">
+        <img v-if="profile.avartar" ref="imgRef" class="avatar" :src="profile.avartar" alt="" srcset="" @error="onError">
+        <img v-else :src="defaultAvatar" class="avatar" alt="" srcset="">
         <div v-if="String(userInfoStore.currentUser.userId) === String(profile.id)" class="edit" @click="handleEditClick">{{
             t('profile-page.editProfile')
         }}</div>
@@ -136,6 +137,7 @@ import { message,Pagination } from 'ant-design-vue';
 import { nfrContractAddress, nftContractAddress } from '@/hooks/var';
 import { toNonExponential } from '@/utils/util';
 import ImageAlt from '@/assets/images/image-alt.png';
+import defaultAvatar from '@/assets/images/defaultAvatar.png';
 
 const userInfoStore = useUserInfoStore();
 const { t } = useI18n();
@@ -319,7 +321,7 @@ const columns = [
       {
         style: {
           display: 'flex',
-          'justify-content': 'center',
+          'justify-content': 'flex-start',
           'align-items': 'center',
         },
       },
@@ -333,6 +335,10 @@ const columns = [
               height: '50px',
               'margin-right': '7px',
               'border-radius': '10px'
+            },
+            // eslint-disable-next-line no-use-before-define
+            onError: (e: Event) => {
+              (e.target as HTMLImageElement).src = ImageAlt;
             }
           }
         ),
@@ -353,13 +359,13 @@ const columns = [
   {
     label: t('activityTableLabel[1]'),
     prop: 'price',
-    width: 100,
+    width: 150,
     cellRender: (val: {value: string}) => h(
       'div',
       {
         style: {
           display: 'flex',
-          'justify-content': 'center',
+          'justify-content': 'flex-start',
           'align-items': 'center'
         }
       },
@@ -377,6 +383,14 @@ const columns = [
         ),
         h(
           'span',
+          {
+            style: {
+              width: '100px',
+              'overflow': 'hidden',
+              'text-overflow': 'ellipsis'
+            },
+            title: toNonExponential(Number(val.value)) || '--'
+          },
           toNonExponential(Number(val.value)) || '--'
         ),
       ]
@@ -384,7 +398,7 @@ const columns = [
   },
   { label: t('activityTableLabel[2]'), prop: 'quantity', width: 100 },
   {
-    label: t('activityTableLabel[3]'), prop: 'sourceFrom', width: 200, cellRender: (val: {value: string}) => h(
+    label: t('activityTableLabel[3]'), prop: 'sourceFrom', width: 150, cellRender: (val: {value: string}) => h(
       'span',
       {
         style: {
@@ -401,7 +415,7 @@ const columns = [
   {
     label: t('activityTableLabel[4]'),
     prop: 'sourceTo',
-    width: 200,
+    width: 150,
     cellRender: (val: {value: string}) => h(
       'span',
       {
@@ -416,7 +430,7 @@ const columns = [
       val.value === userInfoStore.currentUser.publicKey ? 'you' : val.value?.slice(2,8) || '--'
     )
   },
-  { label: t('activityTableLabel[5]'), prop: 'activityType', width: 100 },
+  { label: t('activityTableLabel[5]'), prop: 'activityType', width: 150 },
   {
     label: t('activityTableLabel[6]'),
     prop: 'transTime',
@@ -475,9 +489,12 @@ const getProfile = async () => {
     profile.description = res.data.description;
     profile.twitter = res.data.twitter;
     profile.etherAddr = res.data.etherAddr;
-    userInfoStore.setCurrentUser({
-      avatar:res.data.avartar
-    });
+    if(accountAdr === userInfoStore.currentUser.publicKey) {
+      // 如果查的是当前登录用户的profile，则刷新头像
+      userInfoStore.setCurrentUser({
+        avatar:res.data.avartar
+      });
+    }
     getData(true);
   } else {
     message.error(res.msg);
@@ -578,6 +595,7 @@ const onError = function () {
 .ant-pagination-item-active a {
   color: #a32015;
 }
+
 .ant-pagination-item:hover,
 .ant-pagination-item-active {
   border-color: #a32015;

@@ -62,6 +62,14 @@ const useSeaport = () => {
     return ethers.utils.formatEther(balance);
   };
 
+  /** 获取eth余额 */
+  const getEthBalance = async (address: string) => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    const balance = await provider.getBalance(address);
+    return ethers.utils.formatEther(balance);
+  };
+
   /** 请求NFR */
   const requestNFR = async (data: INFRTypeForRequest) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -107,6 +115,30 @@ const useSeaport = () => {
     };
   };
 
+  /** 兑换weth */
+  async function depositWETH(amount: string) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const erc20abi = ['function deposit() public payable'];
+    const erc20Contract = new ethers.Contract(wethAddress, erc20abi, signer);
+    const result = await erc20Contract.deposit({ value: ethers.utils.parseEther(amount) });
+    console.log('result', result);
+
+    return result;
+    let txReceipt = await provider.getTransactionReceipt(result.hash);
+    let count = 15;
+    while (!(txReceipt && txReceipt.blockNumber) && count-- > 0) {
+      console.log('txReceipt', txReceipt);
+      txReceipt = await provider.getTransactionReceipt(result.hash);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    if (txReceipt && txReceipt.blockNumber) {
+      //depositSuccess
+    } else {
+      //let users wait a while to sea the result or try again;
+    }
+  }
+
   /** listing NFR */
   const listNFR = async (data: INFRTypeForRequest) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -125,7 +157,9 @@ const useSeaport = () => {
       ],
       consideration: [
         {
-          amount: ethers.utils.parseEther(String(data.price)).toString(),
+          amount: ethers.utils
+            .parseEther(String(toNonExponential(data.price * data.quantity)))
+            .toString(),
         },
       ],
       salt: salt(tokenAddress, String(data.nftId), Number(data.druation)),
@@ -177,17 +211,19 @@ const useSeaport = () => {
     const seaport = new Seaport(provider);
     const order = JSON.parse(bigOrder.order);
     const { orderId, amount } = bigOrder;
-    const { executeAllActions: executeAllFulfillActions } = await seaport.fulfillOrder({
+    const params = {
       order,
       offerCriteria: [{ identifier: String(orderId), proof: [] }],
       unitsToFill: amount,
-    });
+    };
+    console.log({ params });
+    const { executeAllActions: executeAllFulfillActions } = await seaport.fulfillOrder(params);
     const transaction = await executeAllFulfillActions();
     console.log('transaction', transaction);
     return transaction;
   };
 
-  const poll = async (hash:string) => {
+  const poll = async (hash: string) => {
     console.log('🚀 ~ poll ~ hash', hash);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     let txReceipt = await provider.getTransactionReceipt(hash);
@@ -204,7 +240,7 @@ const useSeaport = () => {
     } else {
       return false;
     }
-  }
+  };
 
   /** accept NFR  */
   const acceptNFRsRequest = async (bigOrder: IBigOrderTtpe) => {
@@ -289,10 +325,12 @@ const useSeaport = () => {
     buyNFR,
 
     getWethBalance,
+    getEthBalance,
+    depositWETH,
 
     listNFT,
     buyNFT,
-    poll
+    poll,
   };
 };
 

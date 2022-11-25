@@ -40,8 +40,16 @@
           @mouseleave="visibleRef = false"
         >
           <Avatar
+            v-if="userInfoStore.currentUser.avatar"
             shape="square"
             :src="userInfoStore.currentUser.avatar"
+          >
+          </Avatar>
+          <!-- 默认头像 -->
+          <Avatar
+            v-else
+            shape="square"
+            :src="defaultAvatar"
           >
           </Avatar>
           <div class="address">{{ calcAddress }}</div>
@@ -97,6 +105,7 @@ import { useRouter } from 'vue-router';
 import { useUserInfoStore } from '@/stores/user-info';
 import { Avatar, Alert } from 'ant-design-vue';
 import useMetaMask from '@/hooks/useMetaMask';
+import defaultAvatar from '@/assets/images/defaultAvatar.png';
 
 const { ethereum } = window;
 const { t } = useI18n();

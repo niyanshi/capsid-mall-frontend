@@ -3,19 +3,40 @@
     <div class="campaign-info">{{ campaignName }}</div>
     <div v-if="!isCreate">
       <div class="nft-edit">
-        <div class="add item-size" @click="handleAddClick">
+        <div
+          class="add item-size"
+          @click="handleAddClick"
+        >
           <div class="icon radius10">
-            <img src="../../assets/icons/icon-add.png" alt="" srcset="">
+            <img
+              src="../../assets/icons/icon-add.png"
+              alt=""
+              srcset=""
+            />
             <div class="text"></div>
           </div>
         </div>
         <div
-          v-for="(item, index) in waitingMintList" :key="index"
-          :class="['nft-item', 'item-size']">
-          <div class="delete" @click.stop="handleItemDelete(item.id)">
-            <img src="../../assets/icons/close.png" class="delete" alt="" srcset="">
+          v-for="(item, index) in waitingMintList"
+          :key="index"
+          :class="['nft-item', 'item-size']"
+        >
+          <div
+            class="delete"
+            @click.stop="handleItemDelete(item.id)"
+          >
+            <img
+              src="../../assets/icons/close.png"
+              class="delete"
+              alt=""
+              srcset=""
+            />
           </div>
-          <img :src="item.imageUrl" class="img" alt="">
+          <img
+            :src="item.imageUrl"
+            class="img"
+            alt=""
+          />
           <div class="info">
             <div class="text">
               <div class="name">{{ item.name }}</div>
@@ -24,77 +45,181 @@
           </div>
         </div>
         <div
-          v-for="(item, index) in waitingListList" :key="index"
-          :class="['nft-item', 'item-size']">
-          <div class="delete" @click.stop="handleItemDelete(item.id)">
-            <img src="../../assets/icons/close.png" class="delete" alt="" srcset="">
+          v-for="(item, index) in waitingListList"
+          :key="index"
+          :class="['nft-item', 'item-size']"
+        >
+          <div
+            class="delete"
+            @click.stop="handleItemDelete(item.id)"
+          >
+            <img
+              src="../../assets/icons/close.png"
+              class="delete"
+              alt=""
+              srcset=""
+            />
           </div>
-          <img :src="item.imageUrl" class="img" alt="">
+          <img
+            :src="item.imageUrl"
+            class="img"
+            alt=""
+          />
           <div class="info">
             <div class="text">
               <div class="name">{{ item.name }}</div>
               <div class="status">{{ item.status }}</div>
             </div>
-            <div v-if="!item.nftOrderId || !item.nfrOrderId" class="button" @click="handleNFTList(item)">List</div>
+            <div
+              v-if="!item.nftOrderId || !item.nfrOrderId"
+              class="button"
+              @click="handleNFTList(item)"
+            >
+              List
+            </div>
           </div>
         </div>
-        <div v-for="(item, index) in listedList" :key="index" class="nft-item item-size">
-          <img :src="item.imageUrl" alt="">
+        <div
+          v-for="(item, index) in listedList"
+          :key="index"
+          class="nft-item item-size"
+        >
+          <img
+            :src="item.imageUrl"
+            alt=""
+          />
           <div class="info">
             <div class="text">
               <div class="name">{{ item.name }}</div>
               <div class="status">{{ item.status }}</div>
             </div>
-            <div v-if="!item.nftOrderId || !item.nfrOrderId" class="button" @click="handleNFTList(item)">List</div>
+            <div
+              v-if="!item.nftOrderId || !item.nfrOrderId"
+              class="button"
+              @click="handleNFTList(item)"
+            >
+              List
+            </div>
           </div>
         </div>
       </div>
       <div class="operate">
-        <div class="operate-button ok" @click="handleMint">
+        <div
+          class="operate-button ok"
+          @click="handleMint"
+        >
           <span>{{ t('mintAll') }}</span>
         </div>
       </div>
     </div>
-    <div v-else class="nft-create">
-      <form-item class="form-item" :title="t('newNFT.imageLabel')" :width="600">
+    <div
+      v-else
+      class="nft-create"
+    >
+      <form-item
+        class="form-item"
+        :title="t('newNFT.imageLabel')"
+        :width="600"
+      >
         <BaseImageSelect
-          v-model="newNFT.imageUrl" width="300" height="300" icon-size="50" url="/campaign-nft/upload"
-          :icon-text="t('newNFT.chooseImage')"></BaseImageSelect>
+          v-model="newNFT.imageUrl"
+          width="300"
+          height="300"
+          icon-size="50"
+          url="/campaign-nft/upload"
+          :icon-text="t('newNFT.chooseImage')"
+        ></BaseImageSelect>
       </form-item>
-      <form-item class="form-item" :title="t('newNFT.nameLabel')" :width="600">
-        <base-input v-model="newNFT.name" style-type="line" :placeholder="t('newNFT.namePlaceholder')">
+      <form-item
+        class="form-item"
+        :title="t('newNFT.nameLabel')"
+        :width="600"
+      >
+        <base-input
+          v-model="newNFT.name"
+          style-type="line"
+          :placeholder="t('newNFT.namePlaceholder')"
+        >
         </base-input>
       </form-item>
-      <form-item-price class="form-item" :title="t('create-nfr-form-items[5]')">
-        <base-input v-model="newNFT.price" type="number" style-type="border"></base-input>
+      <form-item-price
+        class="form-item"
+        :title="t('create-nfr-form-items[5]')"
+      >
+        <base-input
+          v-model="newNFT.price"
+          type="number"
+          style-type="border"
+        ></base-input>
       </form-item-price>
-      <form-item class="form-item" :title="t('newNFT.descLabel')" :width="600">
+      <form-item
+        class="form-item"
+        :title="t('newNFT.descLabel')"
+        :width="600"
+      >
         <base-textarea v-model="newNFT.description"></base-textarea>
       </form-item>
       <div class="operate">
-        <div class="operate-button back" @click="handleBackClick">
+        <div
+          class="operate-button back"
+          @click="handleBackClick"
+        >
           <span>{{ t('campaign-page.back') }}</span>
           <em></em>
         </div>
-        <div class="operate-button ok" @click="handleOkClick">
+        <div
+          class="operate-button ok"
+          @click="handleOkClick"
+        >
           <span>{{ t('ok') }}</span>
           <em></em>
         </div>
       </div>
     </div>
+    <BaseDialog
+      :visible="mintTipDialogVisible"
+      width="640"
+      height="200"
+      :mask-disable="true"
+      @close="handleMintDialogClose"
+    >
+      <div
+        class="tip-content"
+      >
+        <i class="icon-success icon"></i>
+        <div class="info-text">
+          <div class="info-title">{{ t('mintSuccessTips') }}</div>
+        </div>
+      </div>
+      <template #button>
+        <div
+          class="dialog-button"
+          @click="handleMintDialogClose"
+        >
+          <span>{{ t('ok') }}</span>
+          <i class="icon-ok"></i>
+        </div>
+      </template>
+    </BaseDialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { ICreateNFT,INFRTypeForRequest } from '@/types/nft';
+import { ICreateNFT, INFRTypeForRequest } from '@/types/nft';
 import BaseImageSelect from '@/components/BaseImageSelect/index.vue';
 import FormItem from '@/components/BaseForm/FormItem.vue';
 import FormItemPrice from '@/components/BaseForm/FormItemPrice.vue';
 import BaseInput from '@/components/BaseInput/index.vue';
 import BaseTextarea from '@/components/BaseTextarea/index.vue';
 import { useI18n } from 'vue-i18n';
-import { httpSaveNFT, httpGetCampaignNFTList, httpRemoveCampaignNFT, httpRelateOrder, httpListNFT } from '@/api/campaign';
+import {
+  httpSaveNFT,
+  httpGetCampaignNFTList,
+  httpRemoveCampaignNFT,
+  httpRelateOrder,
+  httpListNFT,
+} from '@/api/campaign';
 import { useRoute } from 'vue-router';
 import useContract from '@/hooks/useContract';
 import { message } from 'ant-design-vue';
@@ -104,6 +229,7 @@ import { httpListNFR } from '@/api/nfr';
 import { ERR } from '@/utils/constant';
 import { toNonExponential } from '@/utils/util';
 import { httpMintNFT } from '@/api/nft';
+import BaseDialog from '@/components/BaseDialog/index.vue';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -119,15 +245,15 @@ const waitingMintList = ref<ICreateNFT[]>([]);
 const listedList = ref<ICreateNFT[]>([]);
 const nftIds = ref<string[]>([]);
 const newNFT = ref<{
-  name: string,
-  price: number,
-  imageUrl: string,
-  description: string
+  name: string;
+  price: number;
+  imageUrl: string;
+  description: string;
 }>({
   name: '',
   imageUrl: '',
   price: 0,
-  description: ''
+  description: '',
 });
 
 const handleAddClick = () => {
@@ -147,7 +273,7 @@ const getMintingList = async () => {
     listedList.value = res.data.listedList;
     waitingListList.value = res.data.waitingListList;
     waitingMintList.value = res.data.waitingMintList;
-    nftIds.value = res.data.nftTokenIds.split(',').filter((item:string) => item !== '');
+    nftIds.value = res.data.nftTokenIds.split(',').filter((item: string) => item !== '');
   } else {
     message.error(res.msg);
   }
@@ -171,7 +297,7 @@ const handleItemDelete = async (nftId: number) => {
 const saveNFT = async () => {
   const res = await httpSaveNFT({
     campaignId: Number(campaignId.value),
-    ...newNFT.value
+    ...newNFT.value,
   });
   if (res.code === 0) {
     isCreate.value = false;
@@ -179,7 +305,7 @@ const saveNFT = async () => {
       name: '',
       imageUrl: '',
       price: 0,
-      description: ''
+      description: '',
     };
     getMintingList();
   } else {
@@ -187,11 +313,11 @@ const saveNFT = async () => {
   }
 };
 // NFR list
-const handleNFRList = async (nfr: INFRTypeForRequest,id: number,tokenId: string) => {
+const handleNFRList = async (nfr: INFRTypeForRequest, id: number, tokenId: string) => {
   console.log('now nfr list');
   nfr.price = toNonExponential(Number(nfr.price)) as number;
   controllerStore.setGlobalLoading(true);
-  controllerStore.setGlobalTip(t('wait-msg.listNFT'));
+  controllerStore.setGlobalTip(t('wait-msg.listNFR'));
   try {
     const resParams = await listNFR(nfr);
     const res = await httpListNFR(resParams);
@@ -201,16 +327,18 @@ const handleNFRList = async (nfr: INFRTypeForRequest,id: number,tokenId: string)
       return;
     } else {
       const resOrder = await httpRelateOrder({
-        campaignNftId:id,
-        nfrOrderId: res.data
+        campaignNftId: id,
+        nfrOrderId: res.data,
       });
-      if(resOrder.code !== 0) {
-        saveResultToServer([tokenId],'list',false);
+      if (resOrder.code !== 0) {
+        saveResultToServer([tokenId], 'list', false);
+        controllerStore.setGlobalLoading(false);
         message.error('err-msg.request-fail');
       } else {
-        const resSave = await saveResultToServer([tokenId],'list',true);
+        const resSave = await saveResultToServer([tokenId], 'list', true);
+        controllerStore.setGlobalLoading(false);
         // eslint-disable-next-line max-depth
-        if(resSave) getMintingList();
+        if (resSave) getMintingList();
       }
     }
   } catch (error) {
@@ -219,8 +347,8 @@ const handleNFRList = async (nfr: INFRTypeForRequest,id: number,tokenId: string)
       message.error(t('err-msg.reject'));
     }
     console.error(error);
+    controllerStore.setGlobalLoading(false);
   }
-  controllerStore.setGlobalLoading(false);
 };
 // NFT list
 const handleNFTList = async (i: ICreateNFT) => {
@@ -229,17 +357,18 @@ const handleNFTList = async (i: ICreateNFT) => {
   const duration = 60;
   const nfr = {
     type: 'Trial',
-    price: Number(price)/TEN,
+    price: Number(price) / TEN,
     druation: duration,
     quantity: TEN,
     nftId: i.tokenId,
     nftContractAddress: i.contractAddress,
     desc: i.description,
-    avatar: i.imageUrl
+    avatar: i.imageUrl,
   };
-  if(i.nftOrderId && !i.nfrOrderId) {
+  if (i.nftOrderId && !i.nfrOrderId) {
     console.log('now nfr list');
-    handleNFRList(nfr,i.id,i.tokenId);
+    handleNFRList(nfr, i.id, i.tokenId);
+    return;
   }
   console.log('now nft list');
   controllerStore.setGlobalLoading(true);
@@ -254,11 +383,11 @@ const handleNFTList = async (i: ICreateNFT) => {
     } else {
       const resOrder = await httpRelateOrder({
         campaignNftId: i.id,
-        nftOrderId: res.data
+        nftOrderId: res.data,
       });
-      if(resOrder.code === 0) {
+      if (resOrder.code === 0) {
         console.log('now nft list success');
-        handleNFRList(nfr,i.id,i.tokenId);
+        handleNFRList(nfr, i.id, i.tokenId);
       } else {
         message.error('err-msg.request-fail');
       }
@@ -269,13 +398,20 @@ const handleNFTList = async (i: ICreateNFT) => {
       message.error(t('err-msg.reject'));
     }
     console.error(error);
+    controllerStore.setGlobalLoading(false);
   }
-  controllerStore.setGlobalLoading(false);
+};
+
+// mint完成之后的提示弹框
+const mintTipDialogVisible = ref(false);
+const handleMintDialogClose = () => {
+  getMintingList();
+  mintTipDialogVisible.value = false;
 };
 
 // mint
 const handleMint = async () => {
-  if(nftIds.value.length === 0) {
+  if (nftIds.value.length === 0) {
     message.warn(t('warn-msg.mintEmpty'));
     return;
   }
@@ -283,20 +419,21 @@ const handleMint = async () => {
   // const mintList = waitingMintList.value.filter((item:ICreateNFT) => nftIds.value.indexOf(item.tokenId) !== -1);
 
   // eslint-disable-next-line no-undef
-  const arr = nftIds.value.map(item => BigInt(item));
+  const arr = nftIds.value.map((item) => BigInt(item));
   if (arr.length === 0) return;
   controllerStore.setGlobalLoading(true);
   controllerStore.setGlobalTip(t('wait-msg.mint'));
   const mintRes = await mintNFt(arr);
   // mint完成后
-  if(mintRes === 'success') {
+  if (mintRes === 'success') {
     console.log('mint success');
+    mintTipDialogVisible.value = true;
     // 延迟一秒查询结果
     const timeout = 1000;
     setTimeout(() => {
       getMintingList();
     }, timeout);
-  } else if(mintRes === 'waiting'){
+  } else if (mintRes === 'waiting') {
     message.warn(t('warn-msg.busy'));
   } else {
     message.error(t('err-msg.request-fail'));
@@ -304,16 +441,39 @@ const handleMint = async () => {
 
   controllerStore.setGlobalLoading(false);
 };
+
 const handleBackClick = () => {
   isCreate.value = false;
   newNFT.value = {
     name: '',
     imageUrl: '',
     price: 0,
-    description: ''
+    description: '',
   };
 };
+const checkPrice = (price: string) => {
+  if(!price) return false;
+  if(Number(price) === 0) return false;
+  const reg = /^(([1-9][0-9]*)|(([0]\.\d{1,10}|[1-9][0-9]*\.\d{1,10})))$/;
+  return reg.test(String(newNFT.value.price));
+};
 const handleOkClick = () => {
+  if(!newNFT.value.name) {
+    message.warn(t('warn-msg.nameEmpty'));
+    return;
+  }
+  if(!checkPrice(String(newNFT.value.price))) {
+    message.warn(t('warn-msg.priceEmpty'));
+    return;
+  }
+  if(!newNFT.value.description) {
+    message.warn(t('warn-msg.descEmpty'));
+    return;
+  }
+  if(!newNFT.value.imageUrl) {
+    message.warn(t('warn-msg.imageEmpty'));
+    return;
+  }
   saveNFT();
 };
 onMounted(() => {
@@ -321,9 +481,8 @@ onMounted(() => {
   campaignName.value = route.query.campaignName as string;
   getMintingList();
 });
-
 </script>
 
 <style lang="scss" scoped>
-@import './index.scss'
+@import './index.scss';
 </style>

@@ -1,11 +1,13 @@
 <template>
   <div class="nfrs-display-item">
-    <img
-      class="image"
-      :src="props.data.avatar"
-      alt=""
-      @click="skipTo"
-    />
+    <div class="image">
+      <BaseNFRImage
+        :src="props.data.avatar!"
+        alt=""
+        @click="skipTo"
+      />
+    </div>
+
     <div class="main-area">
       <div class="title">
         {{ props.data.name }}
@@ -52,6 +54,7 @@
 </template>
 
 <script setup lang="ts">
+import BaseNFRImage from '@/components/BaseNFRImage/index.vue';
 import { INFRsType } from '@/types/nft';
 import IconCalender from '@/assets/icons/calender.png';
 import IconBookmark from '@/assets/icons/bookmark.png';
@@ -93,6 +96,7 @@ const skipTo = () => {
     max-width: 100%;
     height: 100%;
     aspect-ratio: 1/1;
+    overflow: hidden;
     cursor: pointer;
     border-radius: 8px 0 0 8px;
   }

@@ -2,160 +2,192 @@
   width: 1280px;
   margin: 0 auto;
 }
+
 .title {
-  margin: 78px 0 47px 0;
+  margin: 78px 0 47px;
+
   img {
     width: 32px;
     height: 32px;
     margin-right: 16px;
   }
+
   span {
     font-family: 'Quiet Sans';
+    font-size: 32px;
     font-style: normal;
     font-weight: 800;
-    font-size: 32px;
-    line-height: 20px;
-    letter-spacing: 0.02em;
     font-feature-settings: 'pnum' on, 'lnum' on;
+    line-height: 20px;
     color: #1f263b;
+    letter-spacing: 0.02em;
   }
 }
+
 .info-wrap {
   display: flex;
   margin-bottom: 60px;
-  img {
+
+  .image-wrap {
     width: 321px;
     height: 320px;
-    // border: 2.4px solid #a32015;
-    border-radius: 10px;
-    margin-right: 31px;
-    box-sizing: border-box;
   }
+  .image {
+    box-sizing: border-box;
+    width: 321px;
+    height: 320px;
+    margin-right: 31px;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  .info-img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
   .text {
     position: relative;
+    box-sizing: border-box;
     width: 896px;
     height: 432px;
-    box-sizing: border-box;
     padding: 40px 53px 0 72px;
-    background: #ffffff;
+    background: #fff;
     border: 1.6px solid #a32015;
     border-radius: 32px;
   }
+
   .desc {
-    font-family: 'Roboto';
+    font-family: Roboto;
+    font-size: 18px;
     font-style: normal;
     font-weight: 400;
-    font-size: 18px;
     line-height: 30px;
-    letter-spacing: 0.02em;
     color: #4d4d4d;
+    letter-spacing: 0.02em;
   }
+
   .price {
-    font-family: 'Roboto';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 20px;
-    line-height: 23px;
-    text-transform: uppercase;
-    color: #1f263b;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     position: absolute;
     right: 207px;
     bottom: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Roboto;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 23px;
+    color: #1f263b;
+    text-transform: uppercase;
   }
+
   .icon-price {
     display: inline-block;
     width: 32px;
     height: 32px;
+    margin-right: 5px;
     background-image: url('../../assets//icons/compass.png');
     background-repeat: no-repeat;
     background-size: contain;
-    margin-right: 5px;
   }
+
   .buy-button {
-    width: 188px;
-    height: 56px;
-    box-shadow: 2px 2px 20px 10px rgba(163, 32, 21, 0.08);
-    border-radius: 32px;
-    font-family: 'Roboto';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     position: absolute;
     right: 36px;
     bottom: -28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 188px;
+    height: 56px;
+    font-family: Roboto;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
     cursor: pointer;
+    border-radius: 32px;
+    box-shadow: 2px 2px 20px 10px rgb(163 32 21 / 8%);
   }
+
   .nft {
-    background: #a32015;
     color: #fcf5c5;
+    background: #a32015;
   }
+
   .nfr {
-    background: #ffffff;
-    border: 2px solid #a32015;
     color: #a32015;
+    background: #fff;
+    border: 2px solid #a32015;
   }
+
   .button-icon {
     width: 24px;
     height: 24px;
-    background-size: contain;
     margin-left: 8px;
+    background-size: contain;
   }
+
   .nft-money {
     background-image: url('../../assets/icons/nft-money.png');
   }
+
   .nfr-money {
     background-image: url('../../assets/icons/nfr-money.png');
   }
+
   .expire {
+    position: absolute;
+    bottom: 48px;
+    left: 72px;
     width: 260px;
     height: 105px;
-    font-family: 'Roboto';
+    font-family: Roboto;
+    font-size: 20px;
     font-style: normal;
     font-weight: 700;
-    font-size: 20px;
     line-height: 32px;
     color: #000;
-    position: absolute;
-    left: 72px;
-    bottom: 48px;
+
     .expire-date {
-      height: 32px;
       display: flex;
       align-items: center;
+      height: 32px;
     }
+
     span {
       display: inline-block;
     }
+
     .start-icon {
       width: 32px;
       height: 32px;
       margin-right: 12px;
       background-size: contain;
     }
+
     .end-icon {
       width: 24px;
       height: 24px;
+      margin-left: 4px;
       background-image: url('../../assets/icons/Info.png');
       background-size: contain;
-      margin-left: 4px;
     }
+
     .calendar-icon {
       background-image: url('../../assets/icons/calender.png');
     }
+
     .book-icon {
       background-image: url('../../assets/icons/bookmark.png');
     }
   }
 }
+
 .mb41 {
   margin-bottom: 41px;
 }
+
 .wear,
 .select {
   width: 1173px;
@@ -164,36 +196,43 @@
   font-family: 'Quiet Sans';
   font-style: normal;
   font-weight: 800;
-  letter-spacing: 0.02em;
   font-feature-settings: 'pnum' on, 'lnum' on;
+  letter-spacing: 0.02em;
 }
+
 .wear {
   .dialog-main {
     display: flex;
     align-items: center;
+
     .select-box {
       width: 400px;
       height: 436px;
     }
+
     .select-title {
       height: 24px;
-      line-height: 24px;
       margin-bottom: 12px;
+      line-height: 24px;
       color: #1f263b;
     }
+
     .right-arrow {
       background-image: url('@/assets/icons/icon-long-right-arrow.png');
     }
+
     .left-arrow {
       background-image: url('@/assets/icons/icon-long-left-arrow.png');
     }
+
     .split {
       width: 62px;
       height: 30px;
       margin: 0 11px;
-      background-size: auto;
       background-repeat: no-repeat;
+      background-size: auto;
     }
+
     .result-box {
       width: 200px;
       height: 200px;
@@ -201,83 +240,95 @@
       border-radius: 10px;
     }
   }
+
   .img-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 400px;
     height: 400px;
+    cursor: pointer;
     border: 2px dashed #000;
     border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
+
     span {
-      font-family: 'Roboto';
+      font-family: Roboto;
+      font-size: 14px;
       font-style: normal;
       font-weight: 600;
-      font-size: 14px;
       line-height: 20px;
-      text-align: center;
       color: #1f263b;
+      text-align: center;
     }
+
     img {
       width: 100%;
       height: 100%;
       border-radius: 10px;
     }
+
     & > div {
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
     }
   }
+
   .icon-add {
     width: 87px;
     height: 87px;
   }
 }
+
 .dialog-title {
-  height: 64px;
   display: flex;
   align-items: center;
+  height: 64px;
   margin-bottom: 23px;
+
   .icon {
     display: inline-block;
     width: 64px;
     height: 64px;
     margin-right: 23px;
   }
+
   .icon-crown {
     background-image: url('../../assets/icons/crown.png');
     background-size: contain;
   }
+
   .icon-bag {
     background-image: url('../../assets/icons/bag.png');
     background-size: contain;
   }
+
   span {
     font-size: 32px;
     line-height: 20px;
-    color: #000000;
+    color: #000;
   }
 }
+
 .dialog-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 188px;
   height: 56px;
-  background: #a32015;
-  box-shadow: 2px 2px 20px 10px rgba(163, 32, 21, 0.08);
-  border-radius: 32px;
-  font-family: 'Roboto';
+  font-family: Roboto;
+  font-size: 20px;
   font-style: normal;
   font-weight: 700;
-  font-size: 20px;
   line-height: 23px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-transform: uppercase;
   color: #fcf5c5;
+  text-transform: uppercase;
   cursor: pointer;
+  background: #a32015;
+  border-radius: 32px;
+  box-shadow: 2px 2px 20px 10px rgb(163 32 21 / 8%);
+
   i {
     display: inline-block;
     width: 24px;
@@ -285,48 +336,55 @@
     margin-left: 8px;
     background-size: contain;
   }
+
   .icon-wear {
     background-image: url('../../assets/icons/shop.png');
   }
+
   .icon-ok {
     background-image: url('../../assets/icons/icon-ok.png');
   }
 }
+
 .select {
   .tab-wrap {
     margin: 0 0 48px 40px;
   }
+
   .tab {
+    display: inline-block;
     width: 104px;
     height: 32px;
-    line-height: 32px;
-    border-radius: 32px;
-    border: 2px solid #4d4d4d;
     margin-right: 8px;
-    font-family: 'Roboto';
+    font-family: Roboto;
+    font-size: 20px;
     font-style: normal;
     font-weight: 700;
-    font-size: 20px;
+    font-feature-settings: 'pnum' on, 'lnum' on;
+    line-height: 32px;
+    color: #4d4d4d;
     text-align: center;
     letter-spacing: 0.02em;
-    font-feature-settings: 'pnum' on, 'lnum' on;
-    background-color: #fff;
-    color: #4d4d4d;
     cursor: pointer;
-    display: inline-block;
+    background-color: #fff;
+    border: 2px solid #4d4d4d;
+    border-radius: 32px;
   }
+
   .active {
-    background-color: #a32015;
     color: #fcf5c5;
+    background-color: #a32015;
     border: none;
   }
+
   .avatar-to-select {
-    margin-left: 68px;
-    width: 1064px;
-    height: 400px;
-    overflow-y: auto;
     display: flex;
     flex-wrap: wrap;
+    width: 1064px;
+    height: 400px;
+    margin-left: 68px;
+    overflow-y: auto;
+
     & > div {
       width: 204px;
       height: 204px;
@@ -334,64 +392,74 @@
       margin-bottom: 10px;
       border-radius: 10px;
     }
+
     img {
       width: 200px;
       height: 200px;
       border-radius: 10px;
     }
+
     .select-img {
-      border: 2px dashed #000;
       box-sizing: border-box;
+      border: 2px dashed #000;
     }
   }
 }
+
 .tip-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
   .icon {
     display: inline-block;
     width: 64px;
     height: 64px;
     margin-right: 24px;
   }
+
   .info-title {
+    margin-bottom: 16px;
     font-family: 'Quiet Sans';
+    font-size: 32px;
     font-style: normal;
     font-weight: 800;
-    font-size: 32px;
-    line-height: 20px;
-    letter-spacing: 0.02em;
     font-feature-settings: 'pnum' on, 'lnum' on;
+    line-height: 20px;
     color: #000;
-    margin-bottom: 16px;
+    letter-spacing: 0.02em;
   }
+
   .message {
     width: 370px;
-    font-family: 'Roboto';
+    font-family: Roboto;
+    font-size: 20px;
     font-style: normal;
     font-weight: 700;
-    font-size: 20px;
     line-height: 26px;
-    letter-spacing: 0.02em;
     color: #4d4d4d;
+    letter-spacing: 0.02em;
+
     a {
       margin-left: 5px;
-      color: #f1b540;
       font-style: oblique;
+      color: #f1b540;
       cursor: pointer;
     }
+
     p {
       margin: 0;
     }
   }
 }
+
 .icon-success {
   background-image: url('../../assets/icons/party-popper.png');
   background-size: contain;
 }
+
 .icon-error {
   background-image: url('../../assets/icons/toolbox.png');
   background-size: contain;

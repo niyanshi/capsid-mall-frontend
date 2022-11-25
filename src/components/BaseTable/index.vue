@@ -78,6 +78,7 @@ defineProps<{
   th {
     box-sizing: border-box;
     color: #000;
+    text-align: left;
   }
 
   tbody {
@@ -87,7 +88,7 @@ defineProps<{
     }
 
     .td {
-      text-align: center;
+      text-align: left;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;

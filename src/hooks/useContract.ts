@@ -22,6 +22,7 @@ const useContract = () => {
 
   /** mint nft */
   const mintNFt = async (nftIds: bigint[]) => {
+    console.log('🚀 ~ mintNFt ~ nftIds', nftIds);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = await provider.getSigner();
     //合约接⼝, 暂时⽤这个，不同环境会变，需要能配置。
@@ -30,7 +31,7 @@ const useContract = () => {
     const nft721Contract = new ethers.Contract(nft721Address, nft721abi, signer);
     //预估GasFee
     const gasFee = await provider.getGasPrice();
-    console.log('🚀 ~ mintNFt ~ gasFee', gasFee);
+    console.log('gasFee', gasFee);
     //发起交易，这⾥要注意异常处理（⽐如⽤⼾拒绝了签名）
     try {
       //  gasLimit: 0
@@ -42,21 +43,21 @@ const useContract = () => {
       let count = 120;
       while (!(txReceipt && txReceipt.blockNumber) && count-- > 0) {
         txReceipt = await provider.getTransactionReceipt(mintResult.hash);
-        console.log('🚀 ~ mintNFt ~ txReceipt', txReceipt);
+        console.log('txReceipt', txReceipt);
         const TIME = 1000;
         await new Promise((resolve) => setTimeout(resolve, TIME));
       }
       if (txReceipt && txReceipt.blockNumber) {
         const res = await saveResultToServer(nftIds, 'mint', true);
         window.console.log('saveSuccessResultToServer');
-        if(res) return 'success';
+        if (res) return 'success';
       } else {
         //如果还是没结果，让服务端去轮询。
         saveResultToServer(nftIds, 'mint', false);
         return 'waiting';
       }
     } catch (err) {
-      console.log('🚀 ~ mintNFt ~ err', err);
+      console.log('mintNFt err', err);
       if ((err as IOpenseaErrorType).code === ERR.RejectMessage) {
         message.error(t('err-msg.reject'));
       } else {

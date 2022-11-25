@@ -109,7 +109,11 @@
     "mintEmpty": "All Item Minted",
     "busy": "It took too long, please try next time",
     "needLogin": "Please login",
-    "viewSoon": "It took too long, please view transaction result in your wallet"
+    "viewSoon": "It took too long, please view transaction result in your wallet",
+    "nameEmpty": "Name Can Not Be Empty!",
+    "priceEmpty": "Please Input Correct Price!",
+    "descEmpty": "Description Can Not Be Empty!",
+    "imageEmpty": "Please Upload an Image!"
   },
   "err-msg": {
     "reject": " You rejected the request",
@@ -139,6 +143,7 @@
   "viewInMy": "View in the",
   "profile": "Wear Page",
   "wearSuccessTips": "The artist is working on the final look. It might take a few days.",
+  "mintSuccessTips": "Mint success! Please list the NFT now",
   "error": "error",
   "errorTips": "An error occurred, please try again",
   "profile-page": {

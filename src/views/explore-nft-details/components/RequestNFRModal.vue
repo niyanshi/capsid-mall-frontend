@@ -77,16 +77,12 @@ const validateData = () => {
 
 /** request nfr */
 const handleRequest = () => {
-  // const current = dayjs();
-  // const expire = dayjs(expireRef.value.currentValue).endOf('d');
-
   if (!validateData()) return;
   const obj = {
     type: valueObj.type,
     quantity: valueObj.quantity || 0,
     price: valueObj.price || 0,
     druation: valueObj.duration || 0,
-    // druation: Math.ceil(expire.diff(current, 'd', true)),
     nftId: props.data.id,
     nftContractAddress: props.data.contractAddress,
     desc: valueObj.desc,

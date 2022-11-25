@@ -50,22 +50,7 @@ const fetchUserInfo = async () => {
   });
 };
 
-const processLocalstorage = () => {
-  window.onload = function () {
-    const lastTime = sessionStorage.getItem('lastTime');
-    const interval =600000;
-    // 如果没有上一次离开的时间或者时间间隔大于60s，就清除token
-    if (!lastTime || new Date().getTime() - Number(lastTime) > interval) {
-      localStorage.clear();
-    }
-  };
-  window.onunload = function () {
-    sessionStorage.setItem('lastTime', String(new Date().getTime()));
-  };
-};
-
 onMounted(() => {
-  processLocalstorage();
   fetchUserInfo();
   getNFRType();
   // 导航后置钩子

@@ -14,3 +14,14 @@ export const TRANS_STATUS = {
   success: 'submitted',
   fail: 'failed',
 };
+
+/** URL 跳转列表 */
+export const URL_LIST = {
+  Discord: 'https://discord.gg/capsid',
+  Twitter: 'https://twitter.com/Capsid_One',
+  Mirror: 'https://mirror.xyz/realcapsid.eth',
+  Terms: 'https://wings.capsid.one/tos @Celine',
+  Privacy: 'https://wings.capsid.one/policy @Celine',
+  FAQ: 'https://capsid.gitbook.io/capsid/',
+  Careers: 'https://www.notion.so/capsid-one/Capsid-is-hiring-4438a9d8113c4b2cb2265602b3db7525',
+};

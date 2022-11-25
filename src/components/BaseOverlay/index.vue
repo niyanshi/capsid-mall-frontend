@@ -32,14 +32,17 @@ const handleClose = () => {
 watch(props, (newVal) => {
   if (newVal?.visible) document.documentElement.style.overflow = 'hidden';
   else document.documentElement.style.overflow = '';
+  // console.log('watch', document.documentElement.style.overflow);
 });
 
 onMounted(() => {
   document.documentElement.style.overflow = 'hidden';
+  // console.log('onMounted', document.documentElement.style.overflow);
 });
 
 onUnmounted(() => {
   document.documentElement.style.overflow = '';
+  // console.log('onUnmounted', document.documentElement.style.overflow);
 });
 </script>
 
