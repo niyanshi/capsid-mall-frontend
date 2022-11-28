@@ -14,6 +14,7 @@ const useMetaMask = () => {
     }
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send('eth_requestAccounts', []);
       const signer = provider.getSigner();
       const accounts = (await provider.send('eth_requestAccounts', [])) as string[];
       // 获取字符串
@@ -42,6 +43,7 @@ const useMetaMask = () => {
       return '';
     }
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     const accounts = (await provider.send('eth_requestAccounts', [])) as string[];
     return accounts[0];
   };
@@ -50,6 +52,7 @@ const useMetaMask = () => {
   const getNetwork = async () => {
     if (!ethereum) return { name: 'undefined', chainId: -1 } as ethers.providers.Network;
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     return provider.getNetwork();
   };
 

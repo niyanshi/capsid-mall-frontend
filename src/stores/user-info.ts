@@ -14,7 +14,7 @@ export const useUserInfoStore = defineStore('userInfo', {
       token: storage.getToken(),
       publicKey: storage.getPublicKey() || '',
       userId: '',
-      avatar: '',
+      avatar: null,
     },
     // 登录弹窗显示
     loginModalVisible: false,

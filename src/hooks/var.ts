@@ -4,3 +4,5 @@ export const nfrContractAddress = import.meta.env.VITE_NFR_ADDRESS;
 export const wethAddress = import.meta.env.VITE_WETH_ADDRESS;
 /** NFT合约地址，需要配置，不同环境不同 */
 export const nftContractAddress = import.meta.env.VITE_NFT_ADDRESS;
+/** NFT合约地址，需要配置，不同环境不同 */
+export const wearContractAddress = import.meta.env.VITE_WEAR_ADDRESS;

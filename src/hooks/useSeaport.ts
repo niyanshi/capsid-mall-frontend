@@ -8,9 +8,10 @@ import { ethers } from 'ethers';
 import * as buffer from 'buffer';
 import { wethAddress, nfrContractAddress, nftContractAddress } from './var';
 import wethAbi from './wethAbi.json';
-import { toNonExponential } from '@/utils/util';
 import { OrderWithCounter } from '@opensea/seaport-js/lib/types';
 import { ItemType } from '@opensea/seaport-js/lib/constants';
+import { Decimal } from 'decimal.js';
+import { WAIT_TIME } from '@/utils/constant'
 
 interface IBigOrderTtpe {
   order: string;
@@ -42,7 +43,7 @@ function salt(token: string, id: string, duraiton: number): string {
 /** 格式化nftmeta */
 function formatNFTsMeta(data: INFRTypeForRequest): string {
   const obj: IMetaDataType = {
-    name: String(data.type),
+    name: 'CAPSID NFR - ' + data.nftName + ' ' + String(data.type),
     description: data.desc,
     image: data.avatar,
     properties: { ...(data.attributes as object), token_type: 'NFR' },
@@ -57,6 +58,7 @@ const useSeaport = () => {
   /** 获取weth余额 */
   const getWethBalance = async (address: string) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     const contract = new ethers.Contract(wethAddress, wethAbi, provider);
     const balance = await contract.balanceOf(address);
     return ethers.utils.formatEther(balance);
@@ -73,16 +75,20 @@ const useSeaport = () => {
   /** 请求NFR */
   const requestNFR = async (data: INFRTypeForRequest) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     const seaport = new Seaport(provider);
     const signer = provider.getSigner();
     const accounts = (await provider.send('eth_requestAccounts', [])) as string[];
     getWethBalance(accounts[0]);
     const c = await signer.getBalance(provider.blockNumber);
     console.log(ethers.utils.formatEther(c));
+
     const order = {
       offer: [
         {
-          amount: ethers.utils.parseEther(String(data.price)).toString(),
+          amount: ethers.utils
+            .parseEther(new Decimal(data.price).times(data.quantity).toFixed())
+            .toString(),
           token: wethAddress,
         },
       ],
@@ -96,6 +102,7 @@ const useSeaport = () => {
         },
       ],
     };
+    console.log({ order }, new Decimal(data.price).times(data.quantity).toFixed());
     const { executeAllActions } = await seaport.createOrder(order);
     const resOrder = await executeAllActions();
     console.log(resOrder);
@@ -110,7 +117,7 @@ const useSeaport = () => {
       nftTokenAddress: String(data.nftContractAddress),
       orderOnChain: JSON.stringify(resOrder),
       orderOnChainHash: seaport.getOrderHash(resOrder.parameters),
-      price: String(data.price),
+      price: new Decimal(data.price).toFixed(),
       templateId: data.type,
     };
   };
@@ -118,6 +125,7 @@ const useSeaport = () => {
   /** 兑换weth */
   async function depositWETH(amount: string) {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     const signer = provider.getSigner();
     const erc20abi = ['function deposit() public payable'];
     const erc20Contract = new ethers.Contract(wethAddress, erc20abi, signer);
@@ -125,25 +133,13 @@ const useSeaport = () => {
     console.log('result', result);
 
     return result;
-    let txReceipt = await provider.getTransactionReceipt(result.hash);
-    let count = 15;
-    while (!(txReceipt && txReceipt.blockNumber) && count-- > 0) {
-      console.log('txReceipt', txReceipt);
-      txReceipt = await provider.getTransactionReceipt(result.hash);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-    if (txReceipt && txReceipt.blockNumber) {
-      //depositSuccess
-    } else {
-      //let users wait a while to sea the result or try again;
-    }
   }
 
   /** listing NFR */
   const listNFR = async (data: INFRTypeForRequest) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     const seaport = new Seaport(provider);
-    // const { chainId } = await provider.getNetwork();
     const tokenAddress = nfrContractAddress;
     const order = {
       allowPartialFills: true,
@@ -158,7 +154,7 @@ const useSeaport = () => {
       consideration: [
         {
           amount: ethers.utils
-            .parseEther(String(toNonExponential(data.price * data.quantity)))
+            .parseEther(new Decimal(data.price).times(data.quantity).toFixed())
             .toString(),
         },
       ],
@@ -178,7 +174,7 @@ const useSeaport = () => {
       nftTokenAddress: String(data.nftContractAddress),
       orderOnChain: JSON.stringify(resOrder),
       orderOnChainHash: seaport.getOrderHash(resOrder.parameters),
-      price: String(data.price),
+      price: new Decimal(data.price).toFixed(),
       templateId: data.type,
     };
   };
@@ -186,6 +182,7 @@ const useSeaport = () => {
   /** cancel List  */
   const cancelNFRsOrder = async (bigOrder: IBigOrderTtpe) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     const seaport = new Seaport(provider);
     const order = JSON.parse(bigOrder.order);
     const orderHash = seaport.getOrderHash(order.parameters);
@@ -208,6 +205,7 @@ const useSeaport = () => {
   /** buy NFR  */
   const buyNFR = async (bigOrder: IBigOrderTtpe) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     const seaport = new Seaport(provider);
     const order = JSON.parse(bigOrder.order);
     const { orderId, amount } = bigOrder;
@@ -223,9 +221,18 @@ const useSeaport = () => {
     return transaction;
   };
 
+  const sleep = (time = 5000) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(true)
+      }, time)
+  })
+  }
+
   const poll = async (hash: string) => {
     console.log('🚀 ~ poll ~ hash', hash);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     let txReceipt = await provider.getTransactionReceipt(hash);
     let count = 120;
     while (!(txReceipt && txReceipt.blockNumber) && count-- > 0) {
@@ -236,7 +243,16 @@ const useSeaport = () => {
     }
     if (txReceipt && txReceipt.blockNumber) {
       window.console.log('success');
-      return true;
+      const res = await new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(true)
+        }, WAIT_TIME)
+      })
+      if(res) {
+        return true
+      } else {
+        return false
+      }
     } else {
       return false;
     }
@@ -246,6 +262,7 @@ const useSeaport = () => {
   const acceptNFRsRequest = async (bigOrder: IBigOrderTtpe) => {
     const order = JSON.parse(bigOrder.order);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     const seaport = new Seaport(provider);
     const { executeAllActions } = await seaport.fulfillOrder({
       order,
@@ -259,6 +276,7 @@ const useSeaport = () => {
   /** listinng nft */
   const listNFT = async (data: ICreateNFT) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     const seaport = new Seaport(provider);
     const tokenAddress = nftContractAddress;
     // 最大持续时间
@@ -302,6 +320,7 @@ const useSeaport = () => {
   /** buy nft */
   const buyNFT = async (order: OrderWithCounter, accountAddress: string) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     const seaport = new Seaport(provider);
     console.log('order data', order);
     const { executeAllActions: executeAllFulfillActions } = await seaport.fulfillOrder({

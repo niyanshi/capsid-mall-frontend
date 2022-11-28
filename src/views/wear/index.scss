@@ -1,5 +1,6 @@
 .wear-wrap {
   width: 1280px;
+  padding: 0 96px;
   margin: 0 auto;
   font-family: 'Roboto';
   font-style: normal;
@@ -54,6 +55,7 @@
     margin-bottom: 60px;
   }
   .add {
+    cursor: pointer;
     .icon {
       width: 244px;
       height: 284px;

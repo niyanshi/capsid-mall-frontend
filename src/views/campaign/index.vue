@@ -9,6 +9,7 @@
 </script>
 <style scoped lang="scss">
 .main {
+  display: block;
   padding: 0 96px;
 }
 </style>

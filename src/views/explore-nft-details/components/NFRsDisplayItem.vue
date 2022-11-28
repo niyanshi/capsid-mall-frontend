@@ -18,7 +18,7 @@
           :src="IconCalender"
           alt=""
         />
-        {{ dayjs(props.data.expire).format('MM/DD/YYYY') + ' ' + t('expires') }}
+        {{ 'Duration: ' + props.data.duration + ' days' }}
       </div>
 
       <div class="info">
@@ -59,7 +59,6 @@ import { INFRsType } from '@/types/nft';
 import IconCalender from '@/assets/icons/calender.png';
 import IconBookmark from '@/assets/icons/bookmark.png';
 import IconCompass from '@/assets/icons/compass.png';
-import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 

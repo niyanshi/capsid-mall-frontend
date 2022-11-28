@@ -183,9 +183,7 @@
       :mask-disable="true"
       @close="handleMintDialogClose"
     >
-      <div
-        class="tip-content"
-      >
+      <div class="tip-content">
         <i class="icon-success icon"></i>
         <div class="info-text">
           <div class="info-title">{{ t('mintSuccessTips') }}</div>
@@ -230,6 +228,7 @@ import { ERR } from '@/utils/constant';
 import { toNonExponential } from '@/utils/util';
 import { httpMintNFT } from '@/api/nft';
 import BaseDialog from '@/components/BaseDialog/index.vue';
+import _ from 'lodash-es';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -364,6 +363,7 @@ const handleNFTList = async (i: ICreateNFT) => {
     nftContractAddress: i.contractAddress,
     desc: i.description,
     avatar: i.imageUrl,
+    nftName: i.name,
   };
   if (i.nftOrderId && !i.nfrOrderId) {
     console.log('now nfr list');
@@ -457,7 +457,8 @@ const checkPrice = (price: string) => {
   const reg = /^(([1-9][0-9]*)|(([0]\.\d{1,10}|[1-9][0-9]*\.\d{1,10})))$/;
   return reg.test(String(newNFT.value.price));
 };
-const handleOkClick = () => {
+const TIME = 1000;
+const checkNFT = () => {
   if(!newNFT.value.name) {
     message.warn(t('warn-msg.nameEmpty'));
     return;
@@ -476,6 +477,8 @@ const handleOkClick = () => {
   }
   saveNFT();
 };
+const handleOkClick = _.debounce(checkNFT, TIME);
+
 onMounted(() => {
   campaignId.value = Number(route.params.id as string);
   campaignName.value = route.query.campaignName as string;

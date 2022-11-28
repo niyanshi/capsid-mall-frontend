@@ -11,8 +11,14 @@
       v-if="currentNft"
       class="info-wrap"
     >
-      <div class="image" style="display: flex; justify-content: center; align-items: center">
-        <PrivateImage class="info-img" :src="(campaignNft?.imageUrl as string)"></PrivateImage>
+      <div
+        class="image"
+        style="display: flex; align-items: center; justify-content: center;"
+      >
+        <PrivateImage
+          class="info-img"
+          :src="(campaignNft?.imageUrl as string)"
+        ></PrivateImage>
       </div>
       <div class="text">
         <div class="desc">{{ campaignNft?.description }}</div>
@@ -50,12 +56,7 @@
         <div class="expire">
           <div class="expire-date mb41">
             <span class="start-icon calendar-icon"></span>
-            <span>{{
-              dayjs(currentNfr?.createdAt)
-                .add(currentNfr?.duration as number, 'day')
-                .format('DD/MM/YYYY')
-            }}</span>
-            <!-- <span class="end-icon"></span> -->
+            <span> {{ 'Duration: ' + currentNfr?.duration + ' days' }}</span>
           </div>
           <div class="expire-date">
             <span class="start-icon book-icon"></span>
@@ -145,7 +146,6 @@ import { httpCampaignNFTDetail } from '@/api/campaign';
 import { httpBuyNFRs, httpNoticeStatus } from '@/api/nfr';
 import { httpBuyNFT } from '@/api/nft';
 import { INFT, IRequestV } from '../../types/campaign';
-import dayjs from 'dayjs';
 import PrivateWearDialog from '@/components/PrivateWearDialog/index.vue';
 import useSeaport from '@/hooks/useSeaport';
 import { useUserInfoStore } from '@/stores/user-info';
@@ -200,6 +200,7 @@ const handleBuyNFTClick = async () => {
   try {
     const res1 = await buyNFT(order, userInfoStore.currentUser.publicKey);
     const pollRes = await poll(res1.hash);
+    console.log('🚀 ~ handleBuyNFTClick ~ pollRes', pollRes);
     if (pollRes) {
       const res2 = await httpBuyNFT({ nftOrderId: currentNft.value?.id, status: 'complete' });
       if (res2.code === 0) {
@@ -220,10 +221,16 @@ const handleBuyNFTClick = async () => {
   } catch (error) {
     controllerStore.setGlobalLoading(false);
     const completeReason = 'The order you are trying to fulfill is already filled';
+    const { code } = error as IOpenseaErrorType;
+    if (code === ERR.RejectMessage) {
+      message.error(t('err-msg.reject'));
+      return;
+    }
     message.error((error as Error).message);
     if ((error as Error).message === completeReason) {
       await httpBuyNFT({ nftOrderId: currentNft.value?.id, status: 'complete' });
     }
+    console.error(error);
   }
 };
 /** 购买nfr */

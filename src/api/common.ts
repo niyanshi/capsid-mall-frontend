@@ -22,3 +22,9 @@ export const httpGetToken = async (data: Record<string, unknown>) => {
   const res = await http.post(`${prefix}/v1/login`, { ...data });
   return res.data;
 };
+
+/** 发送登出事件 */
+export const httpLogout = async (account: string) => {
+  const res = await http.get(`${prefix}/log?event=accountsChanged&msg=${account}`);
+  return res.data;
+};

@@ -81,9 +81,11 @@ const getNFRsList = async () => {
     avatar: props.data?.avatar,
     total: Number(item.amount) - Number(item.selledAmount),
     price: item.unitPrice,
-    name: `${t('nfr')}: ${item.templateId || ''}`,
+    // name: `${t('nfr')}: ${item.templateId || ''}`,
+    name: JSON.parse(item.nftMeta)?.name,
     expire: dayjs(item.createdAt).add(Number(item.duration), 'day').valueOf(),
     order: item.orderOnChain,
+    duration: item.duration,
   }));
   totalRef.value = res.data.total;
   nfrsListRef.value.push(...arr);

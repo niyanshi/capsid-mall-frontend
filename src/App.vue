@@ -10,6 +10,7 @@ import { message } from 'ant-design-vue';
 import BaseLoading from '@/components/BaseLoading/index.vue';
 import { httpGetType } from './api/nfr';
 import { httpGetAccount } from './api/profile';
+import { httpLogout } from './api/common';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -23,6 +24,7 @@ const execAccountCahngedEvent = (account: unknown) => {
   const [address] = account as string[];
   if (userInfoStore.currentUser.publicKey.toLowerCase() === address.toLowerCase()) return;
   userInfoStore.logout();
+  httpLogout(address);
   userInfoStore.setLoginModalVisible(true);
   message.warn(t('warn-msg.relogin'));
 };

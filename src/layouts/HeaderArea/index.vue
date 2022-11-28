@@ -47,7 +47,7 @@
           </Avatar>
           <!-- 默认头像 -->
           <Avatar
-            v-else
+            v-else-if="userInfoStore.currentUser.avatar === ''"
             shape="square"
             :src="defaultAvatar"
           >

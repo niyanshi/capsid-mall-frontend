@@ -103,6 +103,7 @@ import { EV_RELOAD_NFR_LIST, ERR } from '@/utils/constant';
 import { useControllerStore } from '@/stores/controller';
 import _ from 'lodash-es';
 import { nfrContractAddress } from '@/hooks/var';
+import Decimal from 'decimal.js';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -188,9 +189,10 @@ const handleRequest = async (e: INFRTypeForRequest) => {
     ...e,
     avatar: nftDetalsRef.value?.avatar,
     attributes: nftDetalsRef.value?.attributes,
+    nftName: String(nftDetalsRef.value?.name),
   };
   const balance = await getWethBalance(userInfoStore.currentUser.publicKey);
-  if (Number(balance) < Number(e.price)) {
+  if (new Decimal(balance).lessThan(new Decimal(e.price).times(e.quantity))) {
     message.warn(t('warn-msg.weth-not-enough'));
     controllerStore.setGlobalLoading(false);
     controllerStore.setSwapVisible(true);

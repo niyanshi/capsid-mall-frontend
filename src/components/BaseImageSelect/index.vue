@@ -3,7 +3,7 @@
     <div class="img-box" :style="{ width: `${prop.width || 400}px`, height: `${prop.height || 400}px` }">
       <img v-show="src" :src='src' alt="">
       <div v-show="!src">
-        <input ref="imageInput" type="file" accept="image/gif,image/jpeg,image/jpg,image/png,image/svg+xml" style="display:none;" @change="handleImageChange">
+        <input ref="imageInput" type="file" accept="image/gif,image/jpeg,image/jpg,image/png,image/svg+xml" style="display: none;" @change="handleImageChange">
         <img
           class="icon-add" src="@/assets/icons/icon-add.png"
           :style="{ width: `${prop.iconSize}px`, height: `${prop.iconSize}px` }" />
@@ -37,6 +37,7 @@ watch(() => prop.modelValue, (val) => {
   if(src.value === '') src.value = val;
 }, { immediate: true });
 const handleImageChange = async (e: Event) => {
+
   const input = e.target as HTMLInputElement;
   const file = input.files ? input.files[0] : null;
   if (file) {

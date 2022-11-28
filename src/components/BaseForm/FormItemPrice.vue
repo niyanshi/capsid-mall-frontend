@@ -8,7 +8,7 @@
     </div>
     <div class="value">
       <div class="prefix">
-        {{ currencyRef }}
+        {{ props.currency || currencyRef }}
         <img
           :src="IconCompass"
           alt=""
@@ -23,7 +23,12 @@
 import IconCompass from '@/assets/icons/compass.png';
 import { ref } from 'vue';
 
-const props = defineProps<{ title: string; modelValue?: string; width?: number }>();
+const props = defineProps<{
+  title: string;
+  modelValue?: string;
+  width?: number;
+  currency?: string;
+}>();
 
 const currencyRef = ref('ETH');
 </script>

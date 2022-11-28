@@ -25,3 +25,6 @@ export const URL_LIST = {
   FAQ: 'https://capsid.gitbook.io/capsid/',
   Careers: 'https://www.notion.so/capsid-one/Capsid-is-hiring-4438a9d8113c4b2cb2265602b3db7525',
 };
+
+/** 轮询完成之后等待时间 */
+export const WAIT_TIME = 5000;

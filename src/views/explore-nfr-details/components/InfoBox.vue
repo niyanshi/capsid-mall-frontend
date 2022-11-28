@@ -53,7 +53,12 @@
         alt=""
         class="icon"
       />
-      {{ dayjs(props.data?.expire).format('MM/DD/YYYY') + ' ' + t('expires') }}
+      <template v-if="Number(props.btns?.length) > 0">
+        {{ 'Duration: ' + props.data?.duration + ' days' }}
+      </template>
+      <template v-else>
+        {{ dayjs(props.data?.expire).format('MM/DD/YYYY') + ' expires' }}
+      </template>
     </div>
 
     <div class="info">
@@ -224,7 +229,6 @@ const calcIssuedRole = computed(() =>
     font-size: 20px;
     font-weight: 700;
     line-height: 23px;
-    text-transform: lowercase;
   }
 
   .info {

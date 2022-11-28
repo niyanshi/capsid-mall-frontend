@@ -178,7 +178,7 @@ const handleClose = () => {
             </form-item-details>
           </div>
           <div class="form-layer">
-            <form-item-price :title="t('create-nfr-form-items[5]')">
+            <form-item-price :title="t('create-nfr-form-items[5]')" currency="WETH">
               <base-input
                 v-model="valueObj.price"
                 type="number"

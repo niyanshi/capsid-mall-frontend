@@ -7,7 +7,7 @@ import { ethers } from 'ethers';
 import { httpMintNFT } from '@/api/nft';
 import { nftContractAddress } from './var';
 import { message } from 'ant-design-vue';
-import { ERR } from '@/utils/constant';
+import { ERR, WAIT_TIME } from '@/utils/constant';
 import { useI18n } from 'vue-i18n';
 
 const useContract = () => {
@@ -24,6 +24,7 @@ const useContract = () => {
   const mintNFt = async (nftIds: bigint[]) => {
     console.log('🚀 ~ mintNFt ~ nftIds', nftIds);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     const signer = await provider.getSigner();
     //合约接⼝, 暂时⽤这个，不同环境会变，需要能配置。
     const nft721Address = nftContractAddress;
@@ -50,7 +51,16 @@ const useContract = () => {
       if (txReceipt && txReceipt.blockNumber) {
         const res = await saveResultToServer(nftIds, 'mint', true);
         window.console.log('saveSuccessResultToServer');
-        if (res) return 'success';
+        if (res) {
+          const resWait = await new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(true);
+            }, WAIT_TIME);
+          });
+          // eslint-disable-next-line max-depth
+          if(resWait) return 'success';
+          else return 'waiting';
+        }
       } else {
         //如果还是没结果，让服务端去轮询。
         saveResultToServer(nftIds, 'mint', false);
@@ -65,6 +75,7 @@ const useContract = () => {
       }
       return 'error';
     }
+    return 'waiting';
   };
 
   return {

@@ -14,7 +14,8 @@
       </div>
       <div v-for="(item, index) in wearList" :key="index" class="wear-item item-size">
         <!-- <img v-if="item.wearMeta?.image" :src="item.wearMeta?.image" alt="" srcset=""> -->
-        <PrivateImage v-if="item.wearMeta?.image" :src="item.wearMeta?.image"></PrivateImage>
+        <BaseNFRImage v-if="item.wearMeta?.image && item.status === 3" :src="item.wearMeta?.image"></BaseNFRImage>
+        <PrivateImage v-else-if="item.wearMeta?.image" :src="item.wearMeta?.image"></PrivateImage>
         <PrivateImage v-else :src="item.parentPic1"></PrivateImage>
         <!-- <img v-else :src="item.parentPic1" alt="" srcset=""> -->
         <div class="status text">{{item.status === 3 ? t('wear-page.tab[1]') : t('wear-page.tab[2]')}}</div>
@@ -60,6 +61,7 @@ import { IWear } from '@/types/campaign';
 import BaseDialog from '@/components/BaseDialog/index.vue';
 import PrivateWearDialog from '@/components/PrivateWearDialog/index.vue';
 import PrivateImage from '@/components/PrivateImage/index.vue';
+import BaseNFRImage from '@/components/BaseNFRImage/index.vue';
 
 const { t } = useI18n();
 const userInfoStore = useUserInfoStore();

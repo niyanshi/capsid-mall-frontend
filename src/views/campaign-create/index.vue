@@ -89,6 +89,7 @@ import { useUserInfoStore } from '@/stores/user-info';
 import { ICampaign } from '@/types/campaign';
 import _ from 'lodash-es';
 import dayjs from 'dayjs';
+import { message } from 'ant-design-vue';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -115,6 +116,14 @@ const handleBackClick = () => {
   router.push('/campaign');
 };
 const campaignSubmit = async () => {
+  if(!campaignInfo.campaignName) {
+    message.warn(t('warn-msg.nameEmpty'));
+    return;
+  }
+  if(!campaignInfo.banner) {
+    message.warn(t('warn-msg.imageEmpty'));
+    return;
+  }
   campaignInfo.startTime = campaignInfo.startTime || new Date().toISOString();
   campaignInfo.endTime = dayjs(expireRef.value.currentValue).endOf('day').toDate().toISOString();
   const { campaignName,startTime,endTime,content,link,ownerId,ownerEtherAddr } = campaignInfo;

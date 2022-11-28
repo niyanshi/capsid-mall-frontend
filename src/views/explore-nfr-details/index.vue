@@ -176,6 +176,7 @@ const execBuyNFR = async () => {
 };
 
 /** 获取nft详情 */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const getNFTsDetails = async (address: string, id: string) => {
   const res = await httpGetNFTsDetails(String(address), String(id));
   const myAddress = userInfoStore.currentUser.publicKey;
@@ -213,7 +214,10 @@ const getNFTsDetails = async (address: string, id: string) => {
     }
   } else {
     // owner
-    if (nfrDetalsRef.value?.status === 'active') {
+    if (
+      (nfrDetalsRef.value?.creator as string).toLowerCase() === myAddress.toLowerCase() &&
+      nfrDetalsRef.value?.status === 'active'
+    ) {
       btnsConfigRef.value = [
         {
           title: t('delist'),
@@ -269,10 +273,11 @@ const getNFRsDetails = async () => {
     desc: d.description,
     detailsUrl: d.detailsUrl,
     remain: d.amount - d.selledAmount || 0,
-    expire: dayjs(d.createdAt).add(Number(d.duration), 'day').valueOf(),
+    expire: dayjs(d.expirationDate).valueOf(),
     order: d.orderOnChain,
     creator: d.creator,
     status: d.status,
+    duration: d.duration,
   };
   getNFTsDetails(nftTokenAddress, nftTokenId);
 };

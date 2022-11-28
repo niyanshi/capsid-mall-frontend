@@ -36,6 +36,7 @@ export interface INFRsType {
   nft?: INFTsType;
   order?: string;
   status?: string;
+  duration?: number;
   [key: string]: unknown;
 }
 
@@ -66,6 +67,7 @@ export interface INFRTypeForRequest {
   details?: string;
   avatar?: string;
   attributes?: unknown;
+  nftName: string;
   [key: string]: unknown;
 }
 
@@ -86,6 +88,6 @@ export interface ICreateNFT {
   status: string;
   tokenId: string;
   updateTime: string;
-  nfrOrderId: number | null,
-  nftOrderId: number | null
+  nfrOrderId: number | null;
+  nftOrderId: number | null;
 }

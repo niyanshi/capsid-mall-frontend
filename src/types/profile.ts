@@ -1,5 +1,5 @@
 export interface IProfile {
-  avartar: string;
+  avartar: string | undefined;
   description: string;
   etherAddr: string;
   id: number;

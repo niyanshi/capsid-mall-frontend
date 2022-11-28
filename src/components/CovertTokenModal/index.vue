@@ -3,7 +3,7 @@
     :visible="props.visible"
     @close="handleClose"
   >
-    <div class="purchasing-box">
+    <div class="convert-token-modal">
       <div class="close">
         <img
           :src="IconClose"

@@ -222,6 +222,7 @@ const handleGetSelected = (e?: INFTsType) => {
   nftObj.id = e.id;
   nftObj.avatar = e.avatar;
   nftObj.contractAddress = e.contractAddress;
+  nftObj.name = e.name;
   isChooseRef.value = false;
 };
 
@@ -277,6 +278,7 @@ const handleList = async () => {
     desc: valueObj.desc,
     avatar: nftObj?.avatar,
     attributes: nftObj?.attributes,
+    nftName: nftObj?.name,
   } as INFRTypeForRequest;
 
   controllerStore.setGlobalLoading(true);
