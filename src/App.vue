@@ -61,6 +61,16 @@ onMounted(() => {
       document.title = t(String(to.meta.title));
     }
   });
+  // 导航前置
+  Router.beforeEach(async (to) => {
+    const dur = 1;
+    if (['wear'].includes(String(to.name)) && !userInfoStore.currentUser.isLogin) {
+      userInfoStore.setLoginModalVisible(true);
+      message.warn('You need to log in first!', dur);
+      return false;
+    }
+    return true;
+  });
   // 监听账号切换
   if (ethereum) ethereum.on('accountsChanged', execAccountCahngedEvent);
 });

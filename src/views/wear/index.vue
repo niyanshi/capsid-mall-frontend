@@ -14,7 +14,11 @@
       </div>
       <div v-for="(item, index) in wearList" :key="index" class="wear-item item-size">
         <!-- <img v-if="item.wearMeta?.image" :src="item.wearMeta?.image" alt="" srcset=""> -->
-        <BaseNFRImage v-if="item.wearMeta?.image && item.status === 3" :src="item.wearMeta?.image"></BaseNFRImage>
+        <BaseNFRImage
+          v-if="isCompleteNFR(item)"
+          style="width: 244px;height:244px"
+          :src="item.wearMeta?.image as string"
+        ></BaseNFRImage>
         <PrivateImage v-else-if="item.wearMeta?.image" :src="item.wearMeta?.image"></PrivateImage>
         <PrivateImage v-else :src="item.parentPic1"></PrivateImage>
         <!-- <img v-else :src="item.parentPic1" alt="" srcset=""> -->
@@ -67,6 +71,13 @@ const { t } = useI18n();
 const userInfoStore = useUserInfoStore();
 
 const tabIndex = ref(0);
+
+const isCompleteNFR = (item:IWear) => {
+  const completeStatus = 3;
+  const nfr = 2;
+  return item.resultType === nfr
+    && item.status === completeStatus;
+};
 
 const wearList = ref<IWear[]>([]);
 /**

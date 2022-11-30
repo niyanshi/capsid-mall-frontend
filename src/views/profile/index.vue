@@ -391,7 +391,7 @@ const getNFRList = async (isNew = false) => {
     message.error(ERROR_MESSAGE);
     return;
   }
-  if (res.data.length === 0) {
+  if (res.data.records.length === 0) {
     // 没有值说明已经请求完毕
     noScroll.value = true;
   }
@@ -422,7 +422,7 @@ const getRequestList = async (isNew = false) => {
     message.error(ERROR_MESSAGE);
     return;
   }
-  if (res.data.length === 0) {
+  if (res.data.records.length === 0) {
     // 没有值说明已经请求完毕
     noScroll.value = true;
   }
@@ -604,10 +604,10 @@ const getData = (isNew = false) => {
   if (index === Number('0')) {
     getNFTList(isNew);
   } else if (index === Number('1')) {
-    currentSecondTab.value = 0;
+    // currentSecondTab.value = 0;
     getNFRList(isNew);
   } else if (index === Number('2')) {
-    currentSecondTab.value = 0;
+    // currentSecondTab.value = 0;
     getRequestList(isNew);
   } else if (index === Number('3')) {
     getActivty();
@@ -649,6 +649,7 @@ const handleProfileEdit = async () => {
 const handleTabChange = (index: number) => {
   currentTab.value = index;
   sessionStorage.setItem(SESSION_KEY, String(index));
+  currentSecondTab.value = 0;
   currentPageNum.value = 1;
   noScroll.value = false;
   getData(true);

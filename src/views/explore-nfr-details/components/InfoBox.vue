@@ -132,10 +132,13 @@ const isYou = (address?: string) =>
   address?.toLowerCase() === userInfoStore.currentUser.publicKey.toLowerCase();
 
 const calcReceiveRole = computed(() =>
-  props.data?.receive?.split(',').map((item) => ({
-    val: isYou(item) ? 'you' : item.slice(sliceStart, sliceEnd),
-    key: item,
-  })),
+  props.data?.receive
+    ?.split(',')
+    .filter(Boolean)
+    .map((item) => ({
+      val: isYou(item) ? 'you' : item.slice(sliceStart, sliceEnd),
+      key: item,
+    })),
 );
 
 const calcIssuedRole = computed(() =>

@@ -176,7 +176,7 @@ const execBuyNFR = async () => {
 };
 
 /** 获取nft详情 */
-// eslint-disable-next-line sonarjs/cognitive-complexity
+// eslint-disable-next-line sonarjs/cognitive-complexity, complexity
 const getNFTsDetails = async (address: string, id: string) => {
   const res = await httpGetNFTsDetails(String(address), String(id));
   const myAddress = userInfoStore.currentUser.publicKey;
@@ -247,13 +247,15 @@ const getNFTsDetails = async (address: string, id: string) => {
         ] as IInfoBtnType[];
       }
     } else {
-      btnsConfigRef.value = [
-        {
-          title: t('accept'),
-          icon: IconBuy,
-          event: execAcceptRequest,
-        },
-      ] as IInfoBtnType[];
+      if (nfrDetalsRef.value?.status === 'active') {
+        btnsConfigRef.value = [
+          {
+            title: t('accept'),
+            icon: IconBuy,
+            event: execAcceptRequest,
+          },
+        ] as IInfoBtnType[];
+      }
     }
   }
 };
@@ -279,6 +281,7 @@ const getNFRsDetails = async () => {
     status: d.status,
     duration: d.duration,
   };
+  console.log(nfrDetalsRef.value);
   getNFTsDetails(nftTokenAddress, nftTokenId);
 };
 

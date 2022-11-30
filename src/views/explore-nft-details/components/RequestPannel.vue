@@ -73,7 +73,7 @@ const getNFRsList = async () => {
     id: item.id,
     avatar: props.data?.avatar,
     total: item.amount,
-    price: item.totalPrice,
+    price: item.unitPrice,
     // name: `${t('nfr')}: ${item.templateId || ''}`,
     name: JSON.parse(item.nftMeta)?.name,
 

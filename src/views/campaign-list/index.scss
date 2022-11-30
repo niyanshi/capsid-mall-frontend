@@ -1,5 +1,5 @@
 .list-wrap {
-  width: 1290px;
+  width: 1320px;
   margin: 0 auto;
 }
 .campaign-title {
@@ -48,17 +48,21 @@
     background-size: contain;
   }
 }
+.campaign-list {
+  padding: 20px 10px;
+}
 .campaign-item {
   width: 1280px;
   height: 320px;
   background-color: #fff;
   box-shadow: 2px 2px 20px 10px rgba(163, 32, 21, 0.08);
   border-radius: 32px;
-  margin-bottom: 60px;
+  margin: 0 auto 60px;
   cursor: pointer;
   img {
     width: 1280px;
     height: 200px;
+    border-radius: 32px 32px 0 0;
   }
   .campaign-name {
     width: 100%;
@@ -75,6 +79,10 @@
       line-height: 32px;
       font-feature-settings: 'pnum' on, 'lnum' on;
       color: #000000;
+      width: 60%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .edit {
       position: absolute;

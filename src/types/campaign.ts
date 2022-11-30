@@ -84,6 +84,7 @@ export interface IWear {
   tokenType1: string,
   tokenType2: string,
   status: 0|1|2|3,
+  resultType: 1|2,
   wearMeta?: {
     description: string,
     expirationDate: string;

@@ -17,7 +17,7 @@
     <!--
      -->
 
-    <div class="info">
+    <div class="info" :title="prop.name">
       <p>{{ prop.name?.split('#')[0] }}</p>
       <p>{{ prop.name?.split('#')[1] ? `#${prop.name?.split('#')[1]}` : '' }}</p>
     </div>
@@ -72,6 +72,10 @@ const onError = function () {
 
     p {
       margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      word-break: break-all;
     }
   }
 }
