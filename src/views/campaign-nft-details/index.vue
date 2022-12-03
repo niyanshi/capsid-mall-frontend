@@ -126,6 +126,10 @@
         </div>
       </template>
     </BaseDialog>
+    <PrivateSwitchNetwork
+      :dialog-visible="switchNetworkVisible"
+      @close="(switchNetworkVisible = false)"
+    ></PrivateSwitchNetwork>
     <template v-if="amountDialogVisible">
       <purchasing-box
         :visible="amountDialogVisible"
@@ -154,6 +158,7 @@ import PurchasingBox from '@/components/PurchasingBox/index.vue';
 import { ERR } from '@/utils/constant';
 import { useControllerStore } from '@/stores/controller';
 import PrivateImage from '@/components/PrivateImage/index.vue';
+import PrivateSwitchNetwork from '@/components/PrivateSwitchNetwork/index.vue';
 
 const { buyNFR, buyNFT, poll } = useSeaport();
 const { t } = useI18n();
@@ -177,6 +182,7 @@ const dialogVisible = ref(false);
 const amountDialogVisible = ref(false);
 const resultDialogVisible = ref(false);
 const resultSuccess = ref(false);
+const switchNetworkVisible = ref(false);
 
 /**获取相关数据*/
 const getNFTDetail = async () => {
@@ -194,6 +200,10 @@ const handleBuyNFTClick = async () => {
     message.warn(t('warn-msg.needLogin'));
     return;
   }
+  if(userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
+    switchNetworkVisible.value = true;
+    return;
+  }
   const { orderOnChain } = currentNft.value as IRequestV;
   const order = JSON.parse(orderOnChain);
   controllerStore.setGlobalLoading(true);
@@ -204,7 +214,7 @@ const handleBuyNFTClick = async () => {
     if (pollRes) {
       const res2 = await httpBuyNFT({ nftOrderId: currentNft.value?.id, status: 'complete' });
       if (res2.code === 0) {
-        message.success('You have purchased successfully');
+        message.success('Your purchase is complete.');
         controllerStore.setGlobalLoading(false);
         dialogVisible.value = true;
         itemToWear.value = {
@@ -238,6 +248,10 @@ const handleBuyNFRClick = async () => {
   if (!userInfoStore.currentUser.isLogin) {
     userInfoStore.setLoginModalVisible(true);
     message.warn(t('warn-msg.needLogin'));
+    return;
+  }
+  if(userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
+    switchNetworkVisible.value = true;
     return;
   }
   controllerStore.setLimitForBuy(

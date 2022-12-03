@@ -41,6 +41,7 @@
         <base-input
           v-model="campaignInfo.content"
           style-type="line"
+          :limit="512"
         >
         </base-input>
       </form-item>
@@ -53,6 +54,7 @@
           v-model="campaignInfo.link"
           style-type="line"
           :placeholder="t('campaign-page.pleaseEnter')"
+          :limit="512"
         >
         </base-input>
       </form-item>

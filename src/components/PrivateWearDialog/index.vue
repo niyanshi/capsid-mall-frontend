@@ -89,17 +89,25 @@
       </div>
       <div class="form">
         <div class="form-item">
-          <span class="label">{{ t('wear-page.name') }}</span>
+          <span class="label">{{ t('newNFT.nameLabel') }}</span>
           <base-input
             v-model="name"
             style-type="line"
             :placeholder="t('wear-page.inputName')"
+            style="flex:1"
           >
           </base-input>
         </div>
-        <div class="form-item">
+        <div class="form-item" style="width: 100%">
           <span class="label">{{ t('newNFT.descLabel') }}</span>
-          <base-textarea v-model="desc"></base-textarea>
+          <!-- <base-textarea v-model="desc"></base-textarea> -->
+          <base-input
+            v-model="desc"
+            style-type="line"
+            :limit="512"
+            style="flex:1"
+          >
+          </base-input>
         </div>
       </div>
     </div>

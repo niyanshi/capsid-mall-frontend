@@ -11,6 +11,7 @@ import BaseLoading from '@/components/BaseLoading/index.vue';
 import { httpGetType } from './api/nfr';
 import { httpGetAccount } from './api/profile';
 import { httpLogout } from './api/common';
+import PrivateSwitchNetwork from '@/components/PrivateSwitchNetwork/index.vue';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -90,6 +91,15 @@ onUnmounted(() => {
   <template v-if="controllerStore.globalLoading">
     <base-loading :visible="true"></base-loading>
   </template>
+
+  <!-- 切换网络提示 -->
+  <PrivateSwitchNetwork
+    :dialog-visible="controllerStore.switchNetworkVisible"
+    @close="controllerStore.setSwitchNetworkVisible(false)"
+  ></PrivateSwitchNetwork>
+  <!-- <template v-if="controllerStore.switchNetworkVisible"> -->
+
+  <!-- </template> -->
 </template>
 
 <style lang="scss">

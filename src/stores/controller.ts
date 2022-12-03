@@ -23,8 +23,13 @@ export const useControllerStore = defineStore('contoller', {
     limitForBuy: 10,
 
     swapVisible: false,
+
+    switchNetworkVisible: false,
   }),
   actions: {
+    setSwitchNetworkVisible(payload: boolean) {
+      this.switchNetworkVisible = payload;
+    },
     setSwapVisible(payload: boolean) {
       this.swapVisible = payload;
     },

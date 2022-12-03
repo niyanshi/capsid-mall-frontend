@@ -72,6 +72,10 @@ const validateData = () => {
     message.error(t('warn-msg.price'));
     return false;
   }
+  if(Number(valueObj.price) < import.meta.env.VITE_MIN_PRICE) {
+    message.warn(`${t('warn-msg.minPrice')} ${import.meta.env.VITE_MIN_PRICE}`);
+    return false;
+  }
   return true;
 };
 

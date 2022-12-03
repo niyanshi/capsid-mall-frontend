@@ -77,6 +77,11 @@
         </template>
       </base-alert>
     </template>
+
+    <PrivateSwitchNetwork
+      :dialog-visible="switchNetworkVisible"
+      @close="switchNetworkVisible = false"
+    ></PrivateSwitchNetwork>
   </div>
 </template>
 
@@ -104,6 +109,7 @@ import { useControllerStore } from '@/stores/controller';
 import _ from 'lodash-es';
 import { nfrContractAddress } from '@/hooks/var';
 import Decimal from 'decimal.js';
+import PrivateSwitchNetwork from '@/components/PrivateSwitchNetwork/index.vue';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -111,6 +117,7 @@ const userInfoStore = useUserInfoStore();
 const { requestNFR, getWethBalance } = useSeaport();
 const controllerStore = useControllerStore();
 
+const switchNetworkVisible = ref(false);
 const nftDetalsRef = ref<INFTsType>();
 const isSuccessful = ref(false);
 const requestVisibleRef = ref(false);
@@ -180,7 +187,7 @@ onMounted(() => {
 /** 请求nfr */
 const handleRequest = async (e: INFRTypeForRequest) => {
   if (userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
-    message.error('You are not connected to the correct network environment! ');
+    switchNetworkVisible.value = true;
     return;
   }
   controllerStore.setGlobalLoading(true);

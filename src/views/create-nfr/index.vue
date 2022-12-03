@@ -119,6 +119,10 @@
     </template>
 
     <div :style="{ height: '89px' }"></div>
+    <PrivateSwitchNetwork
+      :dialog-visible="switchNetworkVisible"
+      @close="switchNetworkVisible = false"
+    ></PrivateSwitchNetwork>
   </div>
 </template>
 
@@ -149,6 +153,7 @@ import { useUserInfoStore } from '@/stores/user-info';
 import { useControllerStore } from '@/stores/controller';
 import { ERR } from '@/utils/constant';
 import _ from 'lodash-es';
+import PrivateSwitchNetwork from '@/components/PrivateSwitchNetwork/index.vue';
 
 const { t } = useI18n();
 const { listNFR } = useSeaport();
@@ -156,6 +161,7 @@ const router = useRouter();
 const userInfoStore = useUserInfoStore();
 const controllerStore = useControllerStore();
 
+const switchNetworkVisible = ref(false);
 const isChooseRef = ref(false);
 const isSuccessful = ref(false);
 const isEditableRef = ref(false);
@@ -227,6 +233,7 @@ const handleGetSelected = (e?: INFTsType) => {
 };
 
 /** 数据验证 */
+// eslint-disable-next-line complexity
 const validateData = () => {
   const quantityCof = 10;
   if (!nftObj.contractAddress || !nftObj.id) {
@@ -258,13 +265,17 @@ const validateData = () => {
     message.error(t('warn-msg.price'));
     return false;
   }
+  if (Number(valueObj.price) < import.meta.env.VITE_MIN_PRICE) {
+    message.warn(`${t('warn-msg.minPrice')} ${import.meta.env.VITE_MIN_PRICE}`);
+    return false;
+  }
   return true;
 };
 
 /** list NFR */
 const handleList = async () => {
   if (userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
-    message.error('You are not connected to the correct network environment! ');
+    switchNetworkVisible.value = true;
     return;
   }
   if (!validateData()) return;

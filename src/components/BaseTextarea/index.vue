@@ -1,9 +1,11 @@
 <template>
   <div class="base-textarea">
     <div
+      ref="target"
       class="textarea"
       :style="{ maxHeight: props.max ? `${props.max}px` : '' }"
       contenteditable="true"
+      maxlength="5"
       :placeholder="props.placeholder"
       @input="handleChange"
     ></div>
@@ -11,12 +13,29 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+
 const props = defineProps<{ modelValue?: string; placeholder?: string; max?: number }>();
 const emit = defineEmits(['update:modelValue']);
+const target = ref<HTMLElement | null>(null);
+
+const maxLen = 512;
 
 const handleChange = (e: Event) => {
-  emit('update:modelValue', (e.target as HTMLTextAreaElement).innerText);
+  const text = (e.target as HTMLTextAreaElement).innerText;
+  if (text.length > maxLen) {
+    (target.value as HTMLTextAreaElement).innerText = text.substring(0, maxLen);
+    const curSelection = window.getSelection();
+    curSelection?.selectAllChildren(target.value as HTMLTextAreaElement);
+    curSelection?.collapseToEnd();
+  }
+  emit('update:modelValue', text.substring(0, maxLen));
 };
+
+// function onKeyDown(e: KeyboardEvent) {
+//   if (['Backspace', 'Delete'].includes(e.key)) return;
+//   const text = (target.value as HTMLTextAreaElement).innerText;
+// }
 </script>
 
 <style scoped lang="scss">

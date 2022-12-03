@@ -199,6 +199,10 @@
         </div>
       </template>
     </BaseDialog>
+    <PrivateSwitchNetwork
+      :dialog-visible="switchNetworkVisible"
+      @close="(switchNetworkVisible = false)"
+    ></PrivateSwitchNetwork>
   </div>
 </template>
 
@@ -229,12 +233,15 @@ import { toNonExponential } from '@/utils/util';
 import { httpMintNFT } from '@/api/nft';
 import BaseDialog from '@/components/BaseDialog/index.vue';
 import _ from 'lodash-es';
+import { useUserInfoStore } from '@/stores/user-info';
+import PrivateSwitchNetwork from '@/components/PrivateSwitchNetwork/index.vue';
 
 const { t } = useI18n();
 const route = useRoute();
 const { mintNFt } = useContract();
 const { listNFT, listNFR } = useSeaport();
 const controllerStore = useControllerStore();
+const userInfoStore = useUserInfoStore();
 
 const campaignId = ref<number>();
 const campaignName = ref<string>();
@@ -258,6 +265,9 @@ const newNFT = ref<{
 const handleAddClick = () => {
   isCreate.value = true;
 };
+
+// 切换网络确认弹窗
+const switchNetworkVisible = ref(false);
 
 // 修改nft状态
 const saveResultToServer = async (ids: string[], type: string, result: boolean) => {
@@ -313,6 +323,10 @@ const saveNFT = async () => {
 };
 // NFR list
 const handleNFRList = async (nfr: INFRTypeForRequest, id: number, tokenId: string) => {
+  if(userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
+    switchNetworkVisible.value = true;
+    return;
+  }
   console.log('now nfr list');
   nfr.price = toNonExponential(Number(nfr.price)) as number;
   controllerStore.setGlobalLoading(true);
@@ -351,6 +365,10 @@ const handleNFRList = async (nfr: INFRTypeForRequest, id: number, tokenId: strin
 };
 // NFT list
 const handleNFTList = async (i: ICreateNFT) => {
+  if(userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
+    switchNetworkVisible.value = true;
+    return;
+  }
   const price = toNonExponential(Number(i.price));
   const TEN = 10;
   const duration = 60;
@@ -411,8 +429,13 @@ const handleMintDialogClose = () => {
 
 // mint
 const handleMint = async () => {
+  console.log('mint');
   if (nftIds.value.length === 0) {
     message.warn(t('warn-msg.mintEmpty'));
+    return;
+  }
+  if(userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
+    switchNetworkVisible.value = true;
     return;
   }
   // 将待mint的nft数据筛选出来
@@ -465,6 +488,10 @@ const checkNFT = () => {
   }
   if(!checkPrice(String(newNFT.value.price))) {
     message.warn(t('warn-msg.priceEmpty'));
+    return;
+  }
+  if(Number(newNFT.value.price) < import.meta.env.VITE_MIN_PRICE) {
+    message.warn(`${t('warn-msg.minPrice')} ${import.meta.env.VITE_MIN_PRICE}`);
     return;
   }
   if(!newNFT.value.description) {

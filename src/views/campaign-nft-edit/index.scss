@@ -96,8 +96,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    .text {
+      max-width: 180px;
+    }
     .name {
-      width: 240px;
+      // width: 240px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;

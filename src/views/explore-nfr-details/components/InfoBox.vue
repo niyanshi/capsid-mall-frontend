@@ -53,7 +53,7 @@
         alt=""
         class="icon"
       />
-      <template v-if="Number(props.btns?.length) > 0">
+      <template v-if="Number(props.btns?.length) > 0 || !props.data?.expire ">
         {{ 'Duration: ' + props.data?.duration + ' days' }}
       </template>
       <template v-else>

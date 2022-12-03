@@ -38,16 +38,35 @@
     <div class="sponsor-section">
       <sponsor-show
         :title="t('sponsor-titles[0]')"
-        :image-lists="[ImageGoogle, ImageYoutube, ImageChigago, ImageNorth]"
+        :image-lists="[
+          { url: ImageGoogle },
+          { url: ImageYoutube },
+          { url: ImageChigago },
+          { url: ImageNorth },
+        ]"
       ></sponsor-show>
       <sponsor-show
         :title="t('sponsor-titles[1]')"
-        :image-lists="[ImageBit, ImagSpring, ImageGlobal, ImageXoogler, ImageMask]"
+        :image-lists="[
+          { url: ImageBit },
+          { url: ImagSpring, h: '50px' },
+          { url: ImageGlobal, h: '68px' },
+          { url: ImageXoogler, h: '68px' },
+          { url: ImageMask, h: '68px' },
+        ]"
       ></sponsor-show>
       <sponsor-show
         :title="t('sponsor-titles[2]')"
         :filter="true"
-        :image-lists="[Image1, Image2, Image3, Image4, ImageGoogle, Image5, Image6]"
+        :image-lists="[
+          { url: Image1 },
+          { url: Image2 },
+          { url: Image3 },
+          { url: Image4 },
+          { url: ImageGoogle },
+          { url: Image5 },
+          { url: Image6 },
+        ]"
       ></sponsor-show>
     </div>
   </div>
@@ -63,7 +82,7 @@ import ImageChigago from '@/assets/investors/chigago.png';
 import ImageNorth from '@/assets/investors/north.png';
 
 import ImageBit from '@/assets/investors/bit.png';
-import ImagSpring from '@/assets/investors/spring.png';
+import ImagSpring from '@/assets/investors/spring-wind.png';
 import ImageGlobal from '@/assets/investors/global.png';
 import ImageXoogler from '@/assets/investors/xoogler.png';
 import ImageMask from '@/assets/investors/mask.png';

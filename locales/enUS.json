@@ -97,23 +97,24 @@
     "quantity": "Integer less than 10"
   },
   "warn-msg": {
-    "duration": "Wrong Duration Value!",
-    "type": "Wrong Type Value!",
-    "quantity": "Wrong Quantity Value!",
-    "desc": "Wrong NFR Description!",
-    "price": "Wrong Price Value!",
+    "duration": "Wrong duration value!",
+    "type": "Wrong type value!",
+    "quantity": "Wrong quantity value!",
+    "desc": "Wrong NFR description!",
+    "price": "Wrong price value!",
     "nft": "NFT not selected",
     "relogin": "You need to log in again",
     "high-quantity": "Quantity should be less than 10",
     "weth-not-enough": "WETH is not enough",
-    "mintEmpty": "All Item Minted",
+    "mintEmpty": "All item minted",
     "busy": "It took too long, please try next time",
     "needLogin": "Please login",
     "viewSoon": "It took too long, please view transaction result in your wallet",
-    "nameEmpty": "Name Can Not Be Empty!",
-    "priceEmpty": "Please Input Correct Price!",
-    "descEmpty": "Description Can Not Be Empty!",
-    "imageEmpty": "Please Upload an Image!"
+    "nameEmpty": "Name can not be empty!",
+    "priceEmpty": "Please input correct price!",
+    "descEmpty": "Description can not be empty!",
+    "imageEmpty": "Please upload an image!",
+    "minPrice": "The price can not be lower than "
   },
   "err-msg": {
     "reject": " You rejected the request",
@@ -183,5 +184,6 @@
     "descLabel": "Desc"
   },
   "mintAll": "MINT ALL",
-  "coming-soon": "Coming Soon~~"
+  "coming-soon": "Coming Soon~~",
+  "ErrorNetwork": "Your wallet is connecting to the wrong network, do you want to switch to the correct network?"
 }

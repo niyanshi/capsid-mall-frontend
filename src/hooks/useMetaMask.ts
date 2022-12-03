@@ -56,10 +56,32 @@ const useMetaMask = () => {
     return provider.getNetwork();
   };
 
+  /** 切换网络 */
+  const switchToOtherNetwork = async (chainId: string) => {
+    // const data = [];
+    // data.push({chainId,chainName: 'Ethe',rpcUrls: 'http://127.0.0.1:8080/'});
+    console.log(chainId, 'switchNetwork');
+    try {
+      // const provider = new ethers.providers.Web3Provider(window.ethereum);
+      // await provider.send('wallet_addEthereumChain', data);
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [
+          {
+            chainId: `0x${chainId}`
+          }
+        ]
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return {
     connectWallet,
     getAddress,
     getNetwork,
+    switchToOtherNetwork
     // monitorAccountChange,
   };
 };

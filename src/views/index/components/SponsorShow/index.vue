@@ -11,9 +11,10 @@
       <img
         v-for="(item, index) in props.imageLists"
         :key="index"
-        :src="item"
+        :src="item.url"
         alt=""
         :class="{ filter: props.filter }"
+        :style="{ width: item.w, height: item.h }"
       />
     </div>
   </div>
@@ -22,7 +23,11 @@
 <script setup lang="ts">
 import IconDiamond from '@/assets/icons/diamond.png';
 
-const props = defineProps<{ title: string; imageLists?: string[]; filter?: boolean }>();
+const props = defineProps<{
+  title: string;
+  imageLists?: { url: string; w?: string; h?: string }[];
+  filter?: boolean;
+}>();
 </script>
 
 <style scoped lang="scss">

@@ -80,13 +80,14 @@ const getNFRsList = async () => {
     expire: dayjs(item.createdAt).add(Number(item.duration), 'day').valueOf(),
     order: item.orderOnChain,
     duration: item.duration,
+    issued: item.creator,
   }));
 };
 
 /** accept NFR */
 const handleAccpet = async (data: INFRsType) => {
   if (userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
-    message.error('You are not connected to the correct network environment! ');
+    controllerStore.setSwitchNetworkVisible(true);
     return;
   }
   if (!data?.order) return;
@@ -109,7 +110,9 @@ const handleAccpet = async (data: INFRsType) => {
       return;
     }
     await httpNoticeStatus(res.data.nfrTrans.id, 'submitted', ret.hash);
-    message.success('You accept successfully!');
+    // you sold ${NFR Name} to ${requester}.
+    message.success(`you sold ${data.name} to ${data.issued}`);
+
     emitter.emit(EV_RELOAD_NFR_LIST);
   } catch (error: unknown) {
     await httpNoticeStatus(res.data.nfrTrans.id, 'failed');

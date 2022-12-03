@@ -81,7 +81,7 @@ const handleDelistNFR = async () => {
 };
 const handleConfirmDelistNFR = async () => {
   if (userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
-    message.error('You are not connected to the correct network environment! ');
+    controllerStore.setSwitchNetworkVisible(true);
     return;
   }
   delistVisibleRef.value = false;
@@ -120,7 +120,7 @@ const handleConfirmDelistNFR = async () => {
 /** accept NFR Request */
 const execAcceptRequest = async () => {
   if (userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
-    message.error('You are not connected to the correct network environment! ');
+    controllerStore.setSwitchNetworkVisible(true);
     return;
   }
   if (!nfrDetalsRef.value?.order) return;
@@ -145,7 +145,7 @@ const execAcceptRequest = async () => {
       return;
     }
     await httpNoticeStatus(res.data.nfrTrans.id, 'submitted', ret.hash);
-    message.success('You accept successfully!');
+    message.success(`you sold ${nfrDetalsRef.value.name} to ${nfrDetalsRef.value.issued}`);
     router.back();
   } catch (error: unknown) {
     await httpNoticeStatus(res.data.nfrTrans.id, 'failed');
@@ -280,6 +280,7 @@ const getNFRsDetails = async () => {
     creator: d.creator,
     status: d.status,
     duration: d.duration,
+    name: JSON.parse(d.nftMeta)?.name,
   };
   console.log(nfrDetalsRef.value);
   getNFTsDetails(nftTokenAddress, nftTokenId);

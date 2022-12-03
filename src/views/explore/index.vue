@@ -44,7 +44,7 @@ const router = useRouter();
 /** buy NFR */
 const handleBuy = async (amount: string) => {
   if (userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
-    message.error('You are not connected to the correct network environment! ');
+    controllerStore.setSwitchNetworkVisible(true);
     return;
   }
   controllerStore.setGlobalLoading(true);
@@ -65,7 +65,8 @@ const handleBuy = async (amount: string) => {
       return;
     }
     await httpNoticeStatus(res.data.nfrTrans.id, 'submitted', ret.hash);
-    message.success('You have purchased successfully');
+    message.success('Your purchase is complete.');
+
     if (router.currentRoute.value.path.includes('nfr-details')) {
       router.back();
     } else {
