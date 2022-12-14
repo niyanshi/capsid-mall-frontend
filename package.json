@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "vite",
-    "build:prod": "vite build --mode prod",
+    "build:prod": "vite build --mode production",
     "build:test": "vite build --mode test",
     "build:staging": "vite build --mode staging",
     "preview": "vite preview",
