@@ -4,7 +4,7 @@
       <img src="../../assets/icons/shoppingBags.png" alt="" />
       <span class="text">{{ campaignName }}</span>
       <div class="tab">
-        <span :class="[{active: activeKey === 1}]">{{ t('campaign-page.tab[0]') }}</span>
+        <!-- <span :class="[{active: activeKey === 1}]">{{ t('campaign-page.tab[0]') }}</span> -->
         <!-- <span :class="[{active: activeKey === 2}]">wear</span> -->
         <!-- <span :class="[{active: activeKey === 3}]">REQUESTS</span> -->
       </div>
@@ -20,13 +20,8 @@
         <span>{{ t('coming-soon') }}</span>
       </div>
     </div>
-    <div v-else class="sk-chase">
-      <div class="sk-chase-dot"></div>
-      <div class="sk-chase-dot"></div>
-      <div class="sk-chase-dot"></div>
-      <div class="sk-chase-dot"></div>
-      <div class="sk-chase-dot"></div>
-      <div class="sk-chase-dot"></div>
+    <div v-else class="loading">
+      <BasePageLoading :loading="true" />
     </div>
   </div>
 </template>
@@ -37,11 +32,12 @@ import { INFT } from '../../types/campaign';
 import { useRouter,useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { httpGetCampaignDetail } from '@/api/campaign';
+import BasePageLoading from '@/components/BasePageLoading/index.vue';
 
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
-const activeKey = ref(1);
+// const activeKey = ref(1);
 const campaignId = ref<number>();
 const loading = ref(false);
 

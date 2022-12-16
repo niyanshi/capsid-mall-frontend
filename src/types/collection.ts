@@ -20,3 +20,4 @@ export interface ICollectionsItemDto {
   listings: number;
   slug: string;
 }
+

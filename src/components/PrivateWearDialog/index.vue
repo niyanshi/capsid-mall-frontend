@@ -6,115 +6,7 @@
     :mask-disable="true"
     @close="handleDialogClose"
   >
-    <div
-      v-show="isWear"
-      class="wear"
-    >
-      <div class="dialog-title">
-        <i class="icon-crown icon"></i>
-        <span>{{ t('wear') }}</span>
-      </div>
-      <div class="dialog-main">
-        <div class="select-box">
-          <div class="select-title"></div>
-          <div
-            v-if="leftItem"
-            class="img-box"
-            @click="handleAvatarClick('left')"
-          >
-            <BaseNFRImage
-              v-if="leftItem.tokenAddress === nfrContractAddress"
-              :src="leftItem.image"
-            ></BaseNFRImage>
-            <img
-              v-else
-              ref="leftRef"
-              :src="leftItem.image"
-              alt=""
-              @error="onError('0')"
-            />
-          </div>
-          <div
-            v-else
-            class="img-box add-border"
-            @click="handleAvatarClick('left')"
-          >
-            <div class="add-wrap">
-              <img
-                src="../../assets/icons/icon-add.png"
-                alt=""
-                srcset=""
-              />
-              <div class="text">{{ t('wear-page.chooseWearable') }}</div>
-            </div>
-          </div>
-        </div>
-        <div class="right-arrow split"></div>
-        <div class="result-box"></div>
-        <div class="left-arrow split"></div>
-        <div class="select-box">
-          <div class="select-title">{{ t('selectAvatarNFT') }}</div>
-          <div
-            v-if="selectedItem?.image"
-            class="img-box"
-          >
-            <BaseNFRImage
-              v-if="selectedItem.tokenAddress === nfrContractAddress"
-              :src="selectedItem.image">
-            </BaseNFRImage>
-            <img
-              v-else
-              ref="rightRef"
-              :src="selectedItem?.image"
-              alt=""
-              @click="handleAvatarClick('right')"
-              @error="onError('1')"
-            />
-          </div>
-          <div
-            v-else
-            class="img-box add-border"
-            @click="handleAvatarClick('right')"
-          >
-            <div class="add-wrap">
-              <img
-                src="../../assets/icons/icon-add.png"
-                alt=""
-                srcset=""
-              />
-              <div class="text">{{ t('selectAvatar') }}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form">
-        <div class="form-item">
-          <span class="label">{{ t('newNFT.nameLabel') }}</span>
-          <base-input
-            v-model="name"
-            style-type="line"
-            :placeholder="t('wear-page.inputName')"
-            style="flex:1"
-          >
-          </base-input>
-        </div>
-        <div class="form-item" style="width: 100%">
-          <span class="label">{{ t('newNFT.descLabel') }}</span>
-          <!-- <base-textarea v-model="desc"></base-textarea> -->
-          <base-input
-            v-model="desc"
-            style-type="line"
-            :limit="512"
-            style="flex:1"
-          >
-          </base-input>
-        </div>
-      </div>
-    </div>
-    <div
-      v-show="!isWear"
-      class="select"
-    >
+    <div class="select">
       <div class="dialog-title">
         <i class="icon-bag icon"></i>
         <span>{{ t('selectAvatarz') }}</span>
@@ -122,22 +14,26 @@
       <div class="select-part">
         <div class="tab-wrap">
           <span
-            :class="['tab', isSelectNFT ? 'active' : '']"
-            @click="handleSelectChange(1)"
-            >NFT</span
+            :class="['tab', currentKey === 'All' ? 'active' : '']"
+            @click="handleSelectChange('All')"
+            >All</span
           >
           <span
-            :class="['tab', isSelectNFT ? '' : 'active']"
-            @click="handleSelectChange(2)"
-            >NFR</span
+            v-for="item in collectionList"
+            :key="item.slug"
+            :class="['tab', currentKey === item.slug ? 'active' : '']"
+            @click="handleSelectChange(item.slug)"
+            >{{ item.name }}</span
           >
         </div>
       </div>
       <div class="avatar-to-select">
-        <div
-          v-if="isSelectNFT"
-          ref="scrollListRef"
+        <BaseScrollList
+          v-if="currentKey === 'All'"
+          :height="450"
+          :disabled="noScroll"
           class="select-list"
+          @scroll="handleScroll"
         >
           <div
             v-for="(item, index) in NFTList"
@@ -145,52 +41,38 @@
             :class="[currentAvatar === index ? 'select-img' : '']"
             @click="handleAvatarSelect(index)"
           >
-            <PrivateImage :src="item.imageUrl"></PrivateImage>
-            <!-- <img :src="item.imageUrl" /> -->
+            <PrivateImage v-if="!isNFR(item)" :src="item.imageUrl"></PrivateImage>
+            <BaseNFRImage v-else :src="item.imageUrl"></BaseNFRImage>
           </div>
-        </div>
-        <div
+        </BaseScrollList>
+        <BaseScrollList
           v-else
-          ref="scrollListRef"
+          :height="450"
+          :disabled="noScroll"
           class="select-list"
+          @scroll="handleScroll"
         >
           <div
-            v-for="(item, index) in NFRList"
+            v-for="(item, index) in currentCollectionList"
             :key="index"
             :class="[currentAvatar === index ? 'select-img' : '']"
             @click="handleAvatarSelect(index)"
           >
-            <BaseNFRImage :src="item.image"></BaseNFRImage>
-            <!-- <img ref="imgRef" :src="item.image" @error="onError('2')" /> -->
+            <PrivateImage :src="item.imageUrl"></PrivateImage>
           </div>
+        </BaseScrollList>
+        <div v-show="loading" class="loading">
+          <BasePageLoading :loading="true" />
         </div>
       </div>
     </div>
     <template #button>
       <div
-        v-show="!isWear"
-        style="margin-right: 10px;"
-        class="dialog-button"
-        @click="handleBackClick"
-      >
-        <span>{{ t('back') }}</span>
-        <i class="icon-back"></i>
-      </div>
-      <div
-        v-show="!isWear"
         class="dialog-button"
         @click="handleOkClick"
       >
         <span>{{ t('ok') }}</span>
         <i class="icon-ok"></i>
-      </div>
-      <div
-        v-show="isWear"
-        class="dialog-button"
-        @click="handleWearClick"
-      >
-        <span>{{ t('wear') }}</span>
-        <i class="icon-wear"></i>
       </div>
     </template>
   </BaseDialog>
@@ -199,87 +81,62 @@
 <script setup lang="ts">
 import BaseNFRImage from '@/components/BaseNFRImage/index.vue';
 import BaseDialog from '@/components/BaseDialog/index.vue';
+import BaseScrollList from '@/components/BaseScrollList/index.vue';
+import BasePageLoading from '@/components/BasePageLoading/index.vue';
 import { ref, watch } from 'vue';
-import { INFT, INFR } from '@/types/profile';
+import { INFT } from '@/types/profile';
 import { IWearItem } from '@/types/campaign';
 import { httpGetMyNFTs } from '@/api/nft';
-import { httpGetNFR } from '@/api/profile';
-import { httpCreateWear } from '@/api/campaign';
+import { httpGetWearCollection, httpGetWearCollectionNFT } from '@/api/wear';
 import { useUserInfoStore } from '@/stores/user-info';
 import { useI18n } from 'vue-i18n';
-import BaseInput from '@/components/BaseInput/index.vue';
-import BaseTextarea from '@/components/BaseTextarea/index.vue';
 import { message } from 'ant-design-vue';
 import { nfrContractAddress, wearContractAddress } from '@/hooks/var';
-import _ from 'lodash-es';
-import ImageAlt from '@/assets/images/image-alt.png';
 import PrivateImage from '@/components/PrivateImage/index.vue';
+import { unique } from '@/utils/util';
+import { ICollectionsItemDto } from '@/types/collection';
+import { IWearCollectionNFT } from '@/types/nft';
 
 const userInfoStore = useUserInfoStore();
 const { t } = useI18n();
 
 interface PropType {
   visible: boolean;
-  itemToWear?: IWearItem;
 }
 const props = defineProps<PropType>();
-const emit = defineEmits(['close', 'result']);
+const emit = defineEmits(['close', 'ok']);
 
-// 判断当前是否是wear界面
-const isWear = ref(true);
-// 判断当前是否在选择头像-选择nft
-const isSelectNFT = ref(true);
+const isNFR = (item:INFT) => item.contractAddress.toLowerCase() === nfrContractAddress.toLowerCase();
+// 当前tab的key
+const currentKey = ref('All');
 
 const NFTList = ref<INFT[]>([]);
-const NFRList = ref<INFR[]>([]);
 const currentAvatar = ref(-1);
 const selectedItem = ref<IWearItem | null>();
-const leftItem = ref<IWearItem | null>();
-const name = ref<string>();
-const desc = ref<string>();
+
+// 加载时渲染
+const loading = ref(false);
 
 const handleDialogClose = () => {
-  isWear.value = true;
   currentAvatar.value = -1;
   selectedItem.value = null;
-  leftItem.value = null;
-  name.value = '';
-  desc.value = '';
   emit('close');
 };
-watch(
-  () => props.itemToWear,
-  (val) => {
-    // 如果左侧选择框有值，则固定为父组件传的值
-    if (val) leftItem.value = props.itemToWear;
-  },
-);
-watch(
-  () => props.visible,
-  (val) => {
-    if (!val) {
-      isWear.value = true;
-      currentAvatar.value = -1;
-      selectedItem.value = null;
-      leftItem.value = null;
-      name.value = '';
-      desc.value = '';
-    }
-  },
-);
 
 const noScroll = ref<boolean>(false);
-const scrollListRef = ref();
 const currentPageNum = ref(1);
 const SIZE = 20;
 const currentPageSize = ref(SIZE);
 // 获取拥有的NFT列表
 const getNFTList = async (isNew = false, length = 0) => {
+  if(isNew) loading.value = true;
+  if(noScroll.value) return;
   const res = await httpGetMyNFTs({
     owner: userInfoStore.currentUser.publicKey,
     limit: currentPageSize.value,
     offset: currentPageSize.value * (currentPageNum.value - 1 <= 0 ? 0 : currentPageNum.value - 1),
   });
+  loading.value = false;
   if (res.code === 0) {
     // 筛选出规定合约的nft
     if (res.data.length === 0) {
@@ -288,19 +145,20 @@ const getNFTList = async (isNew = false, length = 0) => {
       return;
     }
     const filterList = res.data.filter(
-      (item: INFT) => item.contractAddress.toLowerCase() !== nfrContractAddress.toLowerCase() && item.contractAddress.toLowerCase() !== wearContractAddress.toLowerCase(),
+      (item: INFT) => item.contractAddress.toLowerCase() !== wearContractAddress.toLowerCase(),
     );
     if (isNew) {
       NFTList.value = filterList;
     } else {
-      NFTList.value = NFTList.value?.concat(...filterList);
+      // 数组去重，避免请求重复数据
+      NFTList.value = unique(NFTList.value?.concat(...filterList), 'tokenId');
     }
     // eslint-disable-next-line no-magic-numbers
     if (filterList.length + length < currentPageSize.value / 2) {
       // 如果筛选结果不足规定一半，重新请求一次
       const timeout = 1000;
-      currentPageNum.value++;
       setTimeout(() => {
+        currentPageNum.value++;
         getNFTList(false, filterList.length);
       }, timeout);
     }
@@ -308,184 +166,96 @@ const getNFTList = async (isNew = false, length = 0) => {
     message.error(res.msg);
   }
 };
-// 获取拥有的NFR列表
-const getNFRList = async (isNew = false) => {
-  const res = await httpGetNFR({
-    accountAdr: userInfoStore.currentUser.publicKey,
-    type: 'owned',
-    pageSize: currentPageSize.value,
-    pageNum: currentPageNum.value,
+const collectionList = ref<ICollectionsItemDto[]>([]);
+// 获取collection列表
+const getCollectionList = async () => {
+  const res = await httpGetWearCollection();
+  if(res.code === 0) {
+    collectionList.value = res.data;
+  } else {
+    message.error(res.msg);
+  }
+};
+const currentCollectionList = ref<IWearCollectionNFT[]>([]);
+// 获取每个collection下的nft列表
+const getCollectionNFTList = async (slug: string,isNew = false) => {
+  if(isNew) loading.value = true;
+  const res = await httpGetWearCollectionNFT({
+    limit: currentPageSize.value,
+    offset: currentPageSize.value * (currentPageNum.value - 1 <= 0 ? 0 : currentPageNum.value - 1),
+    slug
   });
-  if (res.code === 0) {
-    if (res.data.length === 0) {
-      // 没有值说明已经请求完毕
-      noScroll.value = true;
-    }
-    // const list = res.data?.records.map((item: INFR) => ({
-    //   name: 'NFR:',
-    //   imageUrl: item.image
-    // }));
-    if (isNew) {
-      NFRList.value = res.data?.records;
+  loading.value = false;
+  if(res.code === 0) {
+    if(isNew) {
+      currentCollectionList.value = res.data;
     } else {
-      NFRList.value = NFRList.value?.concat(...res.data.records);
+      currentCollectionList.value = currentCollectionList.value.concat(...res.data);
     }
   } else {
     message.error(res.msg);
   }
 };
 
-const handleScroll = (e: Event) => {
-  const target = e.target as HTMLElement;
-  if (target.scrollTop + target.clientHeight === target.scrollHeight) {
-    // 若当前list的数量不是size的整数倍，说明已经请求完了
-    // if (isSelectNFT.value && NFTList.value.length % currentPageSize.value > 0) return;
-    // if (!isSelectNFT.value && NFRList.value.length % currentPageSize.value > 0) return;
-    currentPageNum.value++;
-    if (isSelectNFT.value) {
-      getNFTList();
-    } else {
-      getNFRList();
-    }
-  }
-};
-// 监听滚动区域，加载出来后挂载滚动方法
-watch(scrollListRef, (val) => {
-  if (val) {
-    scrollListRef.value?.addEventListener('scroll', handleScroll);
+watch(()=>props.visible, (v) => {
+  if(v) {
+    currentPageNum.value = 1;
+    getNFTList(true);
+    getCollectionList();
   }
 });
-watch(
-  () => noScroll.value,
-  () => {
-    // 根据条件添加删除滚动函数
-    if (!noScroll.value) {
-      window.console.log('add listen');
-      scrollListRef.value?.addEventListener('scroll', handleScroll);
-    } else {
-      window.console.log('remove listen');
-      scrollListRef.value?.removeEventListener('scroll', handleScroll);
-    }
-  },
-  { immediate: true },
-);
-// 获取拥有的NFT列表
-const handleSelectChange = (index: number) => {
-  isSelectNFT.value = index === 1 ? true : false;
+
+const handleScroll = () => {
+  currentPageNum.value++;
+  if (currentKey.value === 'All') {
+    getNFTList();
+  } else {
+    getCollectionNFTList(currentKey.value);
+  }
+};
+// 切换tab
+const handleSelectChange = (key: string) => {
+  currentKey.value = key;
   currentPageNum.value = 1;
   noScroll.value = false;
-  if (index === 1) {
+  if (key === 'All') {
     getNFTList(true);
   } else {
-    getNFRList(true);
+    currentCollectionList.value = [];
+    getCollectionNFTList(key,true);
   }
 };
-// 判断选择框触发是由左侧触发还是右侧触发
-const triggerType = ref<'left' | 'right'>('right');
-// 选择头像，切换到nft/nfr选择
-const handleAvatarClick = (type: 'left' | 'right') => {
-  if (type === 'left' && props.itemToWear) {
-    // 点击左侧触发框时如prop有值，不允许更改
-    return;
-  }
-  triggerType.value = type;
-  isWear.value = false;
-  getNFTList();
-};
+
 // 点击NFT/NFR
 const handleAvatarSelect = (index: number) => {
   currentAvatar.value = index;
 };
 
-// 生成wear
-const createWear = async (leftValue: IWearItem, rightValue: IWearItem) => {
-  const res = await httpCreateWear({
-    accountAddress: userInfoStore.currentUser.publicKey,
-    accountId: userInfoStore.currentUser.userId,
-    parentPic1: leftValue.image,
-    parentPic2: rightValue.image,
-    parentTokenId1: leftValue.tokenId,
-    parentTokenId2: rightValue.tokenId,
-    parentType1: leftValue.type,
-    parentType2: rightValue.type,
-    tokenAddress1: leftValue.tokenAddress,
-    tokenAddress2: rightValue.tokenAddress,
-    tokenType1: '',
-    tokenType2: '',
-    wearMeta: {
-      description: desc.value,
-      expirationDate: '',
-      image: '',
-      name: name.value,
-      properties: [],
-    },
-  });
-  if (res.code === 0) {
-    emit('result', true);
-  } else {
-    emit('result', false);
-  }
-};
 // 弹框按钮
 const handleOkClick = () => {
-  isWear.value = true;
   let value: IWearItem;
-  if (isSelectNFT.value) {
-    // 选择的是NFT
+  const NFR_TYPE = 2;
+  const NFT_TYPE = 1;
+  if (currentKey.value === 'All') {
+    // 选择的是All
     value = {
       image: NFTList.value[currentAvatar.value].imageUrl,
       tokenAddress: NFTList.value[currentAvatar.value].contractAddress,
       tokenId: NFTList.value[currentAvatar.value].tokenId,
-      type: 1,
+      type: isNFR(NFTList.value[currentAvatar.value]) ? NFR_TYPE : NFT_TYPE,
     };
   } else {
     value = {
-      image: NFRList.value[currentAvatar.value].image,
-      tokenAddress: NFRList.value[currentAvatar.value].nfrTokenAddress,
-      tokenId: NFRList.value[currentAvatar.value].nfrTokenId,
-      type: 2,
+      image: currentCollectionList.value[currentAvatar.value].imageUrl,
+      tokenAddress: currentCollectionList.value[currentAvatar.value].contractAddress,
+      tokenId: currentCollectionList.value[currentAvatar.value].tokenId,
+      type: NFT_TYPE,
     };
   }
-  if (triggerType.value === 'left') leftItem.value = value;
-  else selectedItem.value = value;
-  console.log('left',leftItem.value);
+  emit('ok',value);
   currentAvatar.value = -1;
 };
-// 返回
-const handleBackClick = () => {
-  currentAvatar.value = -1;
-  isWear.value = true;
-};
-const wear = () => {
-  if (!name.value) {
-    message.error(t('wear-page.inputName'));
-    return;
-  }
-  if (!desc.value) {
-    message.error(t('wear-page.desc'));
-    return;
-  }
-  if (!leftItem.value || !selectedItem.value) {
-    message.error(t('wear-page.selectTip'));
-    return;
-  }
-  createWear(leftItem.value as IWearItem, selectedItem.value as IWearItem);
-};
-// 防抖间隔时间
-const TIME = 500;
-const handleWearClick = _.debounce(wear, TIME);
 
-const leftRef = ref();
-const rightRef = ref();
-const onError = function (index: string) {
-  if (index === '0') {
-    if (!leftRef.value) return;
-    leftRef.value.src = ImageAlt;
-  } else if (index === '1') {
-    if (!rightRef.value) return;
-    rightRef.value.src = ImageAlt;
-  }
-};
 </script>
 
 <style lang="scss" scoped>

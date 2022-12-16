@@ -32,6 +32,13 @@
         {{ item.value }}
       </div>
     </div>
+
+    <template v-if="props.errorTip">
+      <div class="error-tip">
+        <InfoCircleFilled :style="{ fontSize: '14px' }" />
+        {{ props.errorTip }}
+      </div>
+    </template>
   </div>
 </template>
 
@@ -39,13 +46,19 @@
 import IconArrowDown from '@/assets/icons/arrow-down.svg';
 import { ref } from 'vue';
 import { useEventListener } from '@vueuse/core';
+import { InfoCircleFilled } from '@ant-design/icons-vue';
 
 interface IOptions {
   key: string | number;
   value: string;
 }
 
-const props = defineProps<{ modelValue?: string; options?: IOptions[]; placeholder?: string }>();
+const props = defineProps<{
+  modelValue?: string;
+  options?: IOptions[];
+  placeholder?: string;
+  errorTip?: string;
+}>();
 const emit = defineEmits(['update:modelValue']);
 const optionsShowRef = ref(false);
 const selectElemRef = ref<HTMLElement | null>(null);

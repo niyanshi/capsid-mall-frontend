@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterView, useRoute } from 'vue-router';
+import { RouterView } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import Router from './router';
 import layouts from '@/layouts/index.vue';
@@ -10,11 +10,11 @@ import { message } from 'ant-design-vue';
 import BaseLoading from '@/components/BaseLoading/index.vue';
 import { httpGetType } from './api/nfr';
 import { httpGetAccount } from './api/profile';
-import { httpLogout } from './api/common';
+import { httpLogout, httpGetUserAuth } from './api/common';
 import PrivateSwitchNetwork from '@/components/PrivateSwitchNetwork/index.vue';
+import InteractiveBox from '@/components/InteractiveBox/index.vue';
 
 const { t } = useI18n();
-const route = useRoute();
 const userInfoStore = useUserInfoStore();
 const controllerStore = useControllerStore();
 const { ethereum } = window;
@@ -43,7 +43,6 @@ const fetchUserInfo = async () => {
   const accountAdr = userInfoStore.currentUser.publicKey;
   const res = await httpGetAccount({ accountAdr });
   if (res.code !== 0) {
-    message.error(res.msg);
     return;
   }
   const { avartar: avatar, id: userId } = res.data;
@@ -53,8 +52,19 @@ const fetchUserInfo = async () => {
   });
 };
 
+/** 获取用户权限 */
+const getUserAuth = async () => {
+  if (!userInfoStore.currentUser.isLogin) return;
+  const res = await httpGetUserAuth();
+  if (res.code !== 0) {
+    return;
+  }
+  userInfoStore.setCurrentUser({ auth: res.data });
+};
+
 onMounted(() => {
   fetchUserInfo();
+  getUserAuth();
   getNFRType();
   // 导航后置钩子
   Router.afterEach((to) => {
@@ -84,12 +94,12 @@ onUnmounted(() => {
 
 <template>
   <layouts>
-    <router-view :key="route.fullPath"></router-view>
+    <router-view></router-view>
   </layouts>
 
-  <!-- 全局loading -->
-  <template v-if="controllerStore.globalLoading">
-    <base-loading :visible="true"></base-loading>
+  <!-- 全局交互提示 -->
+  <template v-if="controllerStore.currentInteractNFR.id">
+    <interactive-box :visible="true"></interactive-box>
   </template>
 
   <!-- 切换网络提示 -->
@@ -97,9 +107,11 @@ onUnmounted(() => {
     :dialog-visible="controllerStore.switchNetworkVisible"
     @close="controllerStore.setSwitchNetworkVisible(false)"
   ></PrivateSwitchNetwork>
-  <!-- <template v-if="controllerStore.switchNetworkVisible"> -->
 
-  <!-- </template> -->
+  <!--   -->
+  <template v-if="controllerStore.globalLoading">
+    <BaseLoading :visible="controllerStore.globalLoading"> </BaseLoading>
+  </template>
 </template>
 
 <style lang="scss">
@@ -136,5 +148,20 @@ body {
     background-color: $main-color;
     border-radius: 8px;
   }
+}
+
+@media only screen and (max-width: 1440px) {
+  html,
+  body {
+    overflow-x: auto;
+  }
+}
+
+.ant-message-notice-content {
+  border-radius: 8px !important;
+}
+
+.ant-image-preview-operations {
+  background-color: rgb(0 0 0 / 0%) !important;
 }
 </style>

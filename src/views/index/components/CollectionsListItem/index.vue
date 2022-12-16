@@ -25,10 +25,12 @@
         <div class="option">
           <div class="key">{{ t('info-options[1]') }}</div>
           <div class="val">{{ props.data.floorPrice }}</div>
-          <img
-            :src="IconCompass"
-            alt=""
-          />
+          <div class="icon">
+            <img
+              :src="IconCompass"
+              alt=""
+            />
+          </div>
         </div>
       </div>
     </div>

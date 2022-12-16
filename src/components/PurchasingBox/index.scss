@@ -1,7 +1,8 @@
 .purchasing-box {
   position: relative;
-  width: 540px;
-  height: 200px;
+  box-sizing: border-box;
+  width: 640px;
+  height: 341px + 10px;
   background-color: #fff;
   border-radius: 32px;
   box-shadow: 2px 2px 20px 10px rgb(163 32 21 / 8%);
@@ -11,11 +12,123 @@
     flex-direction: row-reverse;
 
     img {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       margin-top: 18px;
       margin-right: 29px;
       cursor: pointer;
+    }
+  }
+
+  & > .purchasing-box-main-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 24px;
+
+    .title {
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 36px;
+      color: #1f263b;
+      text-transform: uppercase;
+    }
+
+    .image-text {
+      display: flex;
+      width: 100%;
+      margin-top: 24px;
+
+      & > .image {
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 212px;
+        height: 212px;
+        overflow: hidden;
+        background-color: #d9d9d9;
+        border-radius: 16px;
+      }
+
+      & > .text {
+        width: 364px;
+        margin-left: 16px;
+
+        .name {
+          margin-bottom: 8px;
+          overflow: hidden;
+          font-size: 22px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 36px;
+          color: #1f263b;
+          text-overflow: ellipsis;
+          text-transform: uppercase;
+          white-space: nowrap;
+        }
+
+        .nfr-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: 4px;
+
+          .key {
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 30px;
+            color: rgb(31 38 59 / 60%);
+          }
+
+          .val {
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 30px;
+            color: #1f263b;
+
+            &.red {
+              color: $main-color;
+            }
+
+            input {
+              width: 100%;
+              min-width: 100px;
+              font-family: Roboto, serif;
+              font-weight: 500;
+              line-height: 20px;
+              color: $main-font-color;
+              text-align: right;
+              border: none;
+              outline-style: none;
+
+              &::-webkit-inner-spin-button {
+                appearance: none;
+              }
+
+              &::-webkit-outer-spin-button {
+                appearance: none;
+              }
+
+              &::placeholder {
+                color: rgb(77 77 77 / 60%);
+              }
+            }
+          }
+        }
+
+        .tip {
+          margin-top: 8px;
+          font-size: 14px;
+          font-style: 500;
+          font-weight: 400;
+          line-height: 20px;
+          color: #797d89;
+        }
+      }
     }
   }
 

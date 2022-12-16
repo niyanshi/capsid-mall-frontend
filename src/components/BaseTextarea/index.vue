@@ -9,13 +9,26 @@
       :placeholder="props.placeholder"
       @input="handleChange"
     ></div>
+
+    <template v-if="props.errorTip">
+      <div class="error-tip">
+        <InfoCircleFilled :style="{ fontSize: '14px' }" />
+        {{ props.errorTip }}
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { InfoCircleFilled } from '@ant-design/icons-vue';
 
-const props = defineProps<{ modelValue?: string; placeholder?: string; max?: number }>();
+const props = defineProps<{
+  modelValue?: string;
+  placeholder?: string;
+  max?: number;
+  errorTip?: string;
+}>();
 const emit = defineEmits(['update:modelValue']);
 const target = ref<HTMLElement | null>(null);
 
@@ -31,11 +44,6 @@ const handleChange = (e: Event) => {
   }
   emit('update:modelValue', text.substring(0, maxLen));
 };
-
-// function onKeyDown(e: KeyboardEvent) {
-//   if (['Backspace', 'Delete'].includes(e.key)) return;
-//   const text = (target.value as HTMLTextAreaElement).innerText;
-// }
 </script>
 
 <style scoped lang="scss">

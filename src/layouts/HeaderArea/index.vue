@@ -10,24 +10,27 @@
       <nav>
         <div
           class="nav-item"
-          :class="{ active: currentRouteName.indexOf('explore') === 0 }"
-          @click="skipTo('/explore')"
+          :class="{ active: currentRouteName.indexOf('index') === 0 }"
+          @click="skipTo('/')"
         >
-          {{ t('nav[0]') }}
+          <!-- {{ t('nav[0]') }} -->
+          NFR
         </div>
         <div
           class="nav-item"
           :class="{ active: currentRouteName.indexOf('campaign') === 0 }"
           @click="skipTo('/campaign')"
         >
-          {{ t('nav[1]') }}
+          <!-- {{ t('nav[1]') }} -->
+          NFT Drops
         </div>
         <div
           class="nav-item"
           :class="{ active: currentRouteName.indexOf('wear') === 0 }"
           @click="skipTo('/wear')"
         >
-          {{ t('nav[2]') }}
+          <!-- {{ t('nav[2]') }} -->
+          Studio
         </div>
       </nav>
     </div>
@@ -63,10 +66,11 @@
           class="btn"
           @click="handleConnect"
         >
-          <img
+          <!-- <img
             :src="IconWallet"
             alt=""
-          />
+          /> -->
+          <i class="icon-wallet"></i>
           {{ t('connect') }}
         </div>
       </template>
@@ -96,7 +100,6 @@
 
 <script setup lang="ts">
 import ImageLogo from '@/assets//images/logo.png';
-import IconWallet from '@/assets/icons/wallet.png';
 import DropDownBox from '../DropDownBox/index.vue';
 import WalletConnectModal from '@/components/WalletConnectModal/index.vue';
 import { computed, onMounted, onUnmounted, ref } from 'vue';

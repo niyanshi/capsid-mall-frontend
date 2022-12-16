@@ -1,3 +1,11 @@
+@mixin icon-style($url) {
+  width: 24px;
+  height: 24px;
+  margin-right: 16px;
+  margin-left: 20px;
+  mask: url($url);
+}
+
 .drop-down-box {
   position: absolute;
   top: calc(100% + 2px);
@@ -18,6 +26,36 @@
 
     &.disable {
       opacity: 0.4;
+    }
+
+    &:hover {
+      @include link-hover;
+
+      .icon-profile,
+      .icon-exit {
+        background-color: #f1b540;
+      }
+    }
+
+    &:active {
+      @include link-active;
+
+      .icon-profile,
+      .icon-exit {
+        background-color: $main-color;
+      }
+    }
+
+    .icon-profile {
+      @include icon-style('@/assets/icons/profile.svg');
+
+      background-color: $main-font-color;
+    }
+
+    .icon-exit {
+      @include icon-style('@/assets/icons/exit.svg');
+
+      background-color: $main-font-color;
     }
 
     img {

@@ -7,6 +7,8 @@
   <template v-if="controllerStore.modelVisibleForBuy">
     <purchasing-box
       :visible="controllerStore.modelVisibleForBuy"
+      title="Buy"
+      tips="You will be asked to approve this purchase from your wallet"
       @buy="handleBuy"
       @close="controllerStore.setModelVisibleForBuy(false)"
     ></purchasing-box>
@@ -47,12 +49,18 @@ const handleBuy = async (amount: string) => {
     controllerStore.setSwitchNetworkVisible(true);
     return;
   }
-  controllerStore.setGlobalLoading(true);
   const { order, id } = controllerStore.orderObjForBuy;
+
+  controllerStore.setCurrentInteractNFR({
+    ...controllerStore.currentInteractNFR,
+    id,
+    title: 'Confirm purchase',
+    tip: 'You will be asked to confirm this purchase from your wallet.',
+  });
   const res = await httpBuyNFRs(String(id), amount);
   if (res.code !== 0) {
     message.error(res.msg);
-    controllerStore.setGlobalLoading(false);
+    controllerStore.setCurrentInteractNFR({});
     return;
   }
   try {
@@ -60,7 +68,7 @@ const handleBuy = async (amount: string) => {
     const ret = await buyNFR({ order, orderId, amount });
     const pollRes = await poll(ret.hash);
     if (!pollRes) {
-      controllerStore.setGlobalLoading(false);
+      controllerStore.setCurrentInteractNFR({});
       message.warning(t('warn-msg.viewSoon'));
       return;
     }
@@ -86,7 +94,7 @@ const handleBuy = async (amount: string) => {
     }
     console.error(error);
   } finally {
-    controllerStore.setGlobalLoading(false);
+    controllerStore.setCurrentInteractNFR({});
     controllerStore.setModelVisibleForBuy(false);
   }
 };

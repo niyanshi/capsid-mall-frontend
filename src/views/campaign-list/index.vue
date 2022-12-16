@@ -2,18 +2,18 @@
   <div class="list-wrap">
     <div class="campaign-title">
       <div class="campaign-icon"></div>
-      <div class="campaign-text">{{ t('campaign-page.title') }}</div>
-      <div class="create-button" @click="handleCreateButtonClick">
+      <div class="campaign-text">NFT Drops</div>
+      <div v-if="isRoleCampaign" class="create-button" @click="handleCreateButtonClick">
         <span>{{ t('campaign-page.create') }}</span>
         <em></em>
       </div>
     </div>
     <BaseScrollList :height="700" :disabled="noScroll" @scroll="handleScroll">
       <div v-for="(item, index) in campaignList" :key="index" class="campaign-list" @click="handleListClick(item.id)">
-        <div class="campaign-item">
-          <img :src="item.banner" alt="">
-          <div class="campaign-name">
-            <span>{{ item.campaignName }}</span>
+        <div class="campaign-item" :style="`background-image: url(${item.banner})`">
+          <!-- <img :src="item.banner" alt=""> -->
+          <!-- <div class="campaign-name"> -->
+            <div class="campaign-name">{{ item.campaignName }}</div>
             <div
               v-if="String(item.ownerId) === String(userInfoStore.currentUser.userId)" class="edit r240"
               @click.stop="handleEditClick(item.id)"
@@ -28,21 +28,25 @@
               <span>{{t('campaign-page.editNFT')}}</span>
               <em class="icon-edit"></em>
             </div>
-          </div>
+          <!-- </div> -->
         </div>
+      </div>
+      <div v-show="loading && campaignList.length === 0" class="loading">
+        <BasePageLoading :loading="true" />
       </div>
     </BaseScrollList>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref, h } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { httpGetCampaignList } from '@/api/campaign';
 import { ICampaign, IcampaignId } from '@/types/campaign';
 import { useUserInfoStore } from '@/stores/user-info';
 import BaseScrollList from '@/components/BaseScrollList/index.vue';
+import BasePageLoading from '@/components/BasePageLoading/index.vue';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -51,6 +55,11 @@ const userInfoStore = useUserInfoStore();
 type CampaignListItem = ICampaign & IcampaignId;
 const campaignList = ref<CampaignListItem[]>([]);
 
+// 加载时渲染
+const loading = ref(false);
+
+// 是否有权限编辑，新增campaign
+const isRoleCampaign = computed(() => userInfoStore.currentUser.auth.indexOf('role_campaign' as never) !== -1);
 const noScroll = ref<boolean>(false);
 const currentPageNum = ref(1);
 const SIZE = 10;
@@ -85,6 +94,7 @@ const handleEditNFTClick = (id: number,campaignName: string) => {
 };
 
 const getCampaignList = async () => {
+  loading.value = true;
   const param = {
     // accountId: userInfoStore.currentUser.userId
     accountId: '',
@@ -92,6 +102,7 @@ const getCampaignList = async () => {
     pageSize: currentPageSize.value
   };
   const res = await httpGetCampaignList(param);
+  loading.value = false;
   if (res.code === 0) {
     // campaignList.value = res.data.records;
     if (res.data.records.length === 0) {

@@ -7,12 +7,12 @@
       >
         {{ t('footer-options[0]') }}
       </div>
-      <div
+      <!-- <div
         class="item"
         @click="handleOpen(URL_LIST.Privacy)"
       >
         {{ t('footer-options[1]') }}
-      </div>
+      </div> -->
       <div
         class="item"
         @click="handleOpen(URL_LIST.FAQ)"

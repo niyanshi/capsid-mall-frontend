@@ -5,14 +5,26 @@
       :class="props.styleType"
       :value="props.modelValue"
       :placeholder="props.placeholder"
-      :maxlength="(props.type === 'number' ? '' : props.limit)"
+      :maxlength="props.type === 'number' ? '' : props.limit"
       @input="handleChange"
     />
-    <span v-if="props.type !== 'number'" class="limit-text">{{ `${currentLength}/${props.limit}` }}</span>
+    <span
+      v-if="props.type !== 'number'"
+      class="limit-text"
+      >{{ `${currentLength}/${props.limit}` }}</span
+    >
+    <template v-if="props.errorTip">
+      <div class="error-tip">
+        <InfoCircleFilled :style="{ fontSize: '14px' }" />
+        {{ props.errorTip }}
+      </div>
+    </template>
   </div>
 </template>
 
-<script setup lang="ts">import { ref } from 'vue';
+<script setup lang="ts">
+import { InfoCircleFilled } from '@ant-design/icons-vue';
+import { ref } from 'vue';
 
 const props = withDefaults(
   defineProps<{
@@ -20,18 +32,19 @@ const props = withDefaults(
     styleType?: 'none' | 'line' | 'border';
     modelValue: unknown;
     placeholder?: string;
-    limit?: number
+    limit?: number;
+    errorTip?: string;
   }>(),
   {
     type: 'text',
     styleType: 'none',
     placeholder: '',
-    limit: 128
+    limit: 128,
+    errorTip: '',
   },
 );
 
 const emit = defineEmits(['update:modelValue']);
-
 const currentLength = ref(0);
 const handleChange = (e: Event) => {
   const inputValue = (e.target as HTMLInputElement).value;

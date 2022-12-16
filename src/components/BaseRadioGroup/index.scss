@@ -18,12 +18,21 @@
     cursor: pointer;
     border: 2px solid $main-font-color;
     border-radius: 32px;
+    transition: all 0.3s ease;
 
     &.active {
       box-sizing: border-box;
       color: $vice-color;
       background-color: $main-color;
       border: 2px solid $main-color;
+    }
+
+    &:hover {
+      @include tag-hover(2px);
+    }
+
+    &:active {
+      @include tag-active(2px);
     }
   }
 }

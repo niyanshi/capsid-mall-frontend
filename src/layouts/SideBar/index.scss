@@ -1,20 +1,91 @@
+// @mixin icon-style($url) {
+//   display: inline-block;
+//   width: 32px;
+//   height: 32px;
+//   cursor: pointer;
+//   background-color: $main-color;
+//   mask: url($url);
+//   mask-repeat: no-repeat;
+// }
+@mixin icon-style($url) {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  background-image: url($url);
+  background-size: contain;
+}
+
 .side-bar {
   position: relative;
   top: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: auto 32px;
+  margin: auto 28px;
   transform: translateY(-50%);
 
-  img {
+  .item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 32px;
     height: 32px;
     margin-top: 36px;
     cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    .side-bar-icon {
+      &.discord {
+        @include icon-style('@/assets/svg/discord.svg');
+      }
+
+      &.twitter {
+        @include icon-style('@/assets/svg/twitter.svg');
+      }
+
+      &.mirror {
+        @include icon-style('@/assets/svg/mirror.svg');
+      }
+    }
+
+    &:hover {
+      background: rgb(163 32 21 / 30%);
+    }
+
+    // &:active {
+    //   background-color: $main-color;
+
+    //   .side-bar-icon {
+    //     &.discord {
+    //       @include icon-style('@/assets/svg/discord-active.svg');
+    //     }
+
+    //     &.twitter {
+    //       @include icon-style('@/assets/svg/twitter-active.svg');
+    //     }
+
+    //     &.mirror {
+    //       @include icon-style('@/assets/svg/mirror-active.svg');
+    //     }
+    //   }
+    // }
 
     &:first-child {
       margin-top: 0;
     }
   }
+
+  // img {
+  //   width: 32px;
+  //   height: 32px;
+  //   margin-top: 36px;
+  //   cursor: pointer;
+
+  //   &:first-child {
+  //     margin-top: 0;
+  //   }
+  // }
 }

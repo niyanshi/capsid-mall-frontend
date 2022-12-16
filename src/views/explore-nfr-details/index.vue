@@ -79,17 +79,35 @@ const isAtRequest = computed(() => router.currentRoute.value.path.indexOf('reque
 const handleDelistNFR = async () => {
   delistVisibleRef.value = true;
 };
+/** 需要展示在交互框中的信息 */
+const calcInfoObj = computed(() => ({
+  id: nfrDetalsRef.value?.id,
+  name: nfrDetalsRef.value?.name,
+  image: nftDetalsRef.value?.avatar,
+  chain: 'ethereum',
+  itemPrice: nfrDetalsRef.value?.price,
+  quantity: Number(nfrDetalsRef.value?.remain),
+}));
 const handleConfirmDelistNFR = async () => {
   if (userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
     controllerStore.setSwitchNetworkVisible(true);
     return;
   }
   delistVisibleRef.value = false;
-  controllerStore.setGlobalLoading(true);
   if (isAtRequest.value) {
-    controllerStore.setGlobalTip(t('wait-msg.cancel'));
+    // cancel request
+    controllerStore.setCurrentInteractNFR({
+      ...calcInfoObj.value,
+      title: 'Cancel NFR Request',
+      tip: 'You will be asked to confirm your cancelation from your wallet.',
+    });
   } else {
-    controllerStore.setGlobalTip(t('wait-msg.delist'));
+    // delist
+    controllerStore.setCurrentInteractNFR({
+      ...calcInfoObj.value,
+      title: 'Cancel NFR creation',
+      tip: 'You will be asked to confirm your Cancelation from your wallet.',
+    });
   }
   if (!nfrDetalsRef.value?.order) return;
   const { order, id: orderId } = nfrDetalsRef.value;
@@ -113,7 +131,7 @@ const handleConfirmDelistNFR = async () => {
     }
     console.error(error);
   } finally {
-    controllerStore.setGlobalLoading(false);
+    controllerStore.setCurrentInteractNFR({});
   }
 };
 
@@ -124,23 +142,24 @@ const execAcceptRequest = async () => {
     return;
   }
   if (!nfrDetalsRef.value?.order) return;
+  controllerStore.setCurrentInteractNFR({
+    ...calcInfoObj.value,
+    title: 'Accept the request',
+    tip: 'You will be asked to cofirm this sale from your wallet.',
+  });
   const { order, id } = nfrDetalsRef.value;
-  controllerStore.setGlobalLoading(true);
-
   const res = await httpAcceptNFRsOrder(String(id));
   if (res.code !== 0) {
-    controllerStore.setGlobalLoading(false);
+    controllerStore.setCurrentInteractNFR({});
     message.error(res.msg);
     return;
   }
-  controllerStore.setGlobalLoading(true);
-  controllerStore.setGlobalTip(t('wait-msg.accept'));
   try {
     const orderId = res.data.nfrTrans.nfrTokenId;
     const ret = await acceptNFRsRequest({ order, orderId });
     const pollRes = await poll(ret.hash);
     if (!pollRes) {
-      controllerStore.setGlobalLoading(false);
+      controllerStore.setCurrentInteractNFR({});
       message.warning(t('warn-msg.viewSoon'));
       return;
     }
@@ -157,7 +176,7 @@ const execAcceptRequest = async () => {
     }
     console.error(error);
   } finally {
-    controllerStore.setGlobalLoading(false);
+    controllerStore.setCurrentInteractNFR({});
   }
 };
 
@@ -282,7 +301,6 @@ const getNFRsDetails = async () => {
     duration: d.duration,
     name: JSON.parse(d.nftMeta)?.name,
   };
-  console.log(nfrDetalsRef.value);
   getNFTsDetails(nftTokenAddress, nftTokenId);
 };
 

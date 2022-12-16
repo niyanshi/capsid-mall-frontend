@@ -13,7 +13,8 @@
     <!-- </span> -->
     <span class="page-block page-text" @click="handlePreClick">{{ '<' }}</span>
         <span v-show="currentPage - 1 > 2" class="page-block ellipsis">...</span>
-        <span v-for="pageNum in pageList" :key="pageNum"
+        <span
+          v-for="pageNum in pageList" :key="pageNum"
           :class="['page-block', 'page-text', currentPage === pageNum && 'current']"
           @click="handlePageClick(pageNum)">{{ pageNum }}</span>
         <span v-show="pageAmount - currentPage > 2" class="page-block ellipsis">...</span>

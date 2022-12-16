@@ -1,22 +1,11 @@
 <template>
-  <base-overlay
-    :visible="props.visible"
-    @close="handleClose"
-  >
+  <base-overlay :visible="props.visible" @close="handleClose">
     <div class="base-alert">
       <div class="close">
-        <img
-          :src="IconClose"
-          alt=""
-          @click="handleClose"
-        />
+        <img :src="IconClose" alt="" @click="handleClose" />
       </div>
-      <div class="layer">
-        <img
-          :src="props.icon"
-          alt=""
-          class="icon"
-        />
+      <div :class="{ layer: !props.layerClassName, [props.layerClassName || '']: props.layerClassName }">
+        <img :src="props.icon" alt="" class="icon" />
         <div class="section">
           <div class="title">
             {{ props.title }}
@@ -28,15 +17,9 @@
           </div>
         </div>
       </div>
-      <div
-        class="btn"
-        @click="handleClose"
-      >
+      <div class="btn" @click="handleClose">
         {{ t('ok') }}
-        <img
-          :src="SvgDone"
-          alt=""
-        />
+        <img :src="SvgDone" alt="" />
       </div>
     </div>
   </base-overlay>
@@ -50,7 +33,7 @@ import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
-const props = defineProps<{ visible: boolean; title?: string; desc?: string; icon?: string }>();
+const props = defineProps<{ visible: boolean; title?: string; desc?: string; icon?: string; layerClassName?: string }>();
 const emit = defineEmits<{ (event: 'close'): void }>();
 
 /** 关闭遮罩 */

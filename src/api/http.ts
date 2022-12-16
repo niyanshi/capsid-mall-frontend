@@ -30,6 +30,7 @@ http.interceptors.response.use(
     if (data.code === RELOGIN_CODE) {
       userInfoStore.logout();
       Router.push('/');
+      userInfoStore.setLoginModalVisible(true);
       message.warn(`CODE ${data.code}: ${data.message || data.msg}`);
     }
     return config;

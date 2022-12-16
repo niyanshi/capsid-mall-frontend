@@ -3,11 +3,25 @@
  */
 
 import { defineStore } from 'pinia';
+import { IWearItem } from '@/types/campaign';
 
 interface INFRTypeItem {
   id: string;
   name: string;
 }
+
+interface ICurrentInteractToken {
+  id?: string | number;
+  title?: string;
+  tip?: string;
+  image?: string;
+  name?: string;
+  itemPrice?: string | number;
+  quantity?: string | number;
+  chain?: string;
+  nft?: boolean;
+}
+
 export const useControllerStore = defineStore('contoller', {
   state: () => ({
     globalLoading: false,
@@ -25,8 +39,30 @@ export const useControllerStore = defineStore('contoller', {
     swapVisible: false,
 
     switchNetworkVisible: false,
+    // 当前进行交互的nfr
+    currentInteractNFR: {
+      id: '',
+      title: '',
+      tip: '',
+      image: '',
+      name: '',
+      itemPrice: '',
+      quantity: '',
+      chain: '',
+    } as ICurrentInteractToken,
+
+    // wear的服饰信息
+    itemToWear: {
+      image: '',
+      tokenId: '',
+      type: -1,
+      tokenAddress: '',
+    },
   }),
   actions: {
+    setCurrentInteractNFR(payload: ICurrentInteractToken) {
+      this.currentInteractNFR = payload;
+    },
     setSwitchNetworkVisible(payload: boolean) {
       this.switchNetworkVisible = payload;
     },
@@ -59,6 +95,13 @@ export const useControllerStore = defineStore('contoller', {
         this.orderObjForBuy.order = '';
         this.orderObjForBuy.amount = '';
       }
+    },
+    setItemToWear(payload: IWearItem) {
+      const { image, tokenId, type, tokenAddress } = payload;
+      if (image) this.itemToWear.image = image;
+      if (tokenId) this.itemToWear.tokenId = tokenId;
+      if (type) this.itemToWear.type = type;
+      if (tokenAddress) this.itemToWear.tokenAddress = tokenAddress;
     },
   },
 });

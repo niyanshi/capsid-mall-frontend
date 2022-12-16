@@ -23,8 +23,16 @@ const routes = [
       },
       {
         name: 'explore-nft-collections-display',
-        path: 'nft-collections-display/:slug',
+        path: 'nft-collections-display',
         component: () => import('@/views/explore-nft-collections-display/index.vue'),
+        children: [
+          {
+            name: 'explore-nft-collections-display-slug',
+            path: ':slug',
+            component: () =>
+              import('@/views/explore-nft-collections-display/components/NFTsArea.vue'),
+          },
+        ],
       },
       {
         name: 'explore-nft-details',
@@ -109,30 +117,56 @@ const routes = [
     path: '/wear',
     name: 'wear',
     component: () => import('@/views/wear/index.vue'),
+    children: [
+      {
+        path: '',
+        name: 'wear-select',
+        component: () => import('@/views/wear-select/index.vue'),
+        meta: {
+          title: 'wear-title',
+        },
+      },
+      {
+        path: 'list',
+        name: 'wear-list',
+        component: () => import('@/views/wear-list/index.vue'),
+        meta: {
+          title: 'wear-title',
+        },
+      },
+    ],
     meta: {
       title: 'wear-title',
     },
   },
+  {
+    path: '/wear/detail/:id',
+    name: 'wear-detail',
+    component: () => import('@/views/wear-detail/index.vue'),
+    meta: {
+      title: 'wear-title',
+    },
+  }
 ];
 
 const Router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
-Router.beforeEach((to,from) => {
+Router.beforeEach((to, from) => {
   const userInfoStore = useUserInfoStore();
   if (to.name === 'campaign-create' && !userInfoStore.currentUser.isLogin) {
     userInfoStore.setLoginModalVisible(true);
     return false;
   }
   const profileTab = sessionStorage.getItem('tabStorage') || '';
-  if(from.name === 'profile' && to.path.includes('nfr-details')) {
+  if (from.name === 'profile' && to.path.includes('nfr-details')) {
     // 如果是去nfr detail 或 nfr request detail，记录下profile当前的tab
     const value = sessionStorage.getItem('profile-tab') || '';
-    sessionStorage.setItem('tabStorage',value);
+    sessionStorage.setItem('tabStorage', value);
   }
-  if(from.path.includes('nfr-details') && to.name === 'profile' && profileTab !== '') {
-    sessionStorage.setItem('profile-tab',profileTab);
+  if (from.path.includes('nfr-details') && to.name === 'profile' && profileTab !== '') {
+    sessionStorage.setItem('profile-tab', profileTab);
   }
   return true;
 });

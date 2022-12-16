@@ -36,22 +36,3 @@ export const httpGetNFTsDetails = async (
   });
   return res.data;
 };
-
-/**
- * 获取nfrs
- * @param params
- * @returns
- */
-export const httpGetNFRsList = async (params: Record<string, unknown>): Promise<IResponseDto> => {
-  const res = await http.get('/mock/nft/get-nfrs', { params });
-  return res.data;
-};
-
-/**
- * 获取nfr详情
- * @returns
- */
-export const httpGetNFRsDetails = async (): Promise<IResponseDto> => {
-  const res = await http.get('/mock/nft/get-nfr-details');
-  return res.data;
-};

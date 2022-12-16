@@ -11,5 +11,6 @@
 .main {
   display: block;
   padding: 0 96px;
+  margin-top: 10px;
 }
 </style>

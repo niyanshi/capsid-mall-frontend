@@ -26,7 +26,12 @@
         </tr>
       </tbody>
     </table>
-    <div v-if="!(data as []).length" class="no-message">{{ emptyText }}</div>
+    <div v-if="!(data as []).length && !loading" class="no-message">
+      <div>
+        <span class="icon-empty"></span>
+        <span>{{ emptyText }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -46,6 +51,7 @@ defineProps<{
   columns: Array<columnType>;
   emptyText?: string;
   data: unknown;
+  loading?: boolean
 }>();
 </script>
 
@@ -125,5 +131,20 @@ defineProps<{
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 26px;
+  text-align: center;
+  color: #d2d2d2;
+
+  .icon-empty {
+    display: block;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background-image: url('../../assets/icons/empty.png');
+  }
 }
 </style>

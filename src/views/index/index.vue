@@ -18,10 +18,11 @@
         @click="router.push('/create-nfr')"
       >
         {{ t('quick-start') }}
-        <img
+        <i class="icon-done"></i>
+        <!-- <img
           :src="IconDone"
           alt=""
-        />
+        /> -->
       </div>
     </div>
     <div class="card-section">
@@ -74,7 +75,6 @@
 
 <script setup lang="ts">
 import ImageBanner from '@/assets/images/banner.png';
-import IconDone from '@/assets/icons/done.png';
 import ImageSellTitle from '@/assets/images/sell-title.png';
 import ImageGoogle from '@/assets/investors/google.png';
 import ImageYoutube from '@/assets/investors/youtube.png';

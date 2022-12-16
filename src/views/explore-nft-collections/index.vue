@@ -7,19 +7,25 @@
       />
       {{ t('explore-page.title') }}
     </div>
-    <div class="display">
-      <collections-card
-        v-for="item in collectionsListRef"
-        :key="item.id"
-        :data="item"
-      ></collections-card>
-    </div>
+    <base-page-loading
+      :loading="isLoadingRef"
+      :top="100"
+    >
+      <div class="display">
+        <collections-card
+          v-for="item in collectionsListRef"
+          :key="item.id"
+          :data="item"
+        ></collections-card>
+      </div>
+    </base-page-loading>
   </div>
 </template>
 
 <script setup lang="ts">
 import IconTrophy from '@/assets/icons/trophy.png';
 import CollectionsCard from './components/CollectionsCard.vue';
+import BasePageLoading from '@/components/BasePageLoading/index.vue';
 import { useI18n } from 'vue-i18n';
 import { onMounted, ref } from 'vue';
 import { httpGetNFTCollectionsList } from '@/api/explore';
@@ -27,6 +33,7 @@ import { ICollectionsItemDto, ICollectionsItemType } from '@/types/collection';
 
 const { t } = useI18n();
 const collectionsListRef = ref<ICollectionsItemType[]>();
+const isLoadingRef = ref<boolean>(true);
 
 onMounted(() => {
   const init = async () => {
@@ -38,6 +45,7 @@ onMounted(() => {
       floorPrice: item.floorPrice || 0,
       id: item.slug,
     }));
+    isLoadingRef.value = false;
   };
   init();
 });

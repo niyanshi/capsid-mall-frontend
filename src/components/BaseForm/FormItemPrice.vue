@@ -35,7 +35,7 @@ const currencyRef = ref('ETH');
 
 <style scoped lang="scss">
 .form-item-price {
-  width: 160px;
+  min-width: 160px;
 
   & > .title {
     font-size: 16px;

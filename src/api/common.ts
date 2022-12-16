@@ -28,3 +28,9 @@ export const httpLogout = async (account: string) => {
   const res = await http.get(`${prefix}/log?event=accountsChanged&msg=${account}`);
   return res.data;
 };
+
+/** 获取用户权限 */
+export const httpGetUserAuth = async () => {
+  const res = await http.get(`${prefix}/v1/login/authorities`);
+  return res.data;
+};

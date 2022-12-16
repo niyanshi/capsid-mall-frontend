@@ -53,8 +53,12 @@
         alt=""
         class="icon"
       />
-      <template v-if="Number(props.btns?.length) > 0 || !props.data?.expire ">
+      <template v-if="Number(props.btns?.length) > 0 || !props.data?.expire">
         {{ 'Duration: ' + props.data?.duration + ' days' }}
+        <BaseTooltip
+          :tips="`The non furgible rights will be expired ${props.data?.duration} days after you buy them.`"
+          width="200"
+        />
       </template>
       <template v-else>
         {{ dayjs(props.data?.expire).format('MM/DD/YYYY') + ' expires' }}
@@ -69,10 +73,14 @@
           class="icon"
         />
         {{ props.data?.remain + '/' + props.data?.total }}
-        <img
+        <!-- <img
           :src="IconInfo"
           alt=""
           class="icon-end"
+        /> -->
+        <BaseTooltip
+          :tips="`total supply of ${props.data?.total}, ${props.data?.remain} available on sale.`"
+          width="160"
         />
       </div>
       <div class="item">
@@ -82,6 +90,10 @@
           class="icon"
         />
         {{ props.data?.price }}
+        <BaseTooltip
+          :tips="`unit price of the NFR.`"
+          width="150"
+        />
       </div>
     </div>
 
@@ -108,7 +120,7 @@
 import IconLink from '@/assets/icons/link.svg';
 import IconCompass from '@/assets/icons/compass.png';
 import IconCalender from '@/assets/icons/calender.png';
-import IconInfo from '@/assets/icons/info.svg';
+// import IconInfo from '@/assets/icons/info.svg';
 import IconBookmark from '@/assets/icons/bookmark.png';
 import { INFRsType } from '@/types/nft';
 import { useI18n } from 'vue-i18n';
@@ -117,6 +129,7 @@ import { IInfoBtnType } from '@/types/explore';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserInfoStore } from '@/stores/user-info';
+import BaseTooltip from '@/components/BaseTooltip/index.vue';
 
 const { t } = useI18n();
 const router = useRouter();

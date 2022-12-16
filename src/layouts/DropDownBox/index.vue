@@ -5,10 +5,11 @@
       :class="{ disable: !userInfoStore.currentUser.isLogin }"
       @click="skipToProfile"
     >
-      <img
+      <i class="icon-profile"></i>
+      <!-- <img
         :src="IconProfile"
         alt=""
-      />
+      /> -->
       {{ t('menu-items[0]') }}
     </div>
     <div
@@ -16,18 +17,19 @@
       :class="{ disable: !userInfoStore.currentUser.isLogin }"
       @click="handleLogOut"
     >
-      <img
+      <!-- <img
         :src="IconExit"
         alt=""
-      />
+      /> -->
+      <i class="icon-exit"></i>
       {{ t('menu-items[1]') }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import IconExit from '@/assets/icons/exit.svg';
-import IconProfile from '@/assets/icons/profile.svg';
+// import IconExit from '@/assets/icons/exit.svg';
+// import IconProfile from '@/assets/icons/profile.svg';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -42,7 +44,6 @@ const router = useRouter();
  */
 const skipToProfile = () => {
   if (!userInfoStore.currentUser.isLogin) return;
-  console.log('profile:', userInfoStore.currentUser.publicKey);
   router.push(`/profile/${userInfoStore.currentUser.publicKey}`);
 };
 /**

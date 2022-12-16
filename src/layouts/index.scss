@@ -3,17 +3,19 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1999;
+    z-index: 995;
     width: 100vw;
     height: 96px;
     margin-bottom: 96px;
     background-color: #fff;
+    box-shadow: 0 4px 8px rgb(226 226 226 / 25%);
   }
 
   aside {
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 10;
     width: 96px;
     height: 100vh;
   }
@@ -26,6 +28,7 @@
 
   footer {
     width: 100vw;
+    min-width: 1440px;
     height: 88px;
     background-color: $main-color;
   }

@@ -11,7 +11,7 @@ import wethAbi from './wethAbi.json';
 import { OrderWithCounter } from '@opensea/seaport-js/lib/types';
 import { ItemType } from '@opensea/seaport-js/lib/constants';
 import { Decimal } from 'decimal.js';
-import { WAIT_TIME } from '@/utils/constant'
+import { WAIT_TIME } from '@/utils/constant';
 
 interface IBigOrderTtpe {
   order: string;
@@ -41,7 +41,7 @@ function salt(token: string, id: string, duraiton: number): string {
 }
 
 /** 格式化nftmeta */
-function formatNFTsMeta(data: INFRTypeForRequest): string {
+export function formatNFTsMeta(data: INFRTypeForRequest): string {
   const obj: IMetaDataType = {
     name: 'CAPSID NFR - ' + data.nftName + ' ' + String(data.type),
     description: data.desc,
@@ -50,6 +50,19 @@ function formatNFTsMeta(data: INFRTypeForRequest): string {
   };
   console.log('formatNFTsMeta', obj);
   return JSON.stringify(obj);
+}
+
+/** 获取交互显示数据 */
+export function getInteractiveTokenData(data: INFRTypeForRequest) {
+  const obj = {
+    id: data.nftId,
+    name: 'CAPSID NFR - ' + data.nftName + ' ' + String(data.type),
+    image: data.avatar,
+    chain: 'ethereum',
+    itemPrice: data.price,
+    quantity: data.quantity,
+  };
+  return obj;
 }
 
 const useSeaport = () => {
@@ -224,10 +237,10 @@ const useSeaport = () => {
   const sleep = (time = 5000) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-          resolve(true)
-      }, time)
-  })
-  }
+        resolve(true);
+      }, time);
+    });
+  };
 
   const poll = async (hash: string) => {
     console.log('🚀 ~ poll ~ hash', hash);
@@ -245,13 +258,13 @@ const useSeaport = () => {
       window.console.log('success');
       const res = await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(true)
-        }, WAIT_TIME)
-      })
-      if(res) {
-        return true
+          resolve(true);
+        }, WAIT_TIME);
+      });
+      if (res) {
+        return true;
       } else {
-        return false
+        return false;
       }
     } else {
       return false;

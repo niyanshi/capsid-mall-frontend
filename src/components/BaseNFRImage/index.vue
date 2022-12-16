@@ -1,5 +1,8 @@
 <template>
-  <div class="base-nfr-image">
+  <div
+    class="base-nfr-image"
+    :class="{ 'base-nfr-image-scale': props.isScale }"
+  >
     <img
       ref="imageRef"
       class="main-image"
@@ -8,16 +11,18 @@
       @error="onError"
       @load="onLoad"
     />
-    <img
-      class="frame"
-      :style="{
-        width: tagInfoObj.width + 'px',
-        top: tagInfoObj?.top + 'px',
-        left: tagInfoObj.left + 'px',
-      }"
-      :src="ImageFrame"
-      alt=""
-    />
+    <template v-if="!nft">
+      <img
+        class="frame"
+        :style="{
+          width: tagInfoObj.width + 'px',
+          top: tagInfoObj?.top + 'px',
+          left: tagInfoObj.left + 'px',
+        }"
+        :src="ImageFrame"
+        alt=""
+      />
+    </template>
   </div>
 </template>
 
@@ -26,12 +31,13 @@ import { reactive, ref } from 'vue';
 import ImageAlt from '@/assets/images/image-alt.png';
 import ImageFrame from '@/assets/images/frame.png';
 
-const props = defineProps<{ src: string }>();
+const props = defineProps<{ src: string; isScale?: boolean; nft?: boolean }>();
 
 const imageRef = ref();
 const tagInfoObj = reactive<{
   width?: number;
   top?: number;
+
   left?: number;
 }>({});
 
@@ -69,6 +75,18 @@ const onLoad = (e: Event) => {
     // top: 0;
     width: 100%;
     height: auto;
+  }
+
+  &-scale {
+    img {
+      transition: all 0.3s ease;
+    }
+
+    &:hover {
+      img {
+        transform: scale(1.07, 1.07);
+      }
+    }
   }
 }
 </style>

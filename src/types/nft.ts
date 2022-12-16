@@ -91,3 +91,19 @@ export interface ICreateNFT {
   nfrOrderId: number | null;
   nftOrderId: number | null;
 }
+
+// wear下collection的nft
+export interface IWearCollectionNFT {
+  contractAddress: string;
+  imageUrl: string;
+  name: string;
+  ownerAddressList:Array<string>,
+  tokenId: string;
+  traits: [
+    {
+      displayType: string;
+      traitType: string;
+      value: string;
+    }
+  ]
+}

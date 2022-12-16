@@ -71,6 +71,7 @@ export interface ICampaignDetail {
 export interface IWear {
   accountAddress: string,
   accountId: number,
+  fee: string,
   id: number,
   meta: string,
   parentPic1: string,
@@ -81,6 +82,7 @@ export interface IWear {
   parentType2: 1|2,
   tokenAddress1: string,
   tokenAddress2: string,
+  tokenId: string,
   tokenType1: string,
   tokenType2: string,
   status: 0|1|2|3,
@@ -90,7 +92,8 @@ export interface IWear {
     expirationDate: string;
     image: string,
     name: string
-  }
+  },
+  wearOrderId: number
 }
 export interface IWearItem {
   image: string;

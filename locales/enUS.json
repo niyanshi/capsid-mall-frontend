@@ -35,11 +35,11 @@
     "create": "CREATE CAMPAIGN",
     "chooseBannar": "Choose an Banner",
     "bannerTips": "Minimum size 1280 x 200px",
-    "campaignName": "Campaign name",
+    "campaignName": "Project name",
     "placeholder": "Give me a name",
     "expirationDate": "Expiration date",
     "calendarTitle": "Expiration Date",
-    "describeBriefly": "Describe the campaign Briefly",
+    "describeBriefly": "Description",
     "links": "Useful links ( website, twitter, discord, ... etc. )",
     "pleaseEnter": "Please enter",
     "back": "BACK",
@@ -129,7 +129,8 @@
     "accept": "Accepting...",
     "mint": "Minting...",
     "listNFT": "NFT Listing...",
-    "listNFR": "NFR Listing..."
+    "listNFR": "NFR Listing...",
+    "wear": "Wearing..."
   },
   "info-msg": {
     "success": "Successful operation!"
@@ -138,6 +139,7 @@
   "buyNfr": "BUY NFR",
   "wear": "Wear",
   "selectAvatarNFT": "Select avatar NFT",
+  "selectWearable": "Select wearable NFT/NFR",
   "selectAvatar": "Select your avatar",
   "selectAvatarz": "Select your avatar",
   "wearSuccess": "Wear successfully",
@@ -165,7 +167,7 @@
   "uploadImage": "Upload image",
   "activityTableLabel": ["Item", "Price", "Quantity", "From", "To", "type", "Time"],
   "wear-page": {
-    "tab": ["All", "Completed", "Pending"],
+    "tab": ["Wear!", "Looks"],
     "createNew": "Create",
     "selectWearNFT": "Select wearable NFT/NFR",
     "chooseWearable": "Choose your wearable",
@@ -181,9 +183,24 @@
     "chooseImage": "please upload an image",
     "nameLabel": "Name",
     "namePlaceholder": "please input name",
-    "descLabel": "Desc"
+    "descLabel": "Description"
   },
   "mintAll": "MINT ALL",
   "coming-soon": "Coming Soon~~",
-  "ErrorNetwork": "Your wallet is connecting to the wrong network, do you want to switch to the correct network?"
+  "ErrorNetwork": "Your wallet is connecting to the wrong network, do you want to switch to the correct network?",
+  "avatarGuidence": {
+    "title": "Avatar NFT guidance",
+    "desc": [
+      "1. Please choose your avatar NFT where the avatar occupies more than one quarter of the screen.",
+      "2. The final result will be determined by the digital costume in conjunction with the look and background of your avatar. It is recommended that you provide an avatar based on the style of the digital apparel, e.g. if the digital apparel is designed with necklaces and earrings, try to show the avatar with clear neck and ears in the image."
+    ]
+  },
+  "uploadImageGuidence": {
+    "title": "Image uploading guidance",
+    "desc": [
+      "1. Please upload images with a real person’s or an animal’s full body portrait, and please do not use images where the portrait occupies less than a quarter of the screen.",
+      "2. The final result will be determined by the digital costume in conjunction with the look and background of your image. It is recommended that you provide images based on the style of the digital apparel, e.g. if the digital apparel is designed with necklaces and earrings, try to show the wearer's neck and ears in the images.",
+      "3. If you want to show the same effect of digital clothing, please use pictures without excessive coloring, filters and retouching; if you choose pictures with a unique visual style, we will try our best to customize the clothing style to present the same visual style."
+    ]
+  }
 }

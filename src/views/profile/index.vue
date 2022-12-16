@@ -48,7 +48,7 @@
             >{{ t('profile-page.tabList[3]') }}</span
           >
         </div>
-        <div>
+        <div style="position: relative">
           <div class="operate">
             <span
               v-show="currentTab === 1 || currentTab === 2"
@@ -76,7 +76,7 @@
           >
             <PositionItem
               v-for="(item, index) in NFTList"
-              v-show="currentTab === 0"
+              v-show="currentTab === 0 && !loading"
               :key="index"
               :pic="String(item.imageUrl)"
               :name="String(item.name)"
@@ -85,7 +85,7 @@
             </PositionItem>
             <PositionItem
               v-for="(item, index) in NFROwnedList"
-              v-show="currentTab === 1 && currentSecondTab === Number('1')"
+              v-show="currentTab === 1 && currentSecondTab === Number('1') && !loading"
               :key="index"
               :pic="String(item.image)"
               :name="`${JSON.parse(item.nftMeta).name}`"
@@ -94,7 +94,7 @@
             </PositionItem>
             <PositionItem
               v-for="(item, index) in NFRCreatedList"
-              v-show="currentTab === 1 && currentSecondTab === 0"
+              v-show="currentTab === 1 && currentSecondTab === 0 && !loading"
               :key="index"
               :pic="String(item.image)"
               :name="`${JSON.parse(item.nftMeta).name}`"
@@ -103,7 +103,7 @@
             </PositionItem>
             <PositionItem
               v-for="(item, index) in requestCreatedList"
-              v-show="currentTab === 2 && currentSecondTab === 0"
+              v-show="currentTab === 2 && currentSecondTab === 0 && !loading"
               :key="index"
               :pic="String(item.image)"
               :name="`${JSON.parse(item.nftMeta).name}`"
@@ -112,16 +112,23 @@
             </PositionItem>
             <PositionItem
               v-for="(item, index) in requestReceivedList"
-              v-show="currentTab === 2 && currentSecondTab === 2"
+              v-show="currentTab === 2 && currentSecondTab === 2 && !loading"
               :key="index"
               :pic="String(item.image)"
               :name="`${JSON.parse(item.nftMeta).name!}`"
               @click="goNFRRequestDetail(item)"
             >
             </PositionItem>
+            <!-- <LoadingList :loading="loading"></LoadingList> -->
           </div>
           <div
-            v-show="currentTab !== 3 && isEmpty()"
+            v-show="loading"
+            class="loading"
+          >
+            <BasePageLoading :loading="true" />
+          </div>
+          <div
+            v-show="currentTab !== 3 && isEmpty() && !loading"
             class="empty"
           >
             <span class="icon-empty"></span>
@@ -134,6 +141,7 @@
             <BaseTable
               :columns="columns"
               :data="list"
+              :loading="loading"
               :empty-text="t('emptyTips')"
             ></BaseTable>
             <Pagination
@@ -240,6 +248,7 @@ import BaseInput from '@/components/BaseInput/index.vue';
 import BaseTable from '@/components/BaseTable/index.vue';
 import FormItem from '@/components/BaseForm/FormItem.vue';
 import PositionItem from './components/PositionItem.vue';
+// import LoadingList from './components/LoadingList.vue';
 import { onMounted, reactive, ref, h, watch, onUnmounted } from 'vue';
 import {
   httpGetAccount,
@@ -255,8 +264,9 @@ import { httpGetMyNFTs } from '@/api/nft';
 import dayjs from 'dayjs';
 import { useRouter, useRoute } from 'vue-router';
 import { message, Pagination } from 'ant-design-vue';
-import { nfrContractAddress, nftContractAddress,wearContractAddress } from '@/hooks/var';
-import { toNonExponential } from '@/utils/util';
+import BasePageLoading from '@/components/BasePageLoading/index.vue';
+import { nfrContractAddress, nftContractAddress, wearContractAddress } from '@/hooks/var';
+import { toNonExponential, unique } from '@/utils/util';
 import ImageAlt from '@/assets/images/image-alt.png';
 import defaultAvatar from '@/assets/images/defaultAvatar.png';
 
@@ -312,6 +322,9 @@ const currentList = ref<
     imageUrl: string;
   }[]
 >([]);
+// 加载时渲染
+const loading = ref(false);
+
 const NFTList = ref<INFT[]>([]);
 const NFRCreatedList = ref<INFR[]>([]);
 const NFROwnedList = ref<INFR[]>([]);
@@ -338,11 +351,14 @@ const ERROR_MESSAGE = t('err-msg.request-fail');
  * @param isNew true-刷新列表，获取到的数据不会拼接到已有数据之后
  */
 const getNFTList = async (isNew = false, length = 0) => {
+  if (isNew) loading.value = true;
+  if (noScroll.value) return;
   const res = await httpGetMyNFTs({
     owner: profile.etherAddr,
     limit: currentPageSize.value,
     offset: currentPageSize.value * (currentPageNum.value - 1 <= 0 ? 0 : currentPageNum.value - 1),
   });
+  loading.value = false;
   if (res.code === 0) {
     if (res.data.length === 0) {
       // 没有值说明已经请求完毕
@@ -350,25 +366,24 @@ const getNFTList = async (isNew = false, length = 0) => {
       return;
     }
     // 筛选出规定合约的nft
-    const filterList = res.data.filter((item: INFT) =>
-      item.contractAddress.toLowerCase() !== nfrContractAddress.toLowerCase() &&
-      item.contractAddress.toLowerCase() !== nftContractAddress.toLowerCase() &&
-      item.contractAddress.toLowerCase() !== wearContractAddress.toLowerCase());
-    // const list = res.data.map((item: INFT) => ({
-    //   name: item.name,
-    //   imageUrl: item.imageUrl
-    // }));
+    const filterList = res.data.filter(
+      (item: INFT) =>
+        item.contractAddress.toLowerCase() !== nfrContractAddress.toLowerCase() &&
+        item.contractAddress.toLowerCase() !== nftContractAddress.toLowerCase() &&
+        item.contractAddress.toLowerCase() !== wearContractAddress.toLowerCase(),
+    );
     if (isNew) {
       NFTList.value = filterList;
     } else {
-      NFTList.value = NFTList.value?.concat(...filterList);
+      // 数组去重，避免请求重复数据
+      NFTList.value = unique(NFTList.value?.concat(...filterList), 'tokenId');
     }
     // eslint-disable-next-line no-magic-numbers
     if (filterList.length + length < currentPageSize.value / 2) {
       // 如果筛选结果不足规定一半，重新请求一次
       const timeout = 1000;
-      currentPageNum.value++;
       setTimeout(() => {
+        currentPageNum.value++;
         getNFTList(false, filterList.length);
       }, timeout);
     }
@@ -381,12 +396,14 @@ const getNFTList = async (isNew = false, length = 0) => {
  * NFRs
  */
 const getNFRList = async (isNew = false) => {
+  if (isNew) loading.value = true;
   const res = await httpGetNFR({
     accountAdr: profile.etherAddr,
     type: currentSecondTab.value === Number('1') ? 'owned' : 'created',
     pageSize: currentPageSize.value,
     pageNum: currentPageNum.value,
   });
+  loading.value = false;
   if (res.code !== 0) {
     message.error(ERROR_MESSAGE);
     return;
@@ -412,12 +429,14 @@ const getNFRList = async (isNew = false) => {
  * request
  */
 const getRequestList = async (isNew = false) => {
+  if (isNew) loading.value = true;
   const res = await httpGetRequest({
     accountAdr: profile.etherAddr,
     type: currentSecondTab.value === Number('2') ? 'received' : 'created',
     pageSize: currentPageSize.value,
     pageNum: currentPageNum.value,
   });
+  loading.value = false;
   if (res.code !== 0) {
     message.error(ERROR_MESSAGE);
     return;
@@ -583,12 +602,14 @@ const columns = [
 ];
 const list = ref<IActivity[]>([]);
 const getActivty = async () => {
+  loading.value = true;
   const accountAddr = currentAccount.value;
   const res = await httpGetActivity({
     accountAddr,
     pageNum: pageNum.value,
     pageSize: 10,
   });
+  loading.value = false;
   if (res.code === 0) {
     list.value = res.data.records;
     total.value = res.data.total;
@@ -652,6 +673,7 @@ const handleTabChange = (index: number) => {
   currentSecondTab.value = 0;
   currentPageNum.value = 1;
   noScroll.value = false;
+  loading.value = true;
   getData(true);
 };
 
@@ -660,6 +682,7 @@ const handleSecondTabChange = (index: number) => {
   currentSecondTab.value = index;
   noScroll.value = false;
   currentPageNum.value = 1;
+  loading.value = true;
   if (currentTab.value === 1) {
     NFRCreatedList.value = [];
     NFROwnedList.value = [];
@@ -713,6 +736,17 @@ const goNFRDetail = (NFR: INFR) => {
 const goNFRRequestDetail = (NFR: INFR) => {
   router.push(`/explore/nfr-details/${NFR.id}/request`);
 };
+watch(
+  () => route.params.address,
+  (newV) => {
+    if (!newV) {
+      return;
+    }
+    handleTabChange(0);
+    currentAccount.value = route.params.address as string;
+    getProfile();
+  },
+);
 onMounted(() => {
   currentAccount.value = route.params.address as string;
   getProfile();

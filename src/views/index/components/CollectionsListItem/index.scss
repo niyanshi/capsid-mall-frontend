@@ -10,12 +10,27 @@ $w: 360px;
   overflow: hidden;
   cursor: pointer;
   border: 2px solid transparent;
+  border-radius: 16px;
+  transition: all 0.5s ease;
 
   &:hover {
     box-sizing: border-box;
     border: 2px solid $main-color;
-    border-radius: 16px;
     box-shadow: 4px 4px 30px 8px rgb(234 66 60 / 8%);
+  }
+
+  &:active {
+    color: $focus-font-color;
+    background-color: $main-color;
+
+    & .option-group .option .key,
+    .val {
+      color: $focus-font-color !important;
+    }
+
+    & .option-group .option .icon {
+      background-color: $focus-font-color !important;
+    }
   }
 
   .image {
@@ -76,10 +91,19 @@ $w: 360px;
           white-space: nowrap;
         }
 
-        img {
-          width: 10px;
-          height: auto;
+        .icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 24px;
+          height: 24px;
           margin-left: 8px;
+          border-radius: 100%;
+
+          img {
+            width: 10px;
+            height: auto;
+          }
         }
       }
     }

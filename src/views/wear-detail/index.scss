@@ -1,0 +1,106 @@
+.wear-detail-wrap {
+  width: 1480px;
+  margin: auto;
+  padding: 10px 96px 0;
+
+  display: flex;
+  .left {
+    margin-right: 34px;
+
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 30px;
+    letter-spacing: 0.02em;
+
+    color: #4d4d4d;
+    .image {
+      width: 318px;
+      height: 318px;
+      border-radius: 10px;
+
+      img {
+        max-width: 100%;
+        cursor: pointer;
+      }
+    }
+
+    .props-name {
+      margin-top: 35px;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+    }
+
+    .props-item {
+      max-width: 318px;
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: -moz-fit-content;
+      width: fit-content;
+      height: 40px;
+      font-size: 18px;
+      border: 1.6px solid #a32015;
+      border-radius: 32px;
+      span {
+        display: inline-block;
+        margin: auto 27px;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .right {
+    height: 320px;
+    flex: 1;
+    background: #ffffff;
+    border: 1.6px solid #a32015;
+    border-radius: 32px;
+    box-sizing: border-box;
+    padding: 32px 40px;
+
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 30px;
+    text-align: justify;
+    letter-spacing: 0.02em;
+    color: #1f263b;
+
+    .right-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .title {
+      font-family: 'Quiet Sans';
+      font-style: normal;
+      font-weight: 800;
+      font-size: 32px;
+      line-height: 20px;
+      letter-spacing: 0.02em;
+      font-feature-settings: 'pnum' on, 'lnum' on;
+      color: #1f263b;
+    }
+    .desc {
+      overflow: hidden;
+      display: -webkit-box;
+      text-overflow: ellipsis;
+      -webkit-line-clamp: 6;
+      -webkit-box-orient: vertical;
+    }
+  }
+}

@@ -1,10 +1,11 @@
+<!-- eslint-disable complexity -->
 <script setup lang="ts">
 import FormItemPrice from '@/components/BaseForm/FormItemPrice.vue';
 import FormItemDetails from '@/components/BaseForm/FormItemDetails.vue';
 import FormItem from '@/components/BaseForm/FormItem.vue';
 import BaseInput from '@/components/BaseInput/index.vue';
 import BaseSelect from '@/components/BaseSelect/index.vue';
-// import BaseDatepicker from '@/components/BaseDatepicker/index.vue';
+import BaseAutoComplete from '@/components/BaseAutoComplete/index.vue';
 import BaseTextarea from '@/components/BaseTextarea/index.vue';
 import SvgAddList from '@/assets/svg/add-list.svg';
 import ImageGold from '@/assets/icons/gold.png';
@@ -13,21 +14,24 @@ import ImageBallot from '@/assets/images/ballot.png';
 import BaseOverlay from '@/components/BaseOverlay/index.vue';
 import IconClose from '@/assets/icons/close.png';
 import { useI18n } from 'vue-i18n';
-import { reactive } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { INFRTypeForRequest, INFTsType } from '@/types/nft';
-// import dayjs from 'dayjs';
-import { message } from 'ant-design-vue';
 import { useControllerStore } from '@/stores/controller';
+import { useUserInfoStore } from '@/stores/user-info';
+import useSeaport from '@/hooks/useSeaport';
+import Decimal from 'decimal.js';
 
 const { t } = useI18n();
 const controllerStore = useControllerStore();
+const userInfoStore = useUserInfoStore();
+const { getWethBalance } = useSeaport();
 
 const props = defineProps<{ visible: boolean; data: INFTsType }>();
 const emit = defineEmits<{
   (event: 'close'): void;
   (event: 'request', data: INFRTypeForRequest): void;
 }>();
-// const expireRef = ref();
+
 const valueObj = reactive<{
   type: string;
   details: string;
@@ -43,37 +47,68 @@ const valueObj = reactive<{
   price: '',
   duration: '',
 });
+const wethBalanceRef = ref();
+
+const addVisibleRef = ref<boolean>(false);
 const options = controllerStore.nfrType.map((item) => ({ key: item.id, value: item.name }));
 
+const errorMsgTip = reactive({
+  duration: '',
+  quantity: '',
+  type: '',
+  desc: '',
+  price: '',
+});
+/** 清空错误消息 */
+const clearErrorMsgTip = () => {
+  errorMsgTip.duration = '';
+  errorMsgTip.quantity = '';
+  errorMsgTip.desc = '';
+  errorMsgTip.type = '';
+  errorMsgTip.price = '';
+};
 /** 数据验证 */
 const validateData = () => {
+  clearErrorMsgTip();
   const quantityCof = 10;
   if (!valueObj.duration) {
-    message.error(t('warn-msg.duration'));
+    errorMsgTip.duration = t('warn-msg.duration');
+    return false;
+  }
+  if (Number(valueObj.duration) < 1 || Number(valueObj.duration) % 1 !== 0) {
+    errorMsgTip.duration = 'Duration needs to enter a positive integer';
     return false;
   }
   if (!Number(valueObj.quantity) || valueObj.quantity.includes('.')) {
-    message.error(t('warn-msg.quantity'));
+    errorMsgTip.quantity = t('warn-msg.quantity');
     return false;
   }
   if (Number(valueObj.quantity) > quantityCof) {
-    message.error(t('warn-msg.high-quantity'));
+    errorMsgTip.quantity = t('warn-msg.high-quantity');
     return false;
   }
   if (!valueObj.type) {
-    message.error(t('warn-msg.type'));
+    errorMsgTip.type = t('warn-msg.type');
     return false;
   }
   if (!valueObj.desc) {
-    message.error(t('warn-msg.desc'));
+    errorMsgTip.desc = t('warn-msg.desc');
     return false;
   }
   if (!valueObj.price) {
-    message.error(t('warn-msg.price'));
+    errorMsgTip.price = t('warn-msg.price');
     return false;
   }
-  if(Number(valueObj.price) < import.meta.env.VITE_MIN_PRICE) {
-    message.warn(`${t('warn-msg.minPrice')} ${import.meta.env.VITE_MIN_PRICE}`);
+  if (Number(valueObj.price) < import.meta.env.VITE_MIN_PRICE) {
+    errorMsgTip.price = `${t('warn-msg.minPrice')} ${import.meta.env.VITE_MIN_PRICE}`;
+    return false;
+  }
+  if (
+    new Decimal(wethBalanceRef.value).lessThan(new Decimal(valueObj.price).times(valueObj.quantity))
+  ) {
+    // eslint-disable-next-line quotes
+    errorMsgTip.price = "you don't have enough WETH";
+    addVisibleRef.value = true;
     return false;
   }
   return true;
@@ -98,6 +133,28 @@ const handleRequest = () => {
 const handleClose = () => {
   emit('close');
 };
+/** 监听weth */
+watch(
+  () => valueObj.price,
+  (nv) => {
+    if (!valueObj.quantity || !nv) return;
+    if (new Decimal(wethBalanceRef.value).lessThan(new Decimal(nv).times(valueObj.quantity))) {
+      // eslint-disable-next-line quotes
+      errorMsgTip.price = "you don't have enough WETH";
+      addVisibleRef.value = true;
+      return;
+    }
+    errorMsgTip.price = '';
+    addVisibleRef.value = false;
+  },
+);
+
+onMounted(() => {
+  const init = async () => {
+    wethBalanceRef.value = await getWethBalance(userInfoStore.currentUser.publicKey);
+  };
+  init();
+});
 </script>
 
 <template>
@@ -130,21 +187,39 @@ const handleClose = () => {
           <div class="form-layer one">
             <!-- Expiration date -->
             <form-item :title="t('create-nfr-form-items[1]') + ' (day)'">
-              <base-input
+              <!-- <base-input
                 v-model="valueObj.duration"
                 type="number"
                 style-type="line"
-              ></base-input>
+                :error-tip="errorMsgTip.duration"
+              ></base-input> -->
               <!-- <base-datepicker ref="expireRef"></base-datepicker> -->
+              <BaseAutoComplete
+                v-model="valueObj.duration"
+                :options="[{ value: '7' }, { value: '14' }, { value: '30' }]"
+                :error-tip="errorMsgTip.duration"
+              ></BaseAutoComplete>
             </form-item>
             <!-- Quantity -->
             <form-item :title="t('create-nfr-form-items[2]')">
-              <base-input
+              <!-- <base-input
                 v-model="valueObj.quantity"
                 :placeholder="t('placeholder.quantity')"
                 type="number"
                 style-type="line"
-              ></base-input>
+                :error-tip="errorMsgTip.quantity"
+              ></base-input> -->
+              <BaseAutoComplete
+                v-model="valueObj.quantity"
+                :options="[
+                  { value: '1' },
+                  { value: '2' },
+                  { value: '5' },
+                  { value: '8' },
+                  { value: '10' },
+                ]"
+                :error-tip="errorMsgTip.quantity"
+              ></BaseAutoComplete>
             </form-item>
           </div>
 
@@ -158,6 +233,7 @@ const handleClose = () => {
                 v-model="valueObj.type"
                 :options="options"
                 :placeholder="t('placeholder.type')"
+                :error-tip="errorMsgTip.type"
               ></base-select>
             </form-item>
           </div>
@@ -170,6 +246,7 @@ const handleClose = () => {
               <base-textarea
                 v-model="valueObj.desc"
                 :max="80"
+                :error-tip="errorMsgTip.desc"
               ></base-textarea>
             </form-item>
           </div>
@@ -181,14 +258,26 @@ const handleClose = () => {
               ></base-input>
             </form-item-details>
           </div>
-          <div class="form-layer">
-            <form-item-price :title="t('create-nfr-form-items[5]')" currency="WETH">
+          <div class="form-layer suffix">
+            <form-item-price
+              :title="t('create-nfr-form-items[5]')"
+              currency="WETH"
+            >
               <base-input
                 v-model="valueObj.price"
                 type="number"
                 style-type="border"
+                :error-tip="errorMsgTip.price"
               ></base-input>
             </form-item-price>
+            <template v-if="addVisibleRef">
+              <div
+                class="add-weth"
+                @click="controllerStore.setSwapVisible(true)"
+              >
+                Add WETH
+              </div>
+            </template>
           </div>
         </div>
         <div class="right">
@@ -292,6 +381,24 @@ const handleClose = () => {
             display: grid;
             grid-template-columns: 160px 160px;
             column-gap: 54px;
+          }
+
+          &.suffix {
+            display: flex;
+            align-items: flex-end;
+
+            .add-weth {
+              margin-left: 10px;
+              color: $main-color;
+              cursor: pointer;
+              border-bottom: 2px solid $main-color;
+              transition: all 0.3s ease;
+
+              &:hover {
+                color: $hover-color;
+                border-bottom: 2px solid $hover-color;
+              }
+            }
           }
         }
       }

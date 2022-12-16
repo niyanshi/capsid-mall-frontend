@@ -1,7 +1,7 @@
 <template>
   <base-overlay
     :visible="props.visible"
-    :z-index="2999"
+    :z-index="999"
   >
     <div class="sk-chase">
       <div class="sk-chase-dot"></div>

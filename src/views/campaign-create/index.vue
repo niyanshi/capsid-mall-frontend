@@ -21,6 +21,7 @@
       >
         <base-input
           v-model="campaignInfo.campaignName"
+          :error-tip="nameTip"
           style-type="line"
           :placeholder="t('campaign-page.campaignName')"
         >
@@ -109,6 +110,7 @@ const campaignInfo = reactive<ICampaign>({
   banner: '',
   ownerEtherAddr: userInfoStore.currentUser.publicKey as string,
 });
+const nameTip = ref('');
 // 原始banner
 let originalBanner = '';
 const editId = ref<number>();
@@ -119,9 +121,10 @@ const handleBackClick = () => {
 };
 const campaignSubmit = async () => {
   if(!campaignInfo.campaignName) {
-    message.warn(t('warn-msg.nameEmpty'));
+    nameTip.value = t('warn-msg.nameEmpty');
     return;
   }
+  nameTip.value = '';
   if(!campaignInfo.banner) {
     message.warn(t('warn-msg.imageEmpty'));
     return;

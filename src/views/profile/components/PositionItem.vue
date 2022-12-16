@@ -2,22 +2,29 @@
   <div class="item-wrap">
     <template v-if="isNFR">
       <div class="image">
-        <BaseNFRImage :src="prop.pic" />
+        <BaseNFRImage
+          :src="prop.pic"
+          :is-scale="true"
+        />
       </div>
     </template>
     <template v-else>
-      <img
-        ref="imgRef"
-        class="image"
-        :src="prop.pic"
-        @error="onError"
-      />
+      <div class="image scale">
+        <img
+          ref="imgRef"
+          :src="prop.pic"
+          @error="onError"
+        />
+      </div>
     </template>
 
     <!--
      -->
 
-    <div class="info" :title="prop.name">
+    <div
+      class="info"
+      :title="prop.name"
+    >
       <p>{{ prop.name?.split('#')[0] }}</p>
       <p>{{ prop.name?.split('#')[1] ? `#${prop.name?.split('#')[1]}` : '' }}</p>
     </div>
@@ -53,7 +60,23 @@ const onError = function () {
   .image {
     width: 176px;
     height: 176px;
+    overflow: hidden;
     border-radius: 10px;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+    &.scale {
+      img {
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: scale(1.07, 1.07);
+        }
+      }
+    }
   }
 
   .info {
@@ -74,8 +97,8 @@ const onError = function () {
       margin: 0;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
       word-break: break-all;
+      white-space: nowrap;
     }
   }
 }

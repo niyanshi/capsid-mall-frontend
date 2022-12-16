@@ -48,10 +48,19 @@
       cursor: pointer;
       border: 1px solid $main-color;
       border-radius: 32px;
+      transition: all 0.3s ease;
 
       &.active {
         color: $vice-color;
         background-color: $main-color;
+      }
+
+      &:hover {
+        @include tag-hover(1px);
+      }
+
+      &:active {
+        @include tag-active(1px);
       }
     }
 

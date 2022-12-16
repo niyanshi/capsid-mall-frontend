@@ -138,6 +138,7 @@
         <base-input
           v-model="newNFT.name"
           style-type="line"
+          :error-tip="nameTip"
           :placeholder="t('newNFT.namePlaceholder')"
         >
         </base-input>
@@ -149,6 +150,7 @@
         <base-input
           v-model="newNFT.price"
           type="number"
+          :error-tip="priceTip"
           style-type="border"
         ></base-input>
       </form-item-price>
@@ -157,7 +159,7 @@
         :title="t('newNFT.descLabel')"
         :width="600"
       >
-        <base-textarea v-model="newNFT.description"></base-textarea>
+        <base-textarea v-model="newNFT.description" :error-tip="descTip"></base-textarea>
       </form-item>
       <div class="operate">
         <div
@@ -261,7 +263,6 @@ const newNFT = ref<{
   price: 0,
   description: '',
 });
-
 const handleAddClick = () => {
   isCreate.value = true;
 };
@@ -480,24 +481,31 @@ const checkPrice = (price: string) => {
   const reg = /^(([1-9][0-9]*)|(([0]\.\d{1,10}|[1-9][0-9]*\.\d{1,10})))$/;
   return reg.test(String(newNFT.value.price));
 };
+
+const nameTip = ref('');
+const priceTip = ref('');
+const descTip = ref('');
 const TIME = 1000;
 const checkNFT = () => {
   if(!newNFT.value.name) {
-    message.warn(t('warn-msg.nameEmpty'));
+    nameTip.value = t('warn-msg.nameEmpty');
     return;
   }
+  nameTip.value = '';
   if(!checkPrice(String(newNFT.value.price))) {
-    message.warn(t('warn-msg.priceEmpty'));
+    priceTip.value = t('warn-msg.priceEmpty');
     return;
   }
   if(Number(newNFT.value.price) < import.meta.env.VITE_MIN_PRICE) {
-    message.warn(`${t('warn-msg.minPrice')} ${import.meta.env.VITE_MIN_PRICE}`);
+    priceTip.value = `${t('warn-msg.minPrice')} ${import.meta.env.VITE_MIN_PRICE}`;
     return;
   }
+  priceTip.value = '';
   if(!newNFT.value.description) {
-    message.warn(t('warn-msg.descEmpty'));
+    descTip.value = t('warn-msg.descEmpty');
     return;
   }
+  descTip.value = '';
   if(!newNFT.value.imageUrl) {
     message.warn(t('warn-msg.imageEmpty'));
     return;

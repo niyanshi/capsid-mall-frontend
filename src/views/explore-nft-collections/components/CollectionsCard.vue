@@ -49,30 +49,42 @@ const skipTo = (to: string) => {
 
 <style lang="scss" scoped>
 .collections-card {
-  display: flex;
+  display: grid;
+  grid-template-columns: 46% 48%;
   aspect-ratio: 624/292;
   overflow: hidden;
 
   .avatar {
     height: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 8px;
 
     img {
       height: 100%;
       aspect-ratio: 1/1;
-      border-radius: 8px;
+      transition: all 0.3s ease;
     }
 
-    cursor: pointer;
+    &:hover {
+      img {
+        transform: scale(1.07, 1.07);
+      }
+    }
   }
 
   .info {
     margin-left: 32px;
 
     .title {
+      overflow: hidden;
       font-family: 'Quiet Sans', sans-serif;
       font-size: 32px;
       font-weight: 800;
+      text-overflow: ellipsis;
       letter-spacing: 0.02em;
+      white-space: nowrap;
     }
 
     .option {

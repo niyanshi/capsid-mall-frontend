@@ -3,7 +3,7 @@
     <header>
       <header-area></header-area>
     </header>
-    <div style="height: 96px;"></div>
+    <div style="height: 132px;"></div>
     <aside>
       <side-bar></side-bar>
     </aside>

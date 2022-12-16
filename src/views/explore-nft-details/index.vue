@@ -100,7 +100,7 @@ import { onMounted, ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useUserInfoStore } from '@/stores/user-info';
-import useSeaport from '@/hooks/useSeaport';
+import useSeaport, { getInteractiveTokenData } from '@/hooks/useSeaport';
 import { httpRequestNFR } from '@/api/nfr';
 import { message } from 'ant-design-vue';
 import emitter from '@/utils/event';
@@ -190,18 +190,22 @@ const handleRequest = async (e: INFRTypeForRequest) => {
     switchNetworkVisible.value = true;
     return;
   }
-  controllerStore.setGlobalLoading(true);
-  controllerStore.setGlobalTip(t('wait-msg.request'));
   const obj = {
     ...e,
     avatar: nftDetalsRef.value?.avatar,
     attributes: nftDetalsRef.value?.attributes,
     nftName: String(nftDetalsRef.value?.name),
   };
+  controllerStore.setCurrentInteractNFR({
+    ...getInteractiveTokenData(obj),
+    title: 'Make your NFR request',
+    tip: 'You will be asked to confirm your NFR request from your wallet.',
+  });
+
   const balance = await getWethBalance(userInfoStore.currentUser.publicKey);
   if (new Decimal(balance).lessThan(new Decimal(e.price).times(e.quantity))) {
     message.warn(t('warn-msg.weth-not-enough'));
-    controllerStore.setGlobalLoading(false);
+    controllerStore.setCurrentInteractNFR({});
     controllerStore.setSwapVisible(true);
     return;
   }
@@ -210,7 +214,8 @@ const handleRequest = async (e: INFRTypeForRequest) => {
     const res = await httpRequestNFR(resParams);
     if (res.code !== 0) {
       message.error(res.msg);
-      controllerStore.setGlobalLoading(false);
+      controllerStore.setCurrentInteractNFR({});
+
       return;
     }
     requestVisibleRef.value = false;
@@ -223,7 +228,7 @@ const handleRequest = async (e: INFRTypeForRequest) => {
     }
     console.error(error);
   } finally {
-    controllerStore.setGlobalLoading(false);
+    controllerStore.setCurrentInteractNFR({});
   }
 };
 </script>

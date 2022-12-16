@@ -86,16 +86,28 @@ const getNFRsList = async () => {
 
 /** accept NFR */
 const handleAccpet = async (data: INFRsType) => {
+  const obj = {
+    id: data?.id,
+    name: data?.name,
+    image: data?.avatar,
+    chain: 'ethereum',
+    itemPrice: data?.price,
+    quantity: data.total,
+  };
   if (userInfoStore.currentChainId !== Number(import.meta.env.VITE_CHAINID)) {
     controllerStore.setSwitchNetworkVisible(true);
     return;
   }
   if (!data?.order) return;
   const { order, id } = data;
-  controllerStore.setGlobalLoading(true);
+  controllerStore.setCurrentInteractNFR({
+    ...obj,
+    title: 'Accept the request',
+    tip: 'You will be asked to cofirm this sale from your wallet.',
+  });
   const res = await httpAcceptNFRsOrder(String(id));
   if (res.code !== 0) {
-    controllerStore.setGlobalLoading(false);
+    controllerStore.setCurrentInteractNFR({});
     message.error(res.msg);
     return;
   }
@@ -105,7 +117,7 @@ const handleAccpet = async (data: INFRsType) => {
     const ret = await acceptNFRsRequest({ order, orderId });
     const pollRes = await poll(ret.hash);
     if (!pollRes) {
-      controllerStore.setGlobalLoading(false);
+      controllerStore.setCurrentInteractNFR({});
       message.warning(t('warn-msg.viewSoon'));
       return;
     }
@@ -124,7 +136,7 @@ const handleAccpet = async (data: INFRsType) => {
     }
     console.error(error);
   } finally {
-    controllerStore.setGlobalLoading(false);
+    controllerStore.setCurrentInteractNFR({});
   }
 };
 

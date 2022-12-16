@@ -1,3 +1,25 @@
 $main-color: #a32015;
 $vice-color: #fcf5c5;
 $main-font-color: #4d4d4d;
+$focus-font-color: #fffef4;
+$hover-color: #f3ba2f;
+
+@mixin tag-hover($w) {
+  color: $hover-color;
+  background-color: transparent;
+  border: $w solid $hover-color;
+}
+
+@mixin tag-active($w) {
+  color: $vice-color;
+  background-color: $main-color;
+  border: $w solid $main-color;
+}
+
+@mixin link-hover {
+  color: #f1b540;
+}
+
+@mixin link-active {
+  color: $main-color;
+}

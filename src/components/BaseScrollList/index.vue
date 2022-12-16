@@ -41,5 +41,8 @@ watch(() => prop.disabled, () => {
 <style lang="scss" scoped>
 .scrollList {
   overflow-y: auto;
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { width: 0 !important }
 }
 </style>

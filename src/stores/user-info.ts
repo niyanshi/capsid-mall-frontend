@@ -15,6 +15,7 @@ export const useUserInfoStore = defineStore('userInfo', {
       publicKey: storage.getPublicKey() || '',
       userId: '',
       avatar: null,
+      auth: [],
     },
     // 登录弹窗显示
     loginModalVisible: false,

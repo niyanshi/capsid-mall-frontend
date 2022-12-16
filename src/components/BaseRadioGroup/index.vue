@@ -31,9 +31,15 @@ const handleClick = (e: IDataType) => {
   emit('select', e.id);
 };
 
-watch(props, (newVal) => {
-  if (newVal.activeKey) activeRef.value = newVal.activeKey;
-});
+watch(
+  props,
+  (newVal) => {
+    if (newVal.activeKey) activeRef.value = newVal.activeKey;
+  },
+  {
+    immediate: true,
+  },
+);
 </script>
 
 <style scoped lang="scss">

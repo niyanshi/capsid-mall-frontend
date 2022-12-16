@@ -1,10 +1,13 @@
+$padding: 96px;
+
 .main {
   display: block;
+  padding: 0 96px;
   padding-top: 1px;
 
   .banner {
     margin-top: 166px;
-    margin-left: 134px;
+    margin-left: calc(134px - $padding);
 
     .question {
       font-size: 20px;
@@ -47,22 +50,45 @@
       cursor: pointer;
       background-color: $main-color;
       border-radius: 32px;
+      transition: all 0.3s ease;
 
-      img {
+      .icon-done {
         width: 24px;
         height: 24px;
         margin-left: 16px;
+        background-color: $vice-color;
+        mask: url('@/assets/svg/done-two.svg');
+        mask-size: contain;
+        transition: all 0.3s ease;
+      }
+
+      &:hover {
+        color: $hover-color;
+        background-color: transparent;
+        border: 2px solid $hover-color;
+
+        .icon-done {
+          background-color: $hover-color;
+        }
+      }
+
+      &:active {
+        color: $main-color;
+        background-color: transparent;
+        border: 2px solid $main-color;
+
+        .icon-done {
+          background-color: $main-color;
+        }
       }
     }
   }
 
   .card-section {
-    padding: 0 80px;
     margin-top: 96px;
   }
 
   .sell-section {
-    padding: 0 80px;
     margin-top: 134px;
 
     .image {
@@ -75,6 +101,6 @@
 
   .sponsor-section {
     margin-top: 118px;
-    margin-left: 138px;
+    margin-left: calc(138px - $padding);
   }
 }

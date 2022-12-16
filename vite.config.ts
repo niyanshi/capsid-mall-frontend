@@ -10,6 +10,7 @@ const targetObj = {
   // cj: 'http://172.100.3.188:9002',
   wq: 'http://172.100.3.144:9080',
   test: 'http://172.100.3.188:9092',
+  wt: 'http://10.10.39.207:9080',
 };
 
 /**
@@ -61,8 +62,9 @@ export default ({ command }: ConfigEnv) =>
       port: 8080,
       proxy: {
         '/api': {
-          target: targetObj.test,
-          // rewrite:path => path.replace(/^\/api/, '')
+          // target: targetObj.test,
+          target: targetObj.wt,
+          rewrite: (path) => path.replace(/^\/api/, ''),
         },
         ...processProxy(
           ['/api/v1/login', '/api/nft', '/api/nfr-order', '/api/collections', '/api/nfr-trans'],
