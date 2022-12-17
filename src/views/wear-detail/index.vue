@@ -23,7 +23,7 @@
             :src="IconMedal"
             alt=""
           />
-          {{ wear?.wearMeta?.name }}
+          <div>{{ wear?.wearMeta?.name }}</div>
         </div>
         <img
           :src="OpenSeaLogo"

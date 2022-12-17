@@ -5,7 +5,8 @@
 
 .title {
   margin: 78px 0 47px;
-
+  display: flex;
+  align-items: center;
   img {
     width: 32px;
     height: 32px;
@@ -13,12 +14,17 @@
   }
 
   span {
+    display: inline-block;
+    height: 34px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-family: 'Quiet Sans';
     font-size: 32px;
     font-style: normal;
     font-weight: 800;
     font-feature-settings: 'pnum' on, 'lnum' on;
-    line-height: 20px;
+    line-height: 32px;
     color: #1f263b;
     letter-spacing: 0.02em;
   }
@@ -66,6 +72,7 @@
     color: #4d4d4d;
     letter-spacing: 0.02em;
     max-height: 150px;
+    word-break: break-all;
     overflow: hidden;
     display: -webkit-box;
     text-overflow: ellipsis;

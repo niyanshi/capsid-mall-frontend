@@ -62,9 +62,9 @@ export default ({ command }: ConfigEnv) =>
       port: 8080,
       proxy: {
         '/api': {
-          // target: targetObj.test,
-          target: targetObj.wt,
-          rewrite: (path) => path.replace(/^\/api/, ''),
+          target: targetObj.test,
+          // target: targetObj.wt,
+          // rewrite: (path) => path.replace(/^\/api/, ''),
         },
         ...processProxy(
           ['/api/v1/login', '/api/nft', '/api/nfr-order', '/api/collections', '/api/nfr-trans'],

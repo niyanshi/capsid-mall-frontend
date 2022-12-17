@@ -114,7 +114,8 @@ const useContract = () => {
     const res = await httpsaveOrderResult({wearId,orderId,transactionResult});
     return res.code === 0;
   };
-  const mintAndPay = async (fee: string, nftId: string, wearId: number,orderId: number):Promise<string> => {
+  // eslint-disable-next-line complexity
+  const mintAndPay = async (fee: string, nftId: string, wearId: number,orderId: number):Promise<{message:string,value: string}> => {
     window.console.log('now start mint');
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = await provider.getSigner();
@@ -134,15 +135,20 @@ const useContract = () => {
     try {
       //发起交易，这⾥要注意异常处理（⽐如⽤⼾拒绝了签名）
       const mintResult = await wearNft.mint(nftId, {gasPrice: gasFee, value: ethers.utils.parseEther(fee)});
-      //保存交易提交结果到服务器
-      const orderRes = await httpSaveOrderData({
-        orderId,
-        transactionHash: mintResult.hash,
-        wearId
-      });
-      if(orderRes.code !== 0) {
-        // 保存交易数据失败
-        return 'pending';
+      try {
+        //保存交易提交结果到服务器
+        const orderRes = await httpSaveOrderData({
+          orderId,
+          transactionHash: mintResult.hash,
+          wearId
+        });
+        if(orderRes.code !== 0) {
+          // 保存交易数据失败
+          return {message: 'hashFail',value: mintResult.hash};
+        }
+      } catch (err) {
+        window.console.log('save hash fail',err);
+        return {message: 'hashFail',value: mintResult.hash};
       }
       //轮循交易提交结果，最后要靠后端轮询来保证
       let txReceipt = await provider.getTransactionReceipt(mintResult.hash);
@@ -157,15 +163,15 @@ const useContract = () => {
         if (txReceipt && txReceipt.blockNumber) {
           saveOrderResult(wearId,orderId,SUCCESS);
           window.console.log('success');
-          return 'success';
+          return {message: 'success',value: ''};
         } else {
           //如果还是没结果，就让服务端去轮询。
           saveOrderResult(wearId,orderId,PENDING);
-          return 'pending';
+          return {message: 'pending',value: mintResult.hash};
         }
       } catch (err) {
         window.console.log('saveOrderResult ERR',err);
-        return 'pending';
+        return {message: 'pending',value: mintResult.hash};
       }
     } catch(err) {
       window.console.log('wear err', err);
@@ -175,7 +181,7 @@ const useContract = () => {
         message.error(t('err-msg.request-fail'));
       }
       saveOrderResult(wearId,orderId,FAIL);
-      return 'fail';
+      return {message: 'fail',value: ''};
     }
   };
 

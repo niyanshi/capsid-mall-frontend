@@ -19,10 +19,15 @@
       width: 318px;
       height: 318px;
       border-radius: 10px;
-
+      border: 2.4px solid #a32015;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       img {
         max-width: 100%;
         cursor: pointer;
+        border-radius: 10px;
       }
     }
 
@@ -57,7 +62,7 @@
 
   .right {
     height: 320px;
-    flex: 1;
+    width: 1100px;
     background: #ffffff;
     border: 1.6px solid #a32015;
     border-radius: 32px;
@@ -86,16 +91,26 @@
     }
 
     .title {
+      width: 900px;
       font-family: 'Quiet Sans';
       font-style: normal;
       font-weight: 800;
       font-size: 32px;
-      line-height: 20px;
+      line-height: 32px;
       letter-spacing: 0.02em;
       font-feature-settings: 'pnum' on, 'lnum' on;
       color: #1f263b;
+
+      display: flex;
+      align-items: center;
+      div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
     .desc {
+      word-break: break-all;
       overflow: hidden;
       display: -webkit-box;
       text-overflow: ellipsis;

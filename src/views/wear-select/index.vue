@@ -184,8 +184,34 @@
     >
       <template #desc>
         View in <a @click="goLook">look</a>
-        <div>The artist is working on the final</div>
-        <div>It might take a few days.</div>
+        <div>The artist is working on the final. It might take a few days.</div>
+        <!-- <div></div> -->
+      </template>
+    </base-alert>
+    <base-alert
+      :visible="resultError"
+      title="ERROR"
+      :icon="Bag"
+      :h="270"
+      layer-class-name="wear-dialog error"
+      @close="resultError = false"
+    >
+      <template #desc>
+        <div>An error occurred in saving order: <span style="color: #ee8b49">{{resultHash}}</span></div>
+        <div>Please contact the website administrator</div>
+      </template>
+    </base-alert>
+    <base-alert
+      :visible="resultPending"
+      title="Time out"
+      :icon="Bag"
+      :h="300"
+      layer-class-name="wear-dialog"
+      @close="resultPending = false"
+    >
+      <template #desc>
+        <div>Your transaction is still in the queue,please go to your wallet to check the transaction result.Your transaction hash: </div>
+        <div style="color: #ee8b49">{{resultHash}}</div>
       </template>
     </base-alert>
   </div>
@@ -211,6 +237,7 @@ import { httpUploadload } from '@/api/campaign';
 import { httpCreateWear, httpCreateWearOrder } from '@/api/wear';
 import { useRoute,useRouter } from 'vue-router';
 import ImagePostbox from '@/assets/icons/party-popper.png';
+import Bag from '@/assets/icons/bag.png';
 
 const { t } = useI18n();
 const userInfoStore = useUserInfoStore();
@@ -260,9 +287,9 @@ const currentWay = ref(1);
 const currentTrigger = ref('left');
 const wearDialogVisible = ref(false);
 const resultDialogVisible = ref(false);
-const resultTitle = ref('');
-const resultMsg = ref('');
-const resultType = ref<'success'|'error'>('success');
+const resultError = ref(false);
+const resultPending = ref(false);
+const resultHash = ref('');
 const handleDialogClose = () => {
   wearDialogVisible.value = false;
 };
@@ -323,12 +350,17 @@ const createWearOrder = async (fee: string,wearId: number,nftId: string) => {
   const res = await httpCreateWearOrder(wearId);
   if(res.code === 0) {
     const mintRes = await mintAndPay(fee,nftId,wearId,res.data);
-    if(mintRes !== 'fail') {
+    if(mintRes.message === 'success') {
       clearWearInfo();
-      resultTitle.value = t('wearSuccess');
-      resultMsg.value = t('wearSuccessTips');
-      resultType.value = 'success';
       resultDialogVisible.value = true;
+    } else if(mintRes.message === 'hashFail') {
+      // 保存hash失败
+      resultError.value = true;
+      resultHash.value = mintRes.value;
+    } else if(mintRes.message === 'pending') {
+      // 前端轮询超时
+      resultPending.value = true;
+      resultHash.value = mintRes.value;
     }
     // else {
     // resultTitle.value = t('error');
@@ -461,8 +493,8 @@ onMounted(() => {
 .wear-dialog {
     display: flex;
     align-items: center;
-    margin-top: 6px;
-    margin-left: 100px;
+    width: 80%;
+    margin: 0 auto;
 
     & > .icon {
       width: 64px;
@@ -484,7 +516,7 @@ onMounted(() => {
         font-size: 20px;
         font-weight: 700;
         color: $main-font-color;
-
+        overflow-wrap: anywhere;
         a {
           font-size: 20px;
           font-style: italic;

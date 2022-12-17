@@ -1,10 +1,12 @@
 <template>
-  <div class="nfrs-display-item">
+  <div
+    class="nfrs-display-item"
+    @click="skipTo"
+  >
     <div class="image">
       <BaseNFRImage
         :src="props.data.avatar!"
         alt=""
-        @click="skipTo"
       />
     </div>
 
@@ -42,7 +44,7 @@
     <div
       v-if="props.btn && Object.keys(props.btn).length !== 0"
       class="btn"
-      @click="props.btn?.event?.(props.data)"
+      @click.stop="props.btn?.event?.(props.data)"
     >
       {{ props.btn.title }}
       <img
@@ -87,16 +89,21 @@ const skipTo = () => {
   display: flex;
   width: 363px;
   height: 130px;
+  cursor: pointer;
   background-color: #fff;
+  border: 1px solid #ececec;
   border-radius: 8px;
-  box-shadow: 0 0 12px rgb(163 32 21 / 12%);
+  transform: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 0 12px rgb(163 32 21 / 12%);
+  }
 
   & > .image {
     max-width: 100%;
     height: 100%;
     aspect-ratio: 1/1;
     overflow: hidden;
-    cursor: pointer;
     border-radius: 8px 0 0 8px;
   }
 
