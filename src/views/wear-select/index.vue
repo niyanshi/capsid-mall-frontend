@@ -142,7 +142,7 @@
       </div>
     </div>
     <div v-show="currentWay===1" class="guide">
-      <img src="../../assets/images/wearGuidance.png" alt="" srcset="">
+      <img src="../../assets/images/nft-guide.png" alt="" srcset="">
       <div class="text">
         <div class="title">{{ t('avatarGuidence.title') }}</div>
         <ul>
@@ -152,7 +152,7 @@
       </div>
     </div>
     <div v-show="currentWay===2" class="guide">
-      <img src="../../assets/images/wearGuidance.png" alt="" srcset="">
+      <img src="../../assets/images/image-guide.png" alt="" srcset="">
       <div class="text">
         <div class="title">{{ t('uploadImageGuidence.title') }}</div>
         <ul>

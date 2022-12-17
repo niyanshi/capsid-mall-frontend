@@ -59,6 +59,7 @@
   margin-top: 45px;
   overflow-y: auto;
   background: #fff;
+  padding: 10px;
 
   .item-size {
     width: 244px;
@@ -278,4 +279,11 @@
   .icon-ok {
     background-image: url('../../assets/icons/icon-ok.png');
   }
+}
+
+.scale:hover {
+  transform: scale(1.07, 1.07);
+}
+.scale {
+  transition: all 0.3s ease;
 }

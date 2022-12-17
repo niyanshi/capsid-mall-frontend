@@ -5,82 +5,95 @@ $padding: 96px;
   padding: 0 96px;
   padding-top: 1px;
 
-  .banner {
+  .banner-frame {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 86px;
+    justify-content: space-between;
+    min-width: 1280px;
     margin-top: 166px;
-    margin-left: calc(134px - $padding);
 
-    .question {
-      font-size: 20px;
-      font-style: italic;
-      color: #ee8b49;
-      letter-spacing: 0.02em;
-      user-select: text;
-    }
+    .banner {
+      margin-left: calc(134px - $padding);
 
-    .image {
-      margin-top: 8px;
-
-      img {
-        width: 592px;
-        height: auto;
+      .question {
+        font-size: 20px;
+        font-style: italic;
+        color: #ee8b49;
+        letter-spacing: 0.02em;
+        user-select: text;
       }
-    }
 
-    .description {
-      margin-top: 15px;
-      font-size: 18px;
-      font-weight: 400;
-      line-height: 30px;
-      color: $main-font-color;
-      letter-spacing: 0.02em;
-      white-space: pre-line;
-      user-select: text;
-    }
+      .image {
+        margin-top: 8px;
 
-    .btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 248px;
-      height: 56px;
-      margin-top: 72px;
-      font-size: 20px;
-      font-weight: 700;
-      color: $vice-color;
-      cursor: pointer;
-      background-color: $main-color;
-      border-radius: 32px;
-      transition: all 0.3s ease;
+        img {
+          width: 592px;
+          height: auto;
+        }
+      }
 
-      .icon-done {
-        width: 24px;
-        height: 24px;
-        margin-left: 16px;
-        background-color: $vice-color;
-        mask: url('@/assets/svg/done-two.svg');
-        mask-size: contain;
+      .description {
+        margin-top: 15px;
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 30px;
+        color: $main-font-color;
+        letter-spacing: 0.02em;
+        white-space: pre-line;
+        user-select: text;
+      }
+
+      .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 248px;
+        height: 56px;
+        margin-top: 72px;
+        font-size: 20px;
+        font-weight: 700;
+        color: $vice-color;
+        cursor: pointer;
+        background-color: $main-color;
+        border-radius: 32px;
         transition: all 0.3s ease;
-      }
-
-      &:hover {
-        color: $hover-color;
-        background-color: transparent;
-        border: 2px solid $hover-color;
 
         .icon-done {
-          background-color: $hover-color;
+          width: 24px;
+          height: 24px;
+          margin-left: 16px;
+          background-color: $vice-color;
+          mask: url('@/assets/svg/done-two.svg');
+          mask-size: contain;
+          transition: all 0.3s ease;
+        }
+
+        &:hover {
+          color: $hover-color;
+          background-color: transparent;
+          border: 2px solid $hover-color;
+
+          .icon-done {
+            background-color: $hover-color;
+          }
+        }
+
+        &:active {
+          color: $main-color;
+          background-color: transparent;
+          border: 2px solid $main-color;
+
+          .icon-done {
+            background-color: $main-color;
+          }
         }
       }
+    }
 
-      &:active {
-        color: $main-color;
-        background-color: transparent;
-        border: 2px solid $main-color;
-
-        .icon-done {
-          background-color: $main-color;
-        }
-      }
+    .ip-image {
+      width: 519px;
+      height: 510px;
     }
   }
 

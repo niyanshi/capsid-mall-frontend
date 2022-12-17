@@ -1,30 +1,40 @@
 <template>
   <div class="main">
-    <div class="banner">
-      <div class="question">
-        {{ t('question') }}
-      </div>
-      <div class="image">
-        <img
-          :src="ImageBanner"
-          alt=""
-        />
-      </div>
-      <div class="description">
-        {{ t('description') }}
-      </div>
-      <div
-        class="btn"
-        @click="router.push('/create-nfr')"
-      >
-        {{ t('quick-start') }}
-        <i class="icon-done"></i>
-        <!-- <img
+    <div class="banner-frame">
+      <div class="banner">
+        <div class="question">
+          {{ t('question') }}
+        </div>
+        <div class="image">
+          <img
+            :src="ImageBanner"
+            alt=""
+          />
+        </div>
+        <div class="description">
+          {{ t('description') }}
+        </div>
+        <div
+          class="btn"
+          @click="router.push('/create-nfr')"
+        >
+          {{ t('quick-start') }}
+          <i class="icon-done"></i>
+          <!-- <img
           :src="IconDone"
           alt=""
         /> -->
+        </div>
+      </div>
+      <div class="ip-image">
+        <img
+          src="@/assets/images/ip.jpg"
+          alt=""
+          style="width: 100%; height: 100%;border-radius: 10px;"
+        />
       </div>
     </div>
+
     <div class="card-section">
       <collections-list-card></collections-list-card>
     </div>
