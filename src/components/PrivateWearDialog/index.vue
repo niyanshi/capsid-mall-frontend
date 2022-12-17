@@ -125,7 +125,7 @@ const handleDialogClose = () => {
 
 const noScroll = ref<boolean>(false);
 const currentPageNum = ref(1);
-const SIZE = 20;
+const SIZE = 100;
 const currentPageSize = ref(SIZE);
 // 获取拥有的NFT列表
 const getNFTList = async (isNew = false, length = 0) => {
