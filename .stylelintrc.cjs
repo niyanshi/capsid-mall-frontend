@@ -15,6 +15,7 @@ module.exports = {
     'scss/at-import-partial-extension': 'always',
     'string-quotes': 'single',
     'no-descending-specificity': null,
+    'declaration-block-trailing-semicolon': null,
   },
   ignoreFiles: ['**/*.js', '**/*.jsx', '**/*.tsx', '**/*.ts'],
 };

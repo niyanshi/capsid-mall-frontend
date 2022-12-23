@@ -314,7 +314,7 @@ const handleDialogClose = () => {
 
 const currentSecondTab = ref(0);
 const currentPageNum = ref(1);
-const SIZE = 100;
+const SIZE = 20;
 const currentPageSize = ref(SIZE);
 const currentList = ref<
   {

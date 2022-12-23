@@ -127,6 +127,7 @@
         <base-input
           v-model="desc"
           style-type="line"
+          placeholder="please input description"
           :limit="512"
           style="flex:1"
           :error-tip="descTip"
