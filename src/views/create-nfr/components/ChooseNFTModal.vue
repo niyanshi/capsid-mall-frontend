@@ -114,8 +114,8 @@ const getNFTsList = async () => {
   let empty = false;
   let list = [] as INFTsType[];
 
-  const limit = 10;
-  const size = 120;
+  const limit = 100;
+  const size = 1000;
   const owner = await getAddress();
 
   while (list.length < size && !empty) {
