@@ -96,6 +96,14 @@
     box-shadow: 0 0 12px rgb(0 0 0 / 12%);
     cursor: pointer;
 
+    .img-wrap {
+      width: 100%;
+      max-width: 244px;
+      display: flex;
+      justify-content: center;
+      overflow: hidden;
+    }
+
     img {
       width: 244px;
       height: 244px;

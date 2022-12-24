@@ -20,22 +20,24 @@
         class="wear-item item-size"
         @click="goDetail(item)"
       >
-        <BaseNFRImage
-          v-if="isCompleteNFR(item)"
-          style="width: 244px; height: 244px"
-          class="scale"
-          :src="item.wearMeta?.image as string"
-        ></BaseNFRImage>
-        <PrivateImage
-          v-else-if="item.wearMeta?.image"
-          class="scale"
-          :src="item.wearMeta?.image"
-        ></PrivateImage>
-        <PrivateImage
-          v-else
-          class="scale"
-          :src="item.parentPic1"
-        ></PrivateImage>
+        <div class="img-wrap">
+          <BaseNFRImage
+            v-if="isCompleteNFR(item)"
+            style="width: 244px; height: 244px"
+            class="scale"
+            :src="item.wearMeta?.image as string"
+          ></BaseNFRImage>
+          <PrivateImage
+            v-else-if="item.wearMeta?.image"
+            class="scale"
+            :src="item.wearMeta?.image"
+          ></PrivateImage>
+          <PrivateImage
+            v-else
+            class="scale"
+            :src="item.parentPic1"
+          ></PrivateImage>
+        </div>
         <!-- <img v-else :src="item.parentPic1" alt="" srcset=""> -->
         <div class="status text">
           <span>{{ wearStatus[item.status] }}</span>

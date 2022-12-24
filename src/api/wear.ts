@@ -67,4 +67,19 @@ export const httpGetWearDetail = async (params: Record<string, unknown>): Promis
   return res.data;
 };
 
+/**
+ * 查询discord
+ */
+export const httpGetDiscord = async (): Promise<IResponseDto> => {
+  const res = await http.get(`${prefix}/wear/queryDiscord`);
+  return res.data;
+};
+
+/**
+ * 添加discord
+ */
+export const httpAddDiscord = async (data: FormData): Promise<IResponseDto> => {
+  const res = await http.post(`${prefix}/wear/addDiscord`, data);
+  return res.data;
+};
 

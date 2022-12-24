@@ -138,7 +138,7 @@
         class="dialog-button"
         @click="handleWearClick"
       >
-        <span>{{ t('wear') }}</span>
+        <span>wear(0.01ETH)</span>
         <i class="icon-wear"></i>
       </div>
     </div>
@@ -168,14 +168,41 @@
       @close="handleDialogClose"
       @ok="handleWearSelect"
     ></PrivateWearDialog>
-    <!-- <BaseMessageBox
-      :visible="resultDialogVisible"
-      :title="resultTitle"
-      :message="resultMsg"
-      :type="resultType"
-      @ok="resultDialogVisible = false"
-      @close="resultDialogVisible = false"
-    ></BaseMessageBox> -->
+    <BaseDialog
+      :visible="discordVisible"
+      width="640"
+      height="270"
+      :mask-disable="true"
+      @close="discordVisible = false"
+    >
+      <div class="discord">
+        <div class="title">Discord Fill in</div>
+        <div class="discord-input">
+          <div class="label">Discord Account:</div>
+          <base-input
+            v-model="discord"
+            style-type="line"
+            placeholder="Please enter Discord"
+            error-tip="Please enter Discord"
+            style="flex:1"
+          >
+          </base-input>
+        </div>
+        <div class="info">{{ `In order to contact you to inform you whether your selected image or wearable NFT is compatible with our requirements,
+        we have to collect your Discord account here. We will reach out to you if your image or wearable NFT needs any change.
+        Please join our Discord here.` }}
+        <a @click="handleOpen(URL_LIST.Discord)">here</a>
+        </div>
+      </div>
+      <template #button>
+        <div
+          class="discord-button"
+          @click="handleDiscordConfirm"
+        >
+          <span>{{ t('ok') }}</span>
+        </div>
+      </template>
+    </BaseDialog>
     <base-alert
       :visible="resultDialogVisible"
       :title="t('wearSuccess')"
@@ -227,6 +254,7 @@ import { IWearItem } from '@/types/campaign';
 import BaseNFRImage from '@/components/BaseNFRImage/index.vue';
 import BaseAlert from '@/components/BaseAlert/index.vue';
 import BaseInput from '@/components/BaseInput/index.vue';
+import BaseDialog from '@/components/BaseDialog/index.vue';
 import PrivateWearDialog from '@/components/PrivateWearDialog/index.vue';
 import { CaretDownOutlined } from '@ant-design/icons-vue';
 import { Select, SelectOption, message } from 'ant-design-vue';
@@ -235,10 +263,11 @@ import { useControllerStore } from '@/stores/controller';
 import { useUserInfoStore } from '@/stores/user-info';
 import useContract from '@/hooks/useContract';
 import { httpUploadload } from '@/api/campaign';
-import { httpCreateWear, httpCreateWearOrder } from '@/api/wear';
+import { httpCreateWear, httpCreateWearOrder,httpAddDiscord,httpGetDiscord } from '@/api/wear';
 import { useRoute,useRouter } from 'vue-router';
 import ImagePostbox from '@/assets/icons/party-popper.png';
 import Bag from '@/assets/icons/bag.png';
+import { URL_LIST } from '@/utils/constant';
 
 const { t } = useI18n();
 const userInfoStore = useUserInfoStore();
@@ -288,6 +317,7 @@ const currentWay = ref(1);
 const currentTrigger = ref('left');
 const wearDialogVisible = ref(false);
 const resultDialogVisible = ref(false);
+
 const resultError = ref(false);
 const resultPending = ref(false);
 const resultHash = ref('');
@@ -303,13 +333,59 @@ const handleWearSelect = (value: IWearItem) => {
   }
 };
 
+const discord = ref('');
+// discord弹窗
+const discordVisible = ref(false);
+// 查询discord
+const queryDiscord = async () => {
+  const res = await httpGetDiscord();
+  if(res.code === 0) {
+    if(res.data) {
+    // 有discord账号，说明之前填写过
+      if(currentTrigger.value === 'right' && currentWay.value !== 1) {
+        imageInputRef.value.click();
+        return;
+      }
+      wearDialogVisible.value = true;
+    } else {
+    // 没填过
+      discordVisible.value = true;
+    }
+  } else {
+    message.error(res.msg);
+  }
+};
 const handleAvatarClick = (direction: string) => {
-  currentTrigger.value = direction;
-  if(direction === 'right' && currentWay.value !== 1) {
-    imageInputRef.value.click();
+  if(!userInfoStore.currentUser.isLogin) {
+    userInfoStore.setLoginModalVisible(true);
     return;
   }
-  wearDialogVisible.value = true;
+  currentTrigger.value = direction;
+  // 查询discord
+  queryDiscord();
+  // if(direction === 'right' && currentWay.value !== 1) {
+  //   imageInputRef.value.click();
+  //   return;
+  // }
+  // wearDialogVisible.value = true;
+};
+
+
+const handleDiscordConfirm = async () => {
+  // 不能为空
+  if(!discord.value) return;
+  const form = new FormData();
+  form.append('discord',discord.value);
+  const res = await httpAddDiscord(form);
+  if(res.code === 0) {
+    discord.value = '';
+    discordVisible.value = false;
+    wearDialogVisible.value = true;
+  }
+};
+// 跳转到discord
+const handleOpen = (target: string) => {
+  open(target);
 };
 
 const avatarImage = ref<string>();
