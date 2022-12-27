@@ -25,29 +25,76 @@ import { computed, ref, watch } from 'vue';
 import { httpGetNFTsByCollection } from '@/api/explore';
 import { INFTsType, INFTsDto } from '@/types/nft';
 import { useRouter } from 'vue-router';
+import { useScroll } from '@vueuse/core';
 
 const router = useRouter();
 
+const { arrivedState } = useScroll(document.body);
+
+const size = 50;
 const nftsListRef = ref<INFTsType[]>([]);
+const currentPageNumRef = ref(1);
+const isLoadDataRef = ref(false);
 const activeKeyRef = computed<string>(() => router.currentRoute.value.params.slug as string);
 
 /** 获取collection下的nft列表 */
 const getNFTsByCollection = async (id: string) => {
-  const res = await httpGetNFTsByCollection(id);
-  // console.log(res);
-  nftsListRef.value = res?.data?.map((item: INFTsDto) => ({
-    name: item.name,
-    avatar: item.imageUrl,
-    id: item.tokenId,
-    contractAddress: item.contractAddress,
-  }));
+  const res = await httpGetNFTsByCollection(id, {
+    offset: (currentPageNumRef.value - 1) * size,
+    limit: size,
+  });
+  return res?.data
+    ?.filter(
+      (item: INFTsDto) =>
+        item.name && item.imageUrl && item.name !== 'null' && item.imageUrl !== 'null',
+    )
+    ?.map((item: INFTsDto) => ({
+      name: item.name,
+      avatar: item.imageUrl,
+      id: item.tokenId,
+      contractAddress: item.contractAddress,
+    }));
 };
 watch(
   activeKeyRef,
   (newVal) => {
-    if (newVal) getNFTsByCollection(newVal);
+    const exec = async () => {
+      currentPageNumRef.value = 1;
+      const resList = await getNFTsByCollection(newVal);
+      nftsListRef.value = resList;
+    };
+    if (newVal) exec();
   },
   { immediate: true },
+);
+
+watch(
+  arrivedState,
+  (newVal) => {
+    const exec = async () => {
+      isLoadDataRef.value = true;
+      currentPageNumRef.value = currentPageNumRef.value + 1;
+      try {
+        const resList = await getNFTsByCollection(activeKeyRef.value);
+        if (resList.length > 0) {
+          nftsListRef.value.push(...resList);
+        } else {
+          currentPageNumRef.value = currentPageNumRef.value - 1;
+        }
+        isLoadDataRef.value = false;
+      } catch (error) {
+        currentPageNumRef.value = currentPageNumRef.value - 1;
+        isLoadDataRef.value = false;
+      }
+    };
+    if (newVal.bottom && !isLoadDataRef.value) {
+      // 执行翻页
+      exec();
+    }
+  },
+  {
+    immediate: true,
+  },
 );
 
 const skipToDetails = (e: INFTsType) => {

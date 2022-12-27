@@ -30,7 +30,7 @@
         <img
           src="@/assets/images/ip.jpg"
           alt=""
-          style="width: 100%; height: 100%;border-radius: 10px;"
+          style="width: 100%; height: 100%; border-radius: 10px"
         />
       </div>
     </div>
@@ -50,33 +50,32 @@
       <sponsor-show
         :title="t('sponsor-titles[0]')"
         :image-lists="[
-          { url: ImageGoogle },
-          { url: ImageYoutube },
-          { url: ImageChigago },
-          { url: ImageNorth },
+          { url: ImageGoogle, h: '40.16px' },
+          { url: ImageYoutube, h: '40.16px' },
+          { url: ImageChigago, h: '40.16px' },
+          { url: ImageNorth, h: '40.16px' },
         ]"
       ></sponsor-show>
       <sponsor-show
         :title="t('sponsor-titles[1]')"
         :image-lists="[
-          { url: ImageBit },
-          { url: ImagSpring, h: '50px' },
-          { url: ImageGlobal, h: '68px' },
-          { url: ImageXoogler, h: '68px' },
-          { url: ImageMask, h: '68px' },
+          { url: ImageBit, h: '40.16px' },
+          { url: ImageWeb3, h: '31.01px' },
+          { url: ImageGlobal, h: '64.25px' },
+          { url: ImageXoogler, h: '64.25px' },
+          { url: ImageMask, h: '64.25px' },
         ]"
       ></sponsor-show>
       <sponsor-show
         :title="t('sponsor-titles[2]')"
-        :filter="true"
         :image-lists="[
-          { url: Image1 },
-          { url: Image2 },
-          { url: Image3 },
-          { url: Image4 },
-          { url: ImageGoogle },
-          { url: Image5 },
-          { url: Image6 },
+          { url: Image1, h: '64px' },
+          { url: Image2, h: '73px' },
+          { url: Image3, h: '74px' },
+          { url: Image4, h: '68px' },
+          { url: Image5, h: '68.44px' },
+          { url: Image6, h: '43px' },
+          { url: Image7, h: '62px' },
         ]"
       ></sponsor-show>
     </div>
@@ -89,20 +88,21 @@ import ImageSellTitle from '@/assets/images/sell-title.png';
 import ImageGoogle from '@/assets/investors/google.png';
 import ImageYoutube from '@/assets/investors/youtube.png';
 import ImageChigago from '@/assets/investors/chigago.png';
-import ImageNorth from '@/assets/investors/north.png';
+import ImageNorth from '@/assets/investors/north.svg';
 
 import ImageBit from '@/assets/investors/bit.png';
-import ImagSpring from '@/assets/investors/spring-wind.png';
+import ImageWeb3 from '@/assets/investors/web3.svg';
 import ImageGlobal from '@/assets/investors/global.png';
 import ImageXoogler from '@/assets/investors/xoogler.png';
 import ImageMask from '@/assets/investors/mask.png';
 
-import Image1 from '@/assets/investors/1.jpg';
-import Image2 from '@/assets/investors/2.jpg';
-import Image3 from '@/assets/investors/3.jpg';
-import Image4 from '@/assets/investors/4.jpg';
-import Image5 from '@/assets/investors/5.jpg';
-import Image6 from '@/assets/investors/6.jpg';
+import Image1 from '@/assets/investors/31.svg';
+import Image2 from '@/assets/investors/32.svg';
+import Image3 from '@/assets/investors/33.svg';
+import Image4 from '@/assets/investors/34.svg';
+import Image5 from '@/assets/investors/35.svg';
+import Image6 from '@/assets/investors/36.svg';
+import Image7 from '@/assets/investors/37.svg';
 
 import CollectionsListCard from './components/CollectionsListCard/index.vue';
 import SellCard from './components/SellCard/index.vue';

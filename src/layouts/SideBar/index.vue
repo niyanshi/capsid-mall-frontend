@@ -1,19 +1,19 @@
 <template>
   <div class="side-bar">
     <div
-      class="item"
+      class="side-item"
       @click="handleOpen(URL_LIST.Discord)"
     >
       <i class="side-bar-icon discord"></i>
     </div>
     <div
-      class="item"
+      class="side-item"
       @click="handleOpen(URL_LIST.Twitter)"
     >
       <i class="side-bar-icon twitter"></i>
     </div>
     <div
-      class="item"
+      class="side-item"
       @click="handleOpen(URL_LIST.Mirror)"
     >
       <i class="side-bar-icon mirror"></i>

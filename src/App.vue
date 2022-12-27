@@ -68,6 +68,7 @@ onMounted(() => {
   getNFRType();
   // 导航后置钩子
   Router.afterEach((to) => {
+    document.body.scrollTop = 0;
     if (to.meta.title) {
       document.title = t(String(to.meta.title));
     }

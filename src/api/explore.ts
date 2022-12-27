@@ -13,8 +13,11 @@ export const httpGetNFTCollectionsList = async (): Promise<IResponseDto> => {
  * @param id collection的唯一标识
  * @returns
  */
-export const httpGetNFTsByCollection = async (id: string): Promise<IResponseDto> => {
-  const res = await http.get(`${prefix}/collections/nfts/${id}`);
+export const httpGetNFTsByCollection = async (
+  id: string,
+  params?: { offset: number; limit: number },
+): Promise<IResponseDto> => {
+  const res = await http.get(`${prefix}/collections/nfts/${id}`, { params });
   return res.data;
 };
 

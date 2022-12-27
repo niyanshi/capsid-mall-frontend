@@ -138,9 +138,24 @@
         class="dialog-button"
         @click="handleWearClick"
       >
-        <span>wear(0.01ETH)</span>
+        <div>
+          <span>wear</span>
+        <span class="price">0.01</span>
+        <i class="icon-eth"></i>
         <i class="icon-wear"></i>
+        </div>
       </div>
+    </div>
+    <div class="instructions">
+      <div class="title">Instructions</div>
+      <ul>
+        <li>{{ `When clicking the wear button, the pop up window will ask you to provide your Discord
+          account in order for our support team to contact you if your selected image or wearable NFT is incompatible with our requirements.
+          You will be asked to provide a new image or wearable NFT in our Discord directly.` }}
+        </li>
+        <li>The Wear will cost you 0.01 ETH.</li>
+        <li>The expected composed NFT will take several days to be ready. You can check your wallet once it's done.</li>
+      </ul>
     </div>
     <div v-show="currentWay===1" class="guide">
       <img src="../../assets/images/nft-guide.png" alt="" srcset="">
