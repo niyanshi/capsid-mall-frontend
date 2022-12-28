@@ -44,12 +44,9 @@ const getNFTsByCollection = async (id: string) => {
     limit: size,
   });
   return res?.data
-    ?.filter(
-      (item: INFTsDto) =>
-        item.name && item.imageUrl && item.name !== 'null' && item.imageUrl !== 'null',
-    )
+    ?.filter((item: INFTsDto) => item.name && item.imageUrl && item.imageUrl !== 'null')
     ?.map((item: INFTsDto) => ({
-      name: item.name,
+      name: item.name === 'null' ? `# ${item.tokenId}` : item.name,
       avatar: item.imageUrl,
       id: item.tokenId,
       contractAddress: item.contractAddress,

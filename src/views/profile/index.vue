@@ -464,6 +464,11 @@ const getRequestList = async (isNew = false) => {
  */
 const pageNum = ref(1);
 const total = ref(0);
+const avtivityHandler = (val: string) => {
+  if(!val) return '--';
+  // eslint-disable-next-line no-magic-numbers
+  return val === userInfoStore.currentUser.publicKey ? 'you' : val?.slice(2, 8) || '--';
+};
 const columns = [
   {
     label: t('activityTableLabel[0]'),
@@ -513,7 +518,7 @@ const columns = [
   {
     label: t('activityTableLabel[1]'),
     prop: 'price',
-    width: 150,
+    width: 100,
     cellRender: (val: { value: string }) =>
       h(
         'div',
@@ -537,7 +542,7 @@ const columns = [
             'span',
             {
               style: {
-                width: '100px',
+                width: '80px',
                 overflow: 'hidden',
                 'text-overflow': 'ellipsis',
               },
@@ -548,11 +553,11 @@ const columns = [
         ],
       ),
   },
-  { label: t('activityTableLabel[2]'), prop: 'quantity', width: 100 },
+  { label: t('activityTableLabel[2]'), prop: 'quantity', width: 80 },
   {
     label: t('activityTableLabel[3]'),
     prop: 'sourceFrom',
-    width: 150,
+    width: 100,
     cellRender: (val: { value: string }) =>
       h(
         'span',
@@ -565,14 +570,13 @@ const columns = [
             if (val.value) router.push(`/profile/${val.value}`);
           },
         },
-        // eslint-disable-next-line no-magic-numbers
-        val.value === userInfoStore.currentUser.publicKey ? 'you' : val.value?.slice(2, 8) || '--',
+        avtivityHandler(val.value)
       ),
   },
   {
     label: t('activityTableLabel[4]'),
     prop: 'sourceTo',
-    width: 150,
+    width: 100,
     cellRender: (val: { value: string }) =>
       h(
         'span',
@@ -585,8 +589,7 @@ const columns = [
             if (val.value) router.push(`/profile/${val.value}`);
           },
         },
-        // eslint-disable-next-line no-magic-numbers
-        val.value === userInfoStore.currentUser.publicKey ? 'you' : val.value?.slice(2, 8) || '--',
+        avtivityHandler(val.value)
       ),
   },
   { label: t('activityTableLabel[5]'), prop: 'activityType', width: 150 },
@@ -743,6 +746,7 @@ watch(
       return;
     }
     handleTabChange(0);
+    pageNum.value = 1;
     currentAccount.value = route.params.address as string;
     getProfile();
   },
