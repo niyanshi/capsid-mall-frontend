@@ -119,6 +119,7 @@ const useSeaport = () => {
     const { executeAllActions } = await seaport.createOrder(order);
     const resOrder = await executeAllActions();
     console.log(resOrder);
+    console.log("requested order", JSON.stringify(resOrder));
     return {
       amount: String(data.quantity),
       chain: 'ethereum',
@@ -274,6 +275,7 @@ const useSeaport = () => {
   /** accept NFR  */
   const acceptNFRsRequest = async (bigOrder: IBigOrderTtpe) => {
     const order = JSON.parse(bigOrder.order);
+    console.log("requested order", order);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send('eth_requestAccounts', []);
     const seaport = new Seaport(provider);
