@@ -90,13 +90,18 @@ const useSeaport = () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send('eth_requestAccounts', []);
     const seaport = new Seaport(provider);
-    const signer = provider.getSigner();
+    // const signer = provider.getSigner();
     const accounts = (await provider.send('eth_requestAccounts', [])) as string[];
     getWethBalance(accounts[0]);
-    const c = await signer.getBalance(provider.blockNumber);
-    console.log(ethers.utils.formatEther(c));
+    // const c = await signer.getBalance(provider.blockNumber);
+    // console.log(ethers.utils.formatEther(c));
 
+    console.log("WETHAddress", wethAddress);
+    console.log("NFRAddress", nfrContractAddress);
+    console.log("price", new Decimal(data.price).times(data.quantity).toFixed().toString());
+    console.log("WETH Amount", ethers.utils.parseEther(new Decimal(data.price).times(data.quantity).toFixed()).toString());
     const order = {
+      allowPartialFills: true,
       offer: [
         {
           amount: ethers.utils
@@ -109,11 +114,11 @@ const useSeaport = () => {
         {
           itemType: 3,
           token: nfrContractAddress,
-          salt: salt(nfrContractAddress, String(data.nftId), Number(data.druation)),
           identifiers: [],
           amount: String(data.quantity),
         },
       ],
+      salt: salt(nfrContractAddress, String(data.nftId), Number(data.druation)),
     };
     console.log({ order }, new Decimal(data.price).times(data.quantity).toFixed());
     const { executeAllActions } = await seaport.createOrder(order);
@@ -262,6 +267,8 @@ const useSeaport = () => {
           resolve(true);
         }, WAIT_TIME);
       });
+      const txn = await provider.getTransaction(hash);
+      console.log("txn", txn);
       console.log("txReceipt", JSON.stringify(txReceipt));
       console.log("txStatus", txReceipt.status);
       if (res) {
