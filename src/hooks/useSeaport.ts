@@ -262,6 +262,8 @@ const useSeaport = () => {
           resolve(true);
         }, WAIT_TIME);
       });
+      console.log("txReceipt", JSON.stringify(txReceipt));
+      console.log("txStatus", txReceipt.status);
       if (res) {
         return true;
       } else {
