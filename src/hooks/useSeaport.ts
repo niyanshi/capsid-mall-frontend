@@ -86,15 +86,12 @@ const useSeaport = () => {
   };
 
   /** 请求NFR */
-  const requestNFR = async (data: INFRTypeForRequest) => {
+  const requestNFR = async (data: INFRTypeForRequest, nfrTokenId: String) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send('eth_requestAccounts', []);
     const seaport = new Seaport(provider);
-    const signer = provider.getSigner();
     const accounts = (await provider.send('eth_requestAccounts', [])) as string[];
     getWethBalance(accounts[0]);
-    const c = await signer.getBalance(provider.blockNumber);
-    console.log(ethers.utils.formatEther(c));
 
     const order = {
       offer: [
@@ -109,8 +106,8 @@ const useSeaport = () => {
         {
           itemType: 3,
           token: nfrContractAddress,
-          salt: salt(nfrContractAddress, String(data.nftId), Number(data.druation)),
-          identifiers: [],
+          // identifiers: [],
+          identifier: nfrTokenId,
           amount: String(data.quantity),
         },
       ],
@@ -276,10 +273,11 @@ const useSeaport = () => {
     const order = JSON.parse(bigOrder.order);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send('eth_requestAccounts', []);
+    const address = await provider.getSigner().getAddress();
     const seaport = new Seaport(provider);
     const { executeAllActions } = await seaport.fulfillOrder({
-      order,
-      considerationCriteria: [{ identifier: String(bigOrder.orderId), proof: [] }],
+      order: order,
+      accountAddress: address
     });
     const transaction = await executeAllActions();
     console.log('transaction', transaction);

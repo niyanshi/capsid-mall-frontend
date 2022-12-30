@@ -87,6 +87,22 @@ export const httpBuyNFRs = async (
   return res.data;
 };
 
+export const httpNfrTokenId = async (
+    nftOwner: string,
+    amount: string | Number
+)  => {
+  const res = await http.get(`${prefix}/nfr-trans/nfrTokenId`, {
+            params: {
+                nftOwner,
+                amount,
+                chain:'ethereum',
+            }
+        });
+  return res.data
+};
+
+
+
 /** 通知交易状态 */
 export const httpNoticeStatus = async (
   id: string,

@@ -46,7 +46,6 @@ watch(
   },
 );
 const onSelect = (selectV: unknown) => {
-  console.log('🚀 ~ onSelect ~ selectV', selectV);
   emit('update:modelValue', selectV);
 };
 const handleInputChange = () => {
