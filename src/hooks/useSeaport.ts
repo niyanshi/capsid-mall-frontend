@@ -273,9 +273,11 @@ const useSeaport = () => {
     await provider.send('eth_requestAccounts', []);
     const address = await provider.getSigner().getAddress();
     const seaport = new Seaport(provider);
+    console.log("nfrTokenId is:", bigOrder.orderId);
     const { executeAllActions } = await seaport.fulfillOrder({
       order: order,
-      accountAddress: address
+      accountAddress: address,
+      considerationCriteria: [{ identifier: String(bigOrder.orderId), proof: [] }]
     });
     const transaction = await executeAllActions();
     console.log('transaction', transaction);
