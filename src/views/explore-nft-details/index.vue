@@ -101,7 +101,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useUserInfoStore } from '@/stores/user-info';
 import useSeaport, { getInteractiveTokenData } from '@/hooks/useSeaport';
-import { httpRequestNFR } from '@/api/nfr';
+import {httpNfrTokenId, httpRequestNFR} from '@/api/nfr';
 import { message } from 'ant-design-vue';
 import emitter from '@/utils/event';
 import { EV_RELOAD_NFR_LIST, ERR } from '@/utils/constant';
@@ -210,7 +210,17 @@ const handleRequest = async (e: INFRTypeForRequest) => {
     return;
   }
   try {
-    const resParams = await requestNFR(obj);
+    const owners = nftDetalsRef.value?.owner;
+    if (!owners && owners.length === 0) {
+      message.error("The NFT has no owners.");
+      return;
+    }
+    const tokenRes = await httpNfrTokenId(owners[owners?.length - 1], obj.quantity);
+    if (tokenRes.code !== 0 && !tokenRes.data) {
+      message.error(tokenRes.msg);
+      return;
+    }
+    const resParams = await requestNFR(obj, tokenRes.data);
     const res = await httpRequestNFR(resParams);
     if (res.code !== 0) {
       message.error(res.msg);
