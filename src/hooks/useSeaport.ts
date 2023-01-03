@@ -34,10 +34,7 @@ interface IMetaDataType {
  * @returns 加密字符串
  */
 function salt(token: string, id: string, duraiton: number): string {
-  const nums = 64;
-  const nftId = `${String(id).padStart(nums, '0')}`;
-  const params = `${[token, nftId, duraiton].join('')}`;
-  return ethers.utils.keccak256(ethers.utils.toUtf8Bytes(params));
+  return ethers.utils.keccak256(ethers.utils.toUtf8Bytes([token, id, duraiton].join(",")));
 }
 
 /** 格式化nftmeta */
@@ -111,11 +108,10 @@ const useSeaport = () => {
           amount: String(data.quantity),
         },
       ],
+      salt: salt(nfrContractAddress, String(data.nftId), Number(data.druation)),
     };
-    console.log({ order }, new Decimal(data.price).times(data.quantity).toFixed());
     const { executeAllActions } = await seaport.createOrder(order);
     const resOrder = await executeAllActions();
-    console.log(resOrder);
     return {
       amount: String(data.quantity),
       chain: 'ethereum',
