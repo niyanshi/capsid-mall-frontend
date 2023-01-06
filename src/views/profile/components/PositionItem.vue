@@ -5,6 +5,7 @@
         <BaseNFRImage
           :src="prop.pic"
           :is-scale="true"
+          :expired="prop.expired"
         />
       </div>
     </template>
@@ -40,6 +41,7 @@ import { computed, ref } from 'vue';
 const prop = defineProps<{
   pic: string;
   name: string;
+  expired: boolean;
 }>();
 
 const isNFR = computed(() => sessionStorage.getItem('profile-tab') === '1');

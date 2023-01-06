@@ -37,6 +37,7 @@ export interface INFRsType {
   order?: string;
   status?: string;
   duration?: number;
+  expired?: boolean;
   [key: string]: unknown;
 }
 

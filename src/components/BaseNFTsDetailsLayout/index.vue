@@ -16,6 +16,7 @@
           <template v-if="isAtNFR">
             <BaseNFRImage
               :src="props.data.avatar"
+              :expired="props.expired"
               alt=""
             />
           </template>
@@ -69,7 +70,7 @@ const router = useRouter();
 const { t } = useI18n();
 const isAtNFR = computed(() => router.currentRoute.value.path.indexOf('nfr-details') !== -1);
 
-const props = defineProps<{ data: INFTsType }>();
+const props = defineProps<{ data: INFTsType, expired: boolean }>();
 
 const visible = ref<boolean>(false);
 const setVisible = (value: boolean): void => {

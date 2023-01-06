@@ -2,6 +2,7 @@
   <BaseNFTsDetailsLayout
     v-if="nftDetalsRef"
     :data="nftDetalsRef"
+    :expired="expiredRef"
   >
     <div class="explore-nft-details">
       <info-box
@@ -67,6 +68,7 @@ const rejectMsg = t('err-msg.reject');
 
 const nftDetalsRef = ref<INFTsType>();
 const nfrDetalsRef = ref<INFRsType>();
+const expiredRef = ref<Boolean>();
 /** 是否owner */
 const isOwnerRef = ref(false);
 /** 按钮配置 */
@@ -282,6 +284,7 @@ const getNFTsDetails = async (address: string, id: string) => {
 /** 获取nfr详情 */
 const getNFRsDetails = async () => {
   const { id } = router.currentRoute.value.params;
+  expiredRef.value = Boolean(router.currentRoute.value.query.expired);
   const res = await httpGetNFRsDetails(String(id));
   const d = res.data;
   const { nftTokenAddress, nftTokenId } = d;
@@ -300,6 +303,7 @@ const getNFRsDetails = async () => {
     status: d.status,
     duration: d.duration,
     name: JSON.parse(d.nftMeta)?.name,
+    expired: Boolean(router.currentRoute.value.query.expired)
   };
   getNFTsDetails(nftTokenAddress, nftTokenId);
 };

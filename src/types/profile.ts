@@ -44,6 +44,7 @@ export interface INFR {
   type: string;
   unitPrice: string;
   updatedAt: string;
+  expired: boolean;
 }
 export interface ITrait {
   displayType: string;

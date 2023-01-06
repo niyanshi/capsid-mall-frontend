@@ -12,7 +12,7 @@
       @load="onLoad"
     />
     <template v-if="!nft">
-      <img
+      <img v-if="!expired"
         class="frame"
         :style="{
           width: tagInfoObj.width + 'px',
@@ -22,6 +22,16 @@
         :src="ImageFrame"
         alt=""
       />
+      <img v-else
+           class="frame"
+           :style="{
+          width: tagInfoObj.width + 'px',
+          top: tagInfoObj?.top + 'px',
+          left: tagInfoObj.left + 'px',
+        }"
+           :src="ImageFrameExpired"
+           alt=""
+      />
     </template>
   </div>
 </template>
@@ -30,8 +40,9 @@
 import { reactive, ref } from 'vue';
 import ImageAlt from '@/assets/images/image-alt.png';
 import ImageFrame from '@/assets/images/frame.png';
+import ImageFrameExpired from '@/assets/images/nfr_frame_expired.png';
 
-const props = defineProps<{ src: string; isScale?: boolean; nft?: boolean }>();
+const props = defineProps<{ src: string; isScale?: boolean; nft?: boolean; expired?: boolean }>();
 
 const imageRef = ref();
 const tagInfoObj = reactive<{

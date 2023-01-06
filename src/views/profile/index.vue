@@ -88,6 +88,7 @@
               v-show="currentTab === 1 && currentSecondTab === Number('1') && !loading"
               :key="index"
               :pic="String(item.image)"
+              :expired="item.expired"
               :name="`${JSON.parse(item.nftMeta).name}`"
               @click="goNFRDetail(item)"
             >
@@ -733,11 +734,12 @@ const goNFTDetail = (NFT: INFT) => {
 };
 // 点击跳转到NFR详情页
 const goNFRDetail = (NFR: INFR) => {
-  router.push(`/explore/nfr-details/${NFR.id}`);
+  console.log(NFR);
+  router.push({path: `/explore/nfr-details/${NFR.id}`, query:{expired: String(NFR.expired)}});
 };
 // 点击跳转到NFR requset详情页
 const goNFRRequestDetail = (NFR: INFR) => {
-  router.push(`/explore/nfr-details/${NFR.id}/request`);
+  router.push({path:`/explore/nfr-details/${NFR.id}/request`});
 };
 watch(
   () => route.params.address,
