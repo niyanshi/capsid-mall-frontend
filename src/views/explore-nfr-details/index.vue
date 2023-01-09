@@ -284,7 +284,7 @@ const getNFTsDetails = async (address: string, id: string) => {
 /** 获取nfr详情 */
 const getNFRsDetails = async () => {
   const { id } = router.currentRoute.value.params;
-  expiredRef.value = Boolean(router.currentRoute.value.query.expired);
+  expiredRef.value = 'true' === router.currentRoute.value.query.expired
   const res = await httpGetNFRsDetails(String(id));
   const d = res.data;
   const { nftTokenAddress, nftTokenId } = d;
