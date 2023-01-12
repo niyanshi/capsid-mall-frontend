@@ -15,7 +15,7 @@ export const httpGetNFTCollectionsList = async (): Promise<IResponseDto> => {
  */
 export const httpGetNFTsByCollection = async (
   id: string,
-  params?: { offset: number; limit: number },
+  params?: { offset: number; limit: number; activeOnly: boolean },
 ): Promise<IResponseDto> => {
   const res = await http.get(`${prefix}/collections/nfts/${id}`, { params });
   return res.data;

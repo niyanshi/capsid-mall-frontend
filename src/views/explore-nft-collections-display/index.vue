@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import IconTrophy from '@/assets/icons/trophy.png';
-import IconSearch from '@/assets/icons/search.svg';
 import { computed, onMounted, ref } from 'vue';
 import BaseRadioGroup from '@/components/BaseRadioGroup/index.vue';
 import { httpGetNFTCollectionsList } from '@/api/explore';
@@ -13,7 +12,6 @@ const router = useRouter();
 
 const collectionsListRef = ref<ICollectionsItemType[]>([]);
 const activeKeyRef = computed<string>(() => router.currentRoute.value.params.slug as string);
-const activeOnlyRef = ref(false);
 
 /** radio select */
 const handleSelect = (e: string | number) => {
@@ -52,7 +50,7 @@ onMounted(() => {
     </div>
     <div class="line"></div>
 
-    <div class="tools-area">
+    <!-- <div class="tools-area">
       <div class="search">
         <input type="text" />
         <img
@@ -67,7 +65,7 @@ onMounted(() => {
       >
         {{ t('active-only') }}
       </div>
-    </div>
+    </div> -->
     <router-view></router-view>
   </div>
 </template>

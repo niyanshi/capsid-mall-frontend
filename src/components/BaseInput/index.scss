@@ -50,16 +50,14 @@
   }
 
   .limit-text {
-    // padding-top: 15px;
-    margin-left: 8px;
-    font-family: 'Roboto';
-    font-style: normal;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 20px;
     display: flex;
     align-items: center;
-
+    margin-left: 8px;
+    font-family: Roboto, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
     color: #949494;
   }
 
@@ -68,6 +66,15 @@
     bottom: 0;
     font-size: 16px;
     color: $main-color;
+    white-space: nowrap;
+    transform: translateY(110%);
+  }
+
+  .tip {
+    position: absolute;
+    bottom: 0;
+    font-size: 16px;
+    color: rgb(77 77 77 / 60%);
     white-space: nowrap;
     transform: translateY(110%);
   }

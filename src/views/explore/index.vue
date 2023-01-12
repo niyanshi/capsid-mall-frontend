@@ -31,7 +31,7 @@ import CovertTokenModal from '@/components/CovertTokenModal/index.vue';
 import useSeaport from '@/hooks/useSeaport';
 import { useControllerStore } from '@/stores/controller';
 import { useUserInfoStore } from '@/stores/user-info';
-import { ERR, EV_RELOAD_NFR_LIST } from '@/utils/constant';
+import { ERR, EV_RELOAD_NFR_LIST, EV_RELOAD_WETH } from '@/utils/constant';
 import emitter from '@/utils/event';
 import { message } from 'ant-design-vue';
 import { useI18n } from 'vue-i18n';
@@ -126,6 +126,7 @@ const handleSwap = async (amount: string) => {
   } finally {
     controllerStore.setGlobalLoading(false);
     controllerStore.setSwapVisible(false);
+    emitter.emit(EV_RELOAD_WETH);
   }
 };
 </script>

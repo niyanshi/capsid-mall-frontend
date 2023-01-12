@@ -237,7 +237,8 @@ module.exports = {
     // 157. 其他：一行不能太长（默认最长 180 个字符）
     'max-len': ['error', { code: 180, tabWidth: 2 }],
     // 160. 其他：避免多余的圆括号
-    '@typescript-eslint/no-extra-parens': 'error',
+    'no-extra-parens': 'off',
+    '@typescript-eslint/no-extra-parens': 'off',
     // 161. 其他：多余的分号应该被移除
     'no-extra-semi': 'error',
     // 162. 其他：但文件不应该包含太多行代码（默认最多 1000 行）

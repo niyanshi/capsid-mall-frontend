@@ -1,4 +1,20 @@
 <template>
+  <div class="tools-area">
+    <!-- <div class="search">
+      <input type="text" />
+      <img
+        :src="IconSearch"
+        alt=""
+      />
+    </div> -->
+    <div
+      class="btn"
+      :class="{ active: activeOnlyRef }"
+      @click="activeOnlyRef = !activeOnlyRef"
+    >
+      {{ t('active-only') }}
+    </div>
+  </div>
   <div class="nfts-area">
     <div
       v-for="item in nftsListRef"
@@ -18,6 +34,16 @@
       </div>
     </div>
   </div>
+  <!-- 空数据 -->
+  <template v-if="nftsListRef.length === 0">
+    <div class="empty">
+      <img
+        src="@/assets/icons/empty.png"
+        alt=""
+      />
+      <div>No content temporarily</div>
+    </div>
+  </template>
 </template>
 
 <script setup lang="ts">
@@ -26,7 +52,10 @@ import { httpGetNFTsByCollection } from '@/api/explore';
 import { INFTsType, INFTsDto } from '@/types/nft';
 import { useRouter } from 'vue-router';
 import { useScroll } from '@vueuse/core';
+// import IconSearch from '@/assets/icons/search.svg';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const router = useRouter();
 
 const { arrivedState } = useScroll(document.body);
@@ -35,13 +64,15 @@ const size = 50;
 const nftsListRef = ref<INFTsType[]>([]);
 const currentPageNumRef = ref(1);
 const isLoadDataRef = ref(false);
+const activeOnlyRef = ref(false);
 const activeKeyRef = computed<string>(() => router.currentRoute.value.params.slug as string);
 
 /** 获取collection下的nft列表 */
 const getNFTsByCollection = async (id: string) => {
   const res = await httpGetNFTsByCollection(id, {
-    offset: (currentPageNumRef.value - 1) * size,
-    limit: size,
+    offset: activeOnlyRef.value ? 0 : (currentPageNumRef.value - 1) * size,
+    limit: activeOnlyRef.value ? currentPageNumRef.value * size : size,
+    activeOnly: activeOnlyRef.value,
   });
   return res?.data
     ?.filter((item: INFTsDto) => item.name && item.imageUrl && item.imageUrl !== 'null')
@@ -56,6 +87,7 @@ watch(
   activeKeyRef,
   (newVal) => {
     const exec = async () => {
+      activeOnlyRef.value = false;
       currentPageNumRef.value = 1;
       const resList = await getNFTsByCollection(newVal);
       nftsListRef.value = resList;
@@ -74,7 +106,11 @@ watch(
       try {
         const resList = await getNFTsByCollection(activeKeyRef.value);
         if (resList.length > 0) {
-          nftsListRef.value.push(...resList);
+          if (activeOnlyRef.value) {
+            nftsListRef.value = resList;
+          } else {
+            nftsListRef.value.push(...resList);
+          }
         } else {
           currentPageNumRef.value = currentPageNumRef.value - 1;
         }
@@ -94,12 +130,82 @@ watch(
   },
 );
 
+watch(activeOnlyRef, () => {
+  const exec = async () => {
+    currentPageNumRef.value = 1;
+    const resList = await getNFTsByCollection(activeKeyRef.value);
+    nftsListRef.value = resList;
+  };
+  exec();
+});
+
 const skipToDetails = (e: INFTsType) => {
   router.push(`/explore/nft-details/${e.contractAddress}/${e.id}`);
 };
 </script>
 
 <style scoped lang="scss">
+.tools-area {
+  display: flex;
+  flex-direction: row-reverse;
+  margin: 23px auto 30px;
+
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 176px;
+    height: 32px;
+    font-size: 20px;
+    color: $main-color;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    border: 1px solid $main-color;
+    border-radius: 32px;
+    transition: all 0.3s ease;
+
+    &.active {
+      color: $vice-color;
+      background-color: $main-color;
+    }
+
+    &:hover {
+      @include tag-hover(1px);
+    }
+
+    &:active {
+      @include tag-active(1px);
+    }
+  }
+
+  .search {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 320px;
+    height: 32px;
+    padding-right: 8px;
+    padding-left: 25px;
+    margin-left: 16px;
+    border: 1px solid $main-color;
+    border-radius: 32px;
+
+    input {
+      width: calc(100% - 32px);
+      font-size: 18px;
+      color: $main-color;
+      border: none;
+      outline-style: none;
+    }
+
+    img {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
 .nfts-area {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -141,5 +247,19 @@ const skipToDetails = (e: INFTsType) => {
       font-weight: 800;
     }
   }
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  font-family: Inter, sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 26px;
+  color: #d2d2d2;
+  text-align: center;
 }
 </style>

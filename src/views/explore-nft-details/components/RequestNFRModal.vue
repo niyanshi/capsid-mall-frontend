@@ -14,12 +14,14 @@ import ImageBallot from '@/assets/images/ballot.png';
 import BaseOverlay from '@/components/BaseOverlay/index.vue';
 import IconClose from '@/assets/icons/close.png';
 import { useI18n } from 'vue-i18n';
-import { onMounted, reactive, ref, watch } from 'vue';
+import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { INFRTypeForRequest, INFTsType } from '@/types/nft';
 import { useControllerStore } from '@/stores/controller';
 import { useUserInfoStore } from '@/stores/user-info';
 import useSeaport from '@/hooks/useSeaport';
 import Decimal from 'decimal.js';
+import emitter from '@/utils/event';
+import { EV_RELOAD_WETH } from '@/utils/constant';
 
 const { t } = useI18n();
 const controllerStore = useControllerStore();
@@ -48,8 +50,9 @@ const valueObj = reactive<{
   duration: '',
 });
 const wethBalanceRef = ref();
-
 const addVisibleRef = ref<boolean>(false);
+const priceTipRef = ref('');
+
 const options = controllerStore.nfrType.map((item) => ({ key: item.id, value: item.name }));
 
 const errorMsgTip = reactive({
@@ -68,7 +71,8 @@ const clearErrorMsgTip = () => {
   errorMsgTip.price = '';
 };
 /** 数据验证 */
-const validateData = () => {
+const validateData = async () => {
+  wethBalanceRef.value = await getWethBalance(userInfoStore.currentUser.publicKey);
   clearErrorMsgTip();
   const quantityCof = 10;
   if (!valueObj.duration) {
@@ -115,8 +119,8 @@ const validateData = () => {
 };
 
 /** request nfr */
-const handleRequest = () => {
-  if (!validateData()) return;
+const handleRequest = async () => {
+  if (!(await validateData())) return;
   const obj = {
     type: valueObj.type,
     quantity: valueObj.quantity || 0,
@@ -134,18 +138,46 @@ const handleClose = () => {
   emit('close');
 };
 /** 监听weth */
+// watch(
+//   () => valueObj.price,
+//   (nv) => {
+//     if (!valueObj.quantity || !nv) return;
+//     if (new Decimal(wethBalanceRef.value).lessThan(new Decimal(nv).times(valueObj.quantity))) {
+//       // eslint-disable-next-line quotes
+//       errorMsgTip.price = "you don't have enough WETH";
+//       addVisibleRef.value = true;
+//       return;
+//     }
+//     errorMsgTip.price = '';
+//     addVisibleRef.value = false;
+//   },
+// );
+
 watch(
-  () => valueObj.price,
+  () => [valueObj.price, valueObj.quantity, wethBalanceRef.value],
   (nv) => {
-    if (!valueObj.quantity || !nv) return;
-    if (new Decimal(wethBalanceRef.value).lessThan(new Decimal(nv).times(valueObj.quantity))) {
+    const [price, quantity, weth] = nv;
+    console.log(weth);
+    priceTipRef.value = '';
+    errorMsgTip.price = '';
+    addVisibleRef.value = false;
+    if (!price || !quantity) return;
+    if (Number(price) === 0 || Number(quantity) === 0) return;
+    console.log(new Decimal(price).times(quantity).toFixed());
+
+    if (
+      new Decimal(wethBalanceRef.value).greaterThanOrEqualTo(new Decimal(price).times(quantity))
+    ) {
+      // eslint-disable-next-line quotes
+      const cof = 5;
+      priceTipRef.value = `total amount ${new Decimal(price).times(quantity).toFixed(cof)}  WETH`;
+      return;
+    }
+    if (new Decimal(wethBalanceRef.value).lessThan(new Decimal(price).times(quantity))) {
       // eslint-disable-next-line quotes
       errorMsgTip.price = "you don't have enough WETH";
       addVisibleRef.value = true;
-      return;
     }
-    errorMsgTip.price = '';
-    addVisibleRef.value = false;
   },
 );
 
@@ -154,6 +186,11 @@ onMounted(() => {
     wethBalanceRef.value = await getWethBalance(userInfoStore.currentUser.publicKey);
   };
   init();
+  emitter.on(EV_RELOAD_WETH, init);
+});
+
+onUnmounted(() => {
+  emitter.off(EV_RELOAD_WETH);
 });
 </script>
 
@@ -268,6 +305,7 @@ onMounted(() => {
                 type="number"
                 style-type="border"
                 :error-tip="errorMsgTip.price"
+                :tip="priceTipRef"
               ></base-input>
             </form-item-price>
             <template v-if="addVisibleRef">

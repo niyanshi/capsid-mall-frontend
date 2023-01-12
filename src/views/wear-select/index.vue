@@ -205,7 +205,7 @@
         </div>
         <div class="info">{{ `In order to contact you to inform you whether your selected image or wearable NFT is compatible with our requirements,
         we have to collect your Discord account here. We will reach out to you if your image or wearable NFT needs any change.
-        Please join our Discord here.` }}
+        Please join our Discord ` }}
         <a @click="handleOpen(URL_LIST.Discord)">here</a>
         </div>
       </div>

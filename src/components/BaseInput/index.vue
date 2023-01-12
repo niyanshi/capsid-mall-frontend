@@ -19,6 +19,11 @@
         {{ props.errorTip }}
       </div>
     </template>
+    <template v-if="!props.errorTip && props.tip">
+      <div class="tip">
+        {{ props.tip }}
+      </div>
+    </template>
   </div>
 </template>
 
@@ -34,6 +39,7 @@ const props = withDefaults(
     placeholder?: string;
     limit?: number;
     errorTip?: string;
+    tip?: string;
   }>(),
   {
     type: 'text',
@@ -41,6 +47,7 @@ const props = withDefaults(
     placeholder: '',
     limit: 128,
     errorTip: '',
+    tip: '',
   },
 );
 

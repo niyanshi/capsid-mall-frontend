@@ -135,9 +135,10 @@ const getNFTsList = async () => {
         (item: INFTsDto) => item.contractAddress.toLowerCase() !== nfrContractAddress.toLowerCase(),
       )
       ?.map((item: INFTsDto) => ({
-        avatar: item.imageUrl,
+        avatar: item.imageUrl || '',
         id: item.tokenId,
         contractAddress: item.contractAddress,
+        name: item.name,
       }));
     list = [...list, ...arr];
   }

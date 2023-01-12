@@ -734,7 +734,6 @@ const goNFTDetail = (NFT: INFT) => {
 };
 // 点击跳转到NFR详情页
 const goNFRDetail = (NFR: INFR) => {
-  console.log(NFR);
   router.push({path: `/explore/nfr-details/${NFR.id}`, query:{expired: String(NFR.expired)}});
 };
 // 点击跳转到NFR requset详情页

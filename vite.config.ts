@@ -6,16 +6,11 @@ import { resolve } from 'path';
 
 /** 代理目标 */
 const targetObj = {
-  // wg: 'http://172.100.3.19:8080',
-  // // cj: 'http://172.100.3.188:9002',
-  // wq: 'http://172.100.3.144:9080',
-  // test: 'http://172.100.3.188:9092',
-  // wt: 'http://10.10.39.207:9080',
-    wg: 'http://127.0.0.1:8888',
-    // cj: 'http://172.100.3.188:9002',
-    wq: 'http://127.0.0.1:8888',
-    test: 'http://127.0.0.1:8888',
-    wt: 'http://127.0.0.1:8888',
+  wg: 'http://172.100.3.19:8080',
+  // cj: 'http://172.100.3.188:9002',
+  wq: 'http://172.100.3.144:9080',
+  test: 'http://172.100.3.188:9092',
+  wt: 'http://10.10.39.207:9080',
 };
 
 /**
@@ -69,7 +64,7 @@ export default ({ command }: ConfigEnv) =>
         '/api': {
           target: targetObj.test,
           // target: targetObj.wt,
-          rewrite: (path) => path.replace(/^\/api/, ''),
+          // rewrite: (path) => path.replace(/^\/api/, ''),
         },
         ...processProxy(
           ['/api/v1/login', '/api/nft', '/api/nfr-order', '/api/collections', '/api/nfr-trans'],

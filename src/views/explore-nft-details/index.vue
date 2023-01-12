@@ -225,7 +225,6 @@ const handleRequest = async (e: INFRTypeForRequest) => {
     if (res.code !== 0) {
       message.error(res.msg);
       controllerStore.setCurrentInteractNFR({});
-
       return;
     }
     requestVisibleRef.value = false;
