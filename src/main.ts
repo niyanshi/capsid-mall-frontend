@@ -6,18 +6,16 @@ import i18n from './i18n';
 import './assets/styles/font-face.css';
 import 'ant-design-vue/dist/antd.css';
 import { message } from 'ant-design-vue';
-import Vue from 'vue';
-import VueAnalytics from 'vue-analytics';
-
-Vue.use(VueAnalytics, {
-  id: 'G-SV0Y3D2HR5',
-})
+import VueGtag from 'vue-gtag';
 
 message.config({
   top: '128px',
 });
 
 const app = createApp(App);
+app.use(VueGtag, {
+    config: { id: 'G-SV0Y3D2HR5' },
+});
 // 国际化配置
 app.use(i18n);
 // 配置路由
