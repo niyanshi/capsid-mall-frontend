@@ -163,7 +163,6 @@ watch(
     addVisibleRef.value = false;
     if (!price || !quantity) return;
     if (Number(price) === 0 || Number(quantity) === 0) return;
-    console.log(new Decimal(price).times(quantity).toFixed());
 
     if (
       new Decimal(wethBalanceRef.value).greaterThanOrEqualTo(new Decimal(price).times(quantity))
@@ -305,7 +304,7 @@ onUnmounted(() => {
                 type="number"
                 style-type="border"
                 :error-tip="errorMsgTip.price"
-                :tip="priceTipRef"
+                :tip="''"
               ></base-input>
             </form-item-price>
             <template v-if="addVisibleRef">
