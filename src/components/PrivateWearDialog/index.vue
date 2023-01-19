@@ -9,7 +9,7 @@
     <div class="select">
       <div class="dialog-title">
         <i class="icon-bag icon"></i>
-        <span>{{ t('selectAvatarz') }}</span>
+        <span>{{ title }}</span>
       </div>
       <div class="select-part">
         <div class="tab-wrap">
@@ -102,6 +102,7 @@ const { t } = useI18n();
 
 interface PropType {
   visible: boolean;
+  title: string;
 }
 const props = defineProps<PropType>();
 const emit = defineEmits(['close', 'ok']);

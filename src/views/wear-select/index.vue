@@ -180,6 +180,7 @@
     </div>
     <PrivateWearDialog
       :visible="wearDialogVisible"
+      :title="currentTrigger === 'left' ? 'Select wearable NFT/NFR' : 'Select your avatar'"
       @close="handleDialogClose"
       @ok="handleWearSelect"
     ></PrivateWearDialog>
